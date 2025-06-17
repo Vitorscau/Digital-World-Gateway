@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832f470cceaa46143a89c0a85d628671, type: 3}
+  m_Name: Burst Flame I
+  m_EditorClassIdentifier: 
+  name_: Burst Flame I
+  description_: Magic attack, 55 Fire damage to one foe. 95% accuracy.
+  atribute_: 0
+  power_: 55
+  cost_: 3
+  type_: 2

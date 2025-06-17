@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Agumon
+  m_EditorClassIdentifier: 
+  name_: Agumon
+  description_: This reptile Digimon looks like a small dinosaur, growing to stand
+    on two legs. Despite how weak this fledging creature is, it boasts a ferocious,
+    reckless attitude. Sharp, solid claws grow from each limb, offering some power
+    in a fight. It may one day Digivolve into a Digimon of great strength. Its special
+    move Pepper Breath launches scorching flames from its mouth.
+  prefab_: {fileID: 919132149155446097, guid: 75312573a5ca2aa44958b62f4a27664e, type: 3}
+  animator_: {fileID: 7582951290208102880, guid: d2bdd012cb4bfa9498220af65b511bfa,
+    type: 3}
+  stage_: 2
+  atribute_: 0
+  personalities_: 0
+  type_: 2
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 68
+  DEF: 45
+  HP: 450
+  INT: 15
+  SP: 45
+  SPD: 37
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: 2c2b0b0c9222c2d4d80e14fda8c2b0e5, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 6
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 12

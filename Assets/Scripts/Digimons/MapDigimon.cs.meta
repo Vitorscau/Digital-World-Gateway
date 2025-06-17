@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 9bdfeda31dbe7be4985aee26fd4106b0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - digimonBase: {fileID: 11400000, guid: 48d3ae7e6b9976f4a9c4b6c41e321136, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
