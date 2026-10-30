@@ -23,6 +23,10 @@ public class DigimonSalvo
     public long proximoCoco;     // quando sai o próximo cocô (Unix)
     // Treino: bônus de 0 a 100 em cada status (100 = +50% na batalha).
     public int treinoOffense, treinoDefense, treinoSpeed, treinoBrains;
+    // Digivolução (estilo Digimon World): erros de cuidado e vitórias contam para o caminho da evolução.
+    public int errosCuidado;     // fome, tristeza ou sujeira deixadas de lado por muito tempo
+    public int vitorias;         // batalhas vencidas por este Digimon
+    public long nasceuEm;        // quando chocou ou digivolveu pela última vez (Unix)
 
     public DigimonBase Ficha => CatalogoDigimon.Buscar(especie);
 }
@@ -87,6 +91,7 @@ public class PerfilJogador
     public bool bandagemAtiva;       // a próxima batalha começa com vida extra
     public bool somLigado = true;
     public bool comecou;             // já recebeu os itens iniciais
+    public bool inicioFeito;         // já escolheu o Digitama (início do jogo)
     public List<PontoUsado> pontosUsados = new List<PontoUsado>();
     public List<string> pontosVisitados = new List<string>(); // Encrypted Data já decifrados alguma vez
     public int dadosDecifrados;
@@ -143,8 +148,10 @@ public class PerfilJogador
         pontosUsados ??= new List<PontoUsado>();
         pontosVisitados ??= new List<string>();
         colecao.RemoveAll(d => d == null || string.IsNullOrEmpty(d.especie));
-        if (colecao.Count == 0) AdicionarNaColecao("Gabumon", 5);
-        if (Parceiro == null) parceiroId = colecao[0].id;
+        // Saves antigos (que já tinham Digimon) pulam a escolha do Digitama.
+        if (colecao.Count > 0) inicioFeito = true;
+        if (inicioFeito && colecao.Count == 0) AdicionarNaColecao("Gabumon", 5);
+        if (Parceiro == null && colecao.Count > 0) parceiroId = colecao[0].id;
         if (nivelMostrado < 1) nivelMostrado = nivel;
         if (!comecou)
         {
@@ -250,7 +257,8 @@ public class PerfilJogador
             id = Guid.NewGuid().ToString("N").Substring(0, 12),
             especie = especie,
             nivel = Mathf.Clamp(nivelDigimon, 1, NivelMaximoDigimon),
-            capturadoEm = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            capturadoEm = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            nasceuEm = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         };
         colecao.Add(d);
         return d;

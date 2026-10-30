@@ -56,7 +56,7 @@ public class LoadingManager : MonoBehaviour
         var tempoMinimo = Random.Range(minLoadTime, maxLoadTime);
         if (!string.IsNullOrEmpty(cenaParaCarregar) && _preCarregamento == null)
         {
-            _preCarregamento = SceneManager.LoadSceneAsync(cenaParaCarregar);
+            _preCarregamento = SceneManager.LoadSceneAsync(cenaParaCarregar == Cenas.Mapa ? Cenas.Inicio : cenaParaCarregar);
             if (_preCarregamento != null) _preCarregamento.allowSceneActivation = false;
         }
 

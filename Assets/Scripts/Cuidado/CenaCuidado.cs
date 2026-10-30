@@ -197,6 +197,20 @@ public class CenaCuidado : MonoBehaviour
     // ------------------------------------------------------------ Toques
 
     private float _ultimoEsfregar;
+    private float _proximaDigivolucao;
+
+    /// <summary>Depois da digivolução: tira o modelo antigo e põe o novo no mesmo lugar.</summary>
+    private void TrocarModelo(DigimonBase nova)
+    {
+        if (_pet == null || nova == null) return;
+        var lugar = _pet.transform.position;
+        Destroy(_pet.gameObject);
+        _pet = null;
+        _ficha = nova;
+        Colocar(lugar);
+        _pet.Comemorar();
+        Coracoes(_pet.Topo, 5);
+    }
 
     private void Update()
     {
@@ -204,6 +218,13 @@ public class CenaCuidado : MonoBehaviour
         TocarOuEsfregar();
         Pinca();
         AtualizarUI();
+        // Digivolução: quando chega a hora, a animação toca e o modelo no AR é trocado.
+        if (_pet != null && _treino == null && !TelaFigma.AlgumaAberta && Time.time > _proximaDigivolucao)
+        {
+            _proximaDigivolucao = Time.time + 3f;
+            var nova = Digivolucao.Verificar(_parceiro);
+            if (nova != null) TelaDigivolucao.Abrir(_parceiro, nova, TrocarModelo);
+        }
         if (Time.time > _proximoSalvar)
         {
             _proximoSalvar = Time.time + 15f;
@@ -409,6 +430,9 @@ public class CenaCuidado : MonoBehaviour
         FigmaUI.CaixaVidro(_raiz, 40f, 40f, 949f, 470f);
         _titulo = FigmaUI.TextoEm(_raiz, 80f, 60f, 870f, 70f, "", 50f, FigmaUI.Peso.Negrito, TextAlignmentOptions.Left);
         _amizadeTxt = FigmaUI.TextoEm(_raiz, 80f, 125f, 870f, 50f, "", 32f, FigmaUI.Peso.Normal, TextAlignmentOptions.Left);
+        _amizadeTxt.enableAutoSizing = true;
+        _amizadeTxt.fontSizeMin = 20f;
+        _amizadeTxt.fontSizeMax = 32f;
         Barra("Fome", 195f, new Color(1f, 0.6f, 0.25f));
         Barra("Energia", 270f, new Color(0.35f, 0.85f, 0.4f));
         Barra("Humor", 345f, new Color(1f, 0.85f, 0.3f));
@@ -454,7 +478,8 @@ public class CenaCuidado : MonoBehaviour
         if (_parceiro == null) return;
         _titulo.text = $"{Nome}  <size=36>Lv {_parceiro.nivel}</size>";
         var jeito = new Digimon(_ficha, Mathf.Max(1, _parceiro.nivel)).Personalidade;
-        _amizadeTxt.text = $"{CuidadoDigimon.NivelAmizade(_parceiro.amizade)} · jeito {jeito}" + (_parceiro.cocos > 0 ? $" · sujeira: {_parceiro.cocos}" : "");
+        _amizadeTxt.text = $"{CuidadoDigimon.NivelAmizade(_parceiro.amizade)} · jeito {jeito} · {Digivolucao.Dica(_parceiro)}" +
+                           (_parceiro.cocos > 0 ? $" · sujeira: {_parceiro.cocos}" : "");
         void B(string n, float v)
         {
             var (fundo, cheio, valor) = _barras[n];

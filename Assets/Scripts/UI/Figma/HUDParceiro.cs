@@ -46,6 +46,7 @@ public class HUDParceiro : MonoBehaviour
     private static void AoCarregar(Scene cena, LoadSceneMode modo)
     {
         if (cena.name != Cenas.Mapa || FindFirstObjectByType<HUDParceiro>() != null) return;
+        if (IrParaDigitamaSePreciso()) return;
         new GameObject("HUDParceiro").AddComponent<HUDParceiro>();
     }
 
@@ -81,13 +82,38 @@ public class HUDParceiro : MonoBehaviour
         if (_aviso != null) _aviso.SetActive(CuidadoDigimon.PrecisaDeAtencao(PerfilJogador.Atual.Parceiro));
     }
 
+    private float _proximaDigivolucao;
+
     private void Update()
     {
         if (Time.unscaledTime > _proximoAviso) { _proximoAviso = Time.unscaledTime + 30f; AtualizarAviso(); }
         // Espera a tela de aviso inicial ("Stay Aware") sair antes de anunciar o Level Up.
-        if (_levelUpVerificado || _barra == null || !_barra.gameObject.activeInHierarchy || TelaFigma.AlgumaAberta) return;
-        _levelUpVerificado = true;
-        TelaLevelUp.MostrarSePreciso();
+        if (_barra == null || !_barra.gameObject.activeInHierarchy || TelaFigma.AlgumaAberta) return;
+        if (!_levelUpVerificado)
+        {
+            _levelUpVerificado = true;
+            TelaLevelUp.MostrarSePreciso();
+            return;
+        }
+        // Hora de digivolver? (nível ou idade, e o caminho pelas condições de cuidado)
+        if (Time.unscaledTime < _proximaDigivolucao) return;
+        _proximaDigivolucao = Time.unscaledTime + 5f;
+        var parceiro = PerfilJogador.Atual.Parceiro;
+        var nova = Digivolucao.Verificar(parceiro);
+        if (nova != null)
+            TelaDigivolucao.Abrir(parceiro, nova, f =>
+            {
+                var controlador = FindFirstObjectByType<DigimonController>();
+                if (controlador != null) controlador.SetDigimon(f);
+            });
+    }
+
+    /// <summary>Jogo novo (sem Digitama escolhido): vai direto para a escolha do ovo.</summary>
+    private static bool IrParaDigitamaSePreciso()
+    {
+        if (PerfilJogador.Atual.inicioFeito) return false;
+        SceneManager.LoadScene(Cenas.Digitama);
+        return true;
     }
 
     /// <summary>

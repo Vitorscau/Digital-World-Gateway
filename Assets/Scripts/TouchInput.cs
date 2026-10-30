@@ -7,6 +7,6 @@ public class TouchInput : MonoBehaviour
     public void LoadMapScene()
     {
         if (LoadingManager.AtivarCenaPreCarregada()) return;
-        SceneManager.LoadScene(Cenas.Mapa);
+        SceneManager.LoadScene(Cenas.Inicio);
     }
 }

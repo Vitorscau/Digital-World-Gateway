@@ -43,6 +43,13 @@ public static class CuidadoDigimon
         }
         if (d.proximoCoco <= agora) d.proximoCoco = agora + SegundosEntreCocos;
 
+        // Erros de cuidado (como no Digimon World): cada 4 h passadas com fome zerada ou triste demais,
+        // e cada 6 h com a sujeira acumulada no máximo, contam um erro. Mudam o caminho da digivolução.
+        var horasComFome = Mathf.Max(0f, horas - d.fome / FomePorHora);
+        var horasTriste = d.humor < 10f ? horas : 0f;
+        d.errosCuidado += Mathf.FloorToInt(horasComFome / 4f) + Mathf.FloorToInt(horasTriste / 4f) +
+                          (d.cocos >= MaxCocos ? Mathf.FloorToInt(horas / 6f) : 0);
+
         d.fome = Mathf.Clamp(d.fome - FomePorHora * horas, 0f, 100f);
         d.energia = Mathf.Clamp(d.energia + EnergiaPorHoraDescansando * horas, 0f, 100f);
         d.humor = Mathf.Clamp(d.humor - (HumorPorHora + d.cocos * HumorPorCocoPorHora + (d.fome < 20f ? 6f : 0f)) * horas, 0f, 100f);

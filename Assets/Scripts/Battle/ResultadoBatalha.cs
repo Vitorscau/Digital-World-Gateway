@@ -60,6 +60,7 @@ public static class ResultadoBatalha
             r.Bits = 10 + nivelInimigo * 2;
             perfil.bits += r.Bits;
             perfil.vitorias++;
+            if (parceiro != null) parceiro.vitorias++; // conta para a digivolução
             // Os itens que aparecem no popup de recompensa da arena.
             perfil.AdicionarItem(Itens.Bandage);
             perfil.AdicionarItem(Itens.Meat);

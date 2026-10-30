@@ -16,12 +16,15 @@ public class RetratoVivo : MonoBehaviour
     private Transform _suporte;
     private GameObject _modelo;
     private int _quadros;
+    private bool _corpoInteiro;
 
-    public static RetratoVivo Criar(DigimonBase ficha, int tamanho = 256)
+    /// <summary>Cria o retrato. Com <paramref name="corpoInteiro"/>, enquadra o Digimon todo (não só o rosto).</summary>
+    public static RetratoVivo Criar(DigimonBase ficha, int tamanho = 256, bool corpoInteiro = false)
     {
         if (ficha == null || ficha.Prefab == null) return null;
         var go = new GameObject("RetratoVivo_" + ficha.name);
         var r = go.AddComponent<RetratoVivo>();
+        r._corpoInteiro = corpoInteiro;
         r.Montar(ficha, tamanho);
         return r;
     }
@@ -69,7 +72,9 @@ public class RetratoVivo : MonoBehaviour
         _cam.allowHDR = false;
         _cam.allowMSAA = true;
         // As outras câmeras não desenham a camada dos retratos.
-        foreach (var c in Camera.allCameras) if (c != _cam) c.cullingMask &= ~(1 << Camada);
+        foreach (var c in Camera.allCameras)
+            if (c != _cam && c.GetComponentInParent<RetratoVivo>() == null) // câmeras de outros retratos ficam como estão
+                c.cullingMask &= ~(1 << Camada);
         Enquadrar();
     }
 
@@ -92,8 +97,8 @@ public class RetratoVivo : MonoBehaviour
         }
         if (!ok) return;
         var h = b.size.y;
-        var quadro = Mathf.Max(h * 0.55f, Mathf.Min(b.size.x, h) * 0.6f);
-        var alvo = new Vector3(b.center.x, b.max.y - quadro * 0.55f, b.center.z);
+        var quadro = _corpoInteiro ? Mathf.Max(h, b.size.x) * 0.72f :Mathf.Max(h * 0.55f, Mathf.Min(b.size.x, h) * 0.6f);
+        var alvo = _corpoInteiro ? b.center : new Vector3(b.center.x, b.max.y - quadro * 0.55f, b.center.z);
         var dist = quadro * 0.62f / Mathf.Tan(_cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
         _cam.nearClipPlane = dist * 0.05f;
         _cam.farClipPlane = dist * 6f + b.size.magnitude;

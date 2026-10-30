@@ -10,4 +10,8 @@ public static class Cenas
     public const string Batalha = "Battle_Scene";
     public const string BatalhaAR = "AR_Battle_Scene";
     public const string Cuidado = "Care_Scene";
+    public const string Digitama = "Digitama_Scene";
+
+    /// <summary>Primeira cena do jogo: a escolha do Digitama num jogo novo, senão o mapa.</summary>
+    public static string Inicio => PerfilJogador.Atual.inicioFeito ? Mapa : Digitama;
 }

@@ -274,6 +274,9 @@ public class _DigimonGOP : MonoBehaviour
             var nivelMin = Mathf.Min(entrada.nivel.x, entrada.nivel.y);
             var nivelMax = Mathf.Max(entrada.nivel.x, entrada.nivel.y);
             var nivel = nivelMin + (int)(Hash(ix, iy, s, 5, cicloAtual) % (ulong)(nivelMax - nivelMin + 1));
+            // No começo (parceiro bebê) os selvagens não passam muito do nível dele.
+            var nivelParceiro = PerfilJogador.Atual.Parceiro?.nivel ?? 1;
+            nivel = Mathf.Clamp(nivel, 1, Mathf.Max(nivelMin, nivelParceiro + 4));
             var giro = Quaternion.Euler(0f, (float)(U(Hash(ix, iy, s, 6, cicloAtual)) * 360.0), 0f);
             var fim = DateTime.UnixEpoch.AddMinutes(cicloAtual * ciclo + inicio + duracao);
 

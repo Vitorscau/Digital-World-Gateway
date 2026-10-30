@@ -68,10 +68,8 @@ public class TelaSettings : TelaFigma
         }
         PerfilJogador.Resetar();
         PlayerPrefs.DeleteKey("DigimonNexus.SpawnsVistos");
-        AvisoNaTela.Mostrar("Progresso apagado. Começando de novo!");
-        var controlador = FindFirstObjectByType<DigimonController>();
-        var ficha = PerfilJogador.Atual.Parceiro?.Ficha;
-        if (controlador != null && ficha != null) controlador.SetDigimon(ficha);
         Fechar();
+        // Jogo novo: começa de novo pela escolha do Digitama.
+        UnityEngine.SceneManagement.SceneManager.LoadScene(Cenas.Digitama);
     }
 }
