@@ -91,10 +91,15 @@ public class MissionMenuController : MonoBehaviour
 
     void DetectarArraste()
     {
+        // Só fecha arrastando para baixo se o menu estiver aberto e o arraste começar em cima dele
+        // (antes, qualquer arraste no mapa disparava o fechamento).
         if (Input.GetMouseButtonDown(0))
         {
             dragStartPos = Input.mousePosition;
-            isDragging = true;
+            var canvas = menuMissionsContainer.GetComponentInParent<Canvas>();
+            var cam = canvas == null || canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+            isDragging = menuMissionsContainer.gameObject.activeInHierarchy &&
+                RectTransformUtility.RectangleContainsScreenPoint(menuMissionsContainer, dragStartPos, cam);
         }
 
         if (Input.GetMouseButtonUp(0) && isDragging)

@@ -37,13 +37,13 @@ public class CoverageManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Incrementa o tempo decorrido com o tempo do último frame
+        // Incrementa o tempo decorrido com o tempo do Ãºltimo frame
         tempoDecorrido += Time.deltaTime;
 
         // Verifica se passaram 2 minutos (120 segundos)
         if (tempoDecorrido >= 120f)
         {
-            // Chama o método desejado
+            // Chama o mÃ©todo desejado
             RequestAreasAroundMapCenter();
 
             // Reinicia o contador de tempo

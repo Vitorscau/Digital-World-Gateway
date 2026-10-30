@@ -29,10 +29,11 @@ public class BattleManager : MonoBehaviour
 
     private NavMeshHowTo navMeshArena;
     private bool batalhaIniciada = false;
+    private bool batalhaTerminada = false;
 
     private void Start()
     {
-        navMeshArena = FindObjectOfType<NavMeshHowTo>();
+        navMeshArena = FindFirstObjectByType<NavMeshHowTo>();
         if (navMeshArena == null)
         {
             Debug.LogWarning("Nenhum objeto com NavMeshHowTo encontrado na cena.");
@@ -73,7 +74,8 @@ public class BattleManager : MonoBehaviour
 
     private void Update()
     {
-        if (!batalhaIniciada) return;
+        // Só checa até o fim da luta (antes chamava ShowVictory/ShowDefeat a cada frame).
+        if (!batalhaIniciada || batalhaTerminada) return;
 
         if (playerCreature == null || playerCreature.gameObject == null)
         {
@@ -125,6 +127,7 @@ public class BattleManager : MonoBehaviour
 
     private void ShowVictory()
     {
+        batalhaTerminada = true;
         if (victoryScreen != null)
             victoryScreen.SetActive(true);
 
@@ -133,6 +136,7 @@ public class BattleManager : MonoBehaviour
 
     private void ShowDefeat()
     {
+        batalhaTerminada = true;
         if (defeatScreen != null)
             defeatScreen.SetActive(true);
 
@@ -156,6 +160,6 @@ public class BattleManager : MonoBehaviour
 
     public void ReturnToMap()
     {
-        SceneManager.LoadScene("Map_Scene");
+        SceneManager.LoadScene(Cenas.Mapa);
     }
 }

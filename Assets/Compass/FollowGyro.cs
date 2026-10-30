@@ -1,7 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Gira o objeto de acordo com uma fonte:
+/// - Giroscopio: inclinação do celular (comportamento antigo).
+/// - Bussola: norte magnético do celular.
+/// - CameraDoMapa: para onde a câmera do mapa está virada (o ponteiro aponta para o norte do mapa,
+///   como a bússola do Pokémon GO).
+/// </summary>
 public class FollowGyro : MonoBehaviour
 {
     public enum RotationAxis
@@ -11,42 +16,59 @@ public class FollowGyro : MonoBehaviour
         Z
     }
 
-    [Header("Tweaks")]
-    [SerializeField] private float rotationSpeed = 1.0f; // Adjust the rotation speed as needed
-    [SerializeField] private float axisOffset = 0.0f;    // Offset for the chosen axis
-    [SerializeField] private RotationAxis rotationAxis = RotationAxis.Z; // Selected rotation axis
-    [SerializeField] private Vector3 positionOffset;     // Offset for the position
+    public enum Fonte
+    {
+        Giroscopio,
+        Bussola,
+        CameraDoMapa
+    }
 
-    // Start is called before the first frame update
+    [Header("Tweaks")]
+    [SerializeField] private Fonte fonte = Fonte.Giroscopio;
+    [SerializeField] private float rotationSpeed = 1.0f;
+    [SerializeField] private float axisOffset = 0.0f;
+    [SerializeField] private RotationAxis rotationAxis = RotationAxis.Z;
+    [Tooltip("Deslocamento aplicado uma vez ao iniciar.")]
+    [SerializeField] private Vector3 positionOffset;
+
     void Start()
     {
-        GyroManager.Instance.EnanbleGyro();
+        // Antes era somado a cada frame, e o objeto ia "fugindo" da tela.
+        transform.position += positionOffset;
+
+        if (fonte == Fonte.Giroscopio) GyroManager.Instance.EnanbleGyro();
+        if (fonte == Fonte.Bussola) Input.compass.enabled = true;
     }
 
     void Update()
     {
-        Quaternion gyroRotation = GyroManager.Instance.GetGyroRotation();
-
-        // Extract only the rotation around the specified axis
-        Quaternion axisRotation = Quaternion.identity;
-
+        var angulo = LerAngulo();
+        Quaternion alvo;
         switch (rotationAxis)
         {
-            case RotationAxis.X:
-                axisRotation = Quaternion.Euler(gyroRotation.eulerAngles.x + axisOffset, 0, 0);
-                break;
-            case RotationAxis.Y:
-                axisRotation = Quaternion.Euler(0, -gyroRotation.eulerAngles.y - axisOffset, 0);
-                break;
-            case RotationAxis.Z:
-                axisRotation = Quaternion.Euler(0, 0, gyroRotation.eulerAngles.z + axisOffset);
-                break;
+            case RotationAxis.X: alvo = Quaternion.Euler(angulo + axisOffset, 0, 0); break;
+            case RotationAxis.Y: alvo = Quaternion.Euler(0, -angulo - axisOffset, 0); break;
+            default: alvo = Quaternion.Euler(0, 0, angulo + axisOffset); break;
         }
 
-        // Apply the rotation to the object
-        transform.localRotation = Quaternion.Slerp(transform.localRotation, axisRotation, rotationSpeed * Time.deltaTime);
+        // CameraDoMapa precisa acompanhar a câmera sem atraso; as outras fontes são suavizadas.
+        transform.localRotation = fonte == Fonte.CameraDoMapa
+            ? alvo
+            : Quaternion.Slerp(transform.localRotation, alvo, rotationSpeed * Time.deltaTime);
+    }
 
-        // Apply position offset
-        transform.position = transform.position + positionOffset;
+    private float LerAngulo()
+    {
+        switch (fonte)
+        {
+            case Fonte.Bussola:
+                return Input.compass.magneticHeading;
+            case Fonte.CameraDoMapa:
+                var cam = Camera.main;
+                return cam != null ? cam.transform.eulerAngles.y : 0f;
+            default:
+                var g = GyroManager.Instance.GetGyroRotation().eulerAngles;
+                return rotationAxis == RotationAxis.X ? g.x : rotationAxis == RotationAxis.Y ? g.y : g.z;
+        }
     }
 }

@@ -16,7 +16,7 @@ public class EscalaImagem : MonoBehaviour
         // Altera a escala da imagem
         AlterarEscala();
 
-        // Altera a direção da alteração de escala quando atinge os limites
+        // Altera a direÃ§Ã£o da alteraÃ§Ã£o de escala quando atinge os limites
         VerificarLimites();
     }
 
@@ -36,7 +36,7 @@ public class EscalaImagem : MonoBehaviour
         // Limita a escala dentro dos valores desejados
         escalaAtual = Mathf.Clamp(escalaAtual, escalaMinima, escalaMaxima);
 
-        // Aplica a nova escala à imagem
+        // Aplica a nova escala Ã  imagem
         transform.localScale = new Vector3(escalaAtual, escalaAtual, 1f);
     }
 

@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class Rotator : MonoBehaviour
 {
-    // Escolha do eixo de rotaÁ„o no Inspector
+    // Escolha do eixo de rota√ß√£o no Inspector
     public Vector3 rotationAxis = Vector3.up;
 
-    // Velocidade de rotaÁ„o ajust·vel no Inspector
+    // Velocidade de rota√ß√£o ajust√°vel no Inspector
     public float rotationSpeed = 5f;
 
     void Update()

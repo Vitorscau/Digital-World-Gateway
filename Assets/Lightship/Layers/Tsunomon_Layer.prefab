@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Veemon
-  _prefab: {fileID: 924642251418939093, guid: 41264e7f5efa6b143ae96005defa3419, type: 3}
+  _prefab: {fileID: 6777745024088490975, guid: b038bdf0c748f9844b272e263db8a111, type: 3}
   _heightOffset: 0
   _scaleWithMapRadius: 0
   _relativeScale: 1

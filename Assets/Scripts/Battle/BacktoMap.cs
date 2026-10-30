@@ -19,6 +19,6 @@ public class BacktoMap : MonoBehaviour
      private void OnMouseDown()
     {
        Debug.Log("voltando para o mapa");
-        SceneManager.LoadScene("Map_Scene");
+        SceneManager.LoadScene(Cenas.Mapa);
     }
 }

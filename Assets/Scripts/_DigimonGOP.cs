@@ -102,11 +102,31 @@ public class _DigimonGOP : MonoBehaviour
 
     // ------------------------------------------------------------------ Spawn
 
+    private LatLng? _ultimaPosicao;
+    private float _metrosPendentes;
+
+    /// <summary>Conta a distância andada (para missões). Saltos grandes (GPS pulando) não contam.</summary>
+    private void ContarCaminhada(LatLng centro)
+    {
+        if (_ultimaPosicao.HasValue)
+        {
+            var d = (float)LightshipMapView.DistanceMeters(_ultimaPosicao.Value, centro);
+            if (d < 80f * intervaloAtualizacao) _metrosPendentes += d;
+        }
+        _ultimaPosicao = centro;
+        if (_metrosPendentes < 25f) return;
+        var metros = Mathf.FloorToInt(_metrosPendentes);
+        _metrosPendentes -= metros;
+        PerfilJogador.Atual.metrosAndados += metros;
+        Missoes.RegistrarCaminhada(metros); // já salva o perfil
+    }
+
     private void Atualizar(DateTime agoraUtc)
     {
         foreach (var a in _ativos.Values) a.Visto = false;
 
         var centro = lightshipMapView.MapCenter;
+        ContarCaminhada(centro);
         var cx = WebMercator.ToMercX(centro.Longitude);
         var cy = WebMercator.ToMercY(centro.Latitude);
         var cosLat = Math.Cos(centro.Latitude * Math.PI / 180.0);
@@ -167,7 +187,9 @@ public class _DigimonGOP : MonoBehaviour
             if (go == null) continue;
             var wild = go.GetComponent<WildDigimon>();
             if (wild == null) wild = go.AddComponent<WildDigimon>();
-            wild.Configurar(this, id, entrada.gameObjectPlacement.Name, nivel, fim, local, habitat);
+            var ficha = entrada.digimon != null ? entrada.digimon : CatalogoDigimon.Buscar(entrada.gameObjectPlacement.Name);
+            wild.Configurar(this, id, entrada.gameObjectPlacement.Name, nivel, fim, local, habitat,
+                ficha, entrada.gameObjectPlacement.Prefab);
             _ativos[id] = new Ativo { Wild = wild, Layer = entrada.gameObjectPlacement, Fim = fim, Visto = true };
         }
 

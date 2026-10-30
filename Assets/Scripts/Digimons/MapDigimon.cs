@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Toque num Digimon para batalhar (sistema antigo, via GameManager).
+/// Digimons selvagens do spawner (com WildDigimon) são tratados pelo próprio WildDigimon.
+/// </summary>
 public class MapDigimon : MonoBehaviour
 {
     public DigimonBase digimonBase;
@@ -8,27 +12,12 @@ public class MapDigimon : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (GetComponent<WildDigimon>() != null) return; // o WildDigimon cuida do encontro
+
         if (GameManager.Instance != null)
         {
-            // Digimon selvagem do mapa: só batalha se o jogador estiver perto, e depois ele some.
-            var selvagem = GetComponent<WildDigimon>();
-            if (selvagem != null)
-            {
-                if (!selvagem.PodeEncontrar)
-                {
-                    Debug.Log($"{selvagem.Especie} está longe demais. Chegue mais perto para batalhar.");
-                    return;
-                }
-                level = selvagem.Nivel;
-                selvagem.RegistrarEncontro();
-            }
-
-            GameManager.Instance.SetBattleData(
-                GameManager.Instance.PlayerDigimon,
-                digimonBase,
-                level
-            );
-            SceneManager.LoadScene("BattleScene");
+            GameManager.Instance.SetBattleData(GameManager.Instance.PlayerDigimon, digimonBase, level);
+            SceneManager.LoadScene(Cenas.Batalha); // antes: "BattleScene", que não existe
         }
     }
 }

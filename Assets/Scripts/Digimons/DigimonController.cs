@@ -11,9 +11,19 @@ public class DigimonController : MonoBehaviour
     [SerializeField]
     private Transform spawnPoint;
 
+    [Tooltip("Usa o parceiro salvo no perfil do jogador (em vez do Digimon fixo acima).")]
+    [SerializeField]
+    private bool usarParceiroDoPerfil = true;
+
     private void Start()
     {
         animator = GetComponent<Animator>();
+
+        if (usarParceiroDoPerfil)
+        {
+            var ficha = PerfilJogador.Atual.Parceiro?.Ficha;
+            if (ficha != null) digimon = ficha;
+        }
 
         if (digimon != null)
         {
@@ -37,7 +47,7 @@ public class DigimonController : MonoBehaviour
             // Definir a escala do GameObject instanciado para (1, 1, 1)
             digimonInstance.transform.localScale = Vector3.one;
 
-            // ObtÈm o Animator do GameObject instanciado
+            // Obt√©m o Animator do GameObject instanciado
             Animator digimonAnimator = digimonInstance.GetComponent<Animator>();
 
             // Verifica se o GameObject instanciado possui um Animator
@@ -53,22 +63,22 @@ public class DigimonController : MonoBehaviour
                  //Verificar se o componente PlayerModel foi encontrado
                 if (playerModel != null)
                 {
-                    // Atribuir o Animator do GameObject instanciado ao par‚metro _animator no PlayerModel
+                    // Atribuir o Animator do GameObject instanciado ao par√¢metro _animator no PlayerModel
                     playerModel.SetAnimator(digimonAnimator);
                 }
                 else
                 {
-                    Debug.LogWarning("O componente PlayerModel n„o foi encontrado.");
+                    Debug.LogWarning("O componente PlayerModel n√£o foi encontrado.");
                 }
             }
             else
             {
-                Debug.LogWarning("O GameObject instanciado n„o possui um Animator.");
+                Debug.LogWarning("O GameObject instanciado n√£o possui um Animator.");
             }
         }
         else
         {
-            Debug.LogWarning("DigimonBase n„o possui um Prefab associado.");
+            Debug.LogWarning("DigimonBase n√£o possui um Prefab associado.");
         }
     }
 

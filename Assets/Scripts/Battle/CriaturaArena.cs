@@ -1,5 +1,11 @@
+using System;
 using UnityEngine;
 
+/// <summary>
+/// Um Digimon lutando na arena: anda até o inimigo e ataca sozinho.
+/// Com Configurar(...), usa a ficha do Digimon (vida, ataque, defesa, tipo e atributo).
+/// Sem ficha, usa os valores fixos do Inspector (comportamento antigo).
+/// </summary>
 public class CriaturaArena : MonoBehaviour
 {
     [Header("Configurações Básicas")]
@@ -20,7 +26,7 @@ public class CriaturaArena : MonoBehaviour
     [Range(0f, 1f)] public float chanceDeEspecial = 0.2f;
     public float tempoEntreAtaques = 1.5f;
 
-    [Header("Vida")]
+    [Header("Vida (sem ficha)")]
     public int vidaMaxima = 57;
     private int vidaAtual;
 
@@ -33,11 +39,24 @@ public class CriaturaArena : MonoBehaviour
     [Header("Controle Manual de Combate")]
     public CriaturaArena inimigo;
 
-    [HideInInspector] public bool podeLutar = false; // 👈 Novo controle
+    [HideInInspector] public bool podeLutar = false;
+
+    /// <summary>Ficha e nível deste Digimon na batalha (null = valores fixos do Inspector).</summary>
+    public Digimon Dados { get; private set; }
+    public int VidaAtual => vidaAtual;
+    public int VidaMaxima => vidaMaxima;
+    public bool Vivo => vidaAtual > 0;
+
+    /// <summary>Disparado quando este Digimon é derrotado.</summary>
+    public event Action<CriaturaArena> Derrotado;
+    /// <summary>Disparado quando recebe dano (quem recebeu, quanto).</summary>
+    public event Action<CriaturaArena, int> RecebeuDano;
 
     private Transform alvo;
     private bool estaMovendo;
     private bool podeAtacar = true;
+    private bool configurado;
+    private bool temIsMoving, temAtaque, temEspecial;
 
     void Awake()
     {
@@ -48,14 +67,39 @@ public class CriaturaArena : MonoBehaviour
         if (rb != null)
         {
             rb.constraints = RigidbodyConstraints.FreezeRotation;
-            rb.isKinematic = false;
         }
+        LerParametrosAnimator();
+        vidaAtual = vidaMaxima;
+    }
+
+    /// <summary>Prepara a criatura com a ficha do Digimon. Chame antes da luta começar.</summary>
+    public void Configurar(Digimon dados, CriaturaArena oponente, HPBar barra)
+    {
+        Dados = dados;
+        inimigo = oponente;
+        alvo = oponente != null ? oponente.transform : null;
+        hpBar = barra;
+        configurado = true;
+        if (dados != null)
+        {
+            vidaMaxima = dados.MaxHp;
+            digimonName = dados.Base.Name.Trim();
+            level = dados.Level;
+        }
+        vidaAtual = vidaMaxima;
+        if (hpBar != null)
+        {
+            hpBar.Initialize(digimonName, level, vidaMaxima);
+            hpBar.SetHP(vidaAtual);
+        }
+        LerParametrosAnimator();
     }
 
     void Start()
     {
-        vidaAtual = vidaMaxima;
+        if (configurado) return; // já preparado por Configurar(...)
 
+        vidaAtual = vidaMaxima;
         GameObject barObject = GameObject.Find(hpBarName);
         if (barObject != null)
         {
@@ -67,45 +111,58 @@ public class CriaturaArena : MonoBehaviour
             }
         }
 
-        if (inimigo != null)
+        if (inimigo != null) alvo = inimigo.transform;
+        else Debug.LogWarning($"{gameObject.name} não tem inimigo atribuído!");
+    }
+
+    private void LerParametrosAnimator()
+    {
+        temIsMoving = temAtaque = temEspecial = false;
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+        foreach (var p in animator.parameters)
         {
-            alvo = inimigo.transform;
-        }
-        else
-        {
-            Debug.LogWarning($"{gameObject.name} não tem inimigo atribuído!");
+            if (p.name == "isMoving") temIsMoving = true;
+            if (p.name == nomeAnimacaoAtaque) temAtaque = true;
+            if (p.name == nomeAnimacaoEspecial) temEspecial = true;
         }
     }
 
     void Update()
     {
-        if (animator != null)
+        if (animator != null && temIsMoving)
             animator.SetBool("isMoving", estaMovendo);
     }
 
     void FixedUpdate()
     {
-        if (!podeLutar || alvo == null || rb == null || vidaAtual <= 0) return;
-
-        Vector3 direcao = (alvo.position - transform.position).normalized;
-        direcao.y = 0;
-        float distancia = Vector3.Distance(transform.position, alvo.position);
-
-        if (distancia > distanciaParada)
+        var inimigoVivo = inimigo != null && inimigo.Vivo;
+        if (!podeLutar || alvo == null || !inimigoVivo || vidaAtual <= 0)
         {
-            rb.linearVelocity = direcao * velocidadeMovimento;
+            estaMovendo = false;
+            if (rb != null && !rb.isKinematic) rb.linearVelocity = Vector3.zero;
+            return;
+        }
+
+        Vector3 direcao = alvo.position - transform.position;
+        direcao.y = 0;
+        float distancia = direcao.magnitude;
+        direcao = distancia > 0.0001f ? direcao / distancia : Vector3.zero;
+        var escala = transform.lossyScale.x; // distâncias acompanham o tamanho da arena (AR)
+
+        if (distancia > distanciaParada * escala)
+        {
+            var passo = direcao * velocidadeMovimento * escala;
+            if (rb != null && rb.isKinematic) rb.MovePosition(rb.position + passo * Time.fixedDeltaTime);
+            else if (rb != null) rb.linearVelocity = passo;
+            else transform.position += passo * Time.fixedDeltaTime;
             estaMovendo = true;
             transform.LookAt(new Vector3(alvo.position.x, transform.position.y, alvo.position.z));
         }
         else
         {
-            rb.linearVelocity = Vector3.zero;
+            if (rb != null && !rb.isKinematic) rb.linearVelocity = Vector3.zero;
             estaMovendo = false;
-
-            if (podeAtacar)
-            {
-                Atacar();
-            }
+            if (podeAtacar) Atacar();
         }
     }
 
@@ -119,23 +176,16 @@ public class CriaturaArena : MonoBehaviour
     {
         podeAtacar = false;
 
-        float sorteio = Random.value;
-        string anim = (sorteio < chanceDeEspecial && !string.IsNullOrEmpty(nomeAnimacaoEspecial))
-            ? nomeAnimacaoEspecial
-            : nomeAnimacaoAtaque;
-
-        if (animator != null)
-        {
+        var especial = UnityEngine.Random.value < chanceDeEspecial && !string.IsNullOrEmpty(nomeAnimacaoEspecial);
+        var anim = especial ? nomeAnimacaoEspecial : nomeAnimacaoAtaque;
+        if (animator != null && (especial ? temEspecial : temAtaque))
             animator.SetTrigger(anim);
-        }
 
-        int dano = (anim == nomeAnimacaoEspecial) ? 20 : 10;
+        int dano = Dados != null && inimigo != null && inimigo.Dados != null
+            ? CalculoDano.Calcular(Dados, inimigo.Dados, especial)
+            : (especial ? 20 : 10);
 
-        if (inimigo != null)
-        {
-            Debug.Log($"{gameObject.name} atacou {inimigo.gameObject.name} causando {dano} de dano");
-            inimigo.ReceberDano(dano);
-        }
+        if (inimigo != null) inimigo.ReceberDano(dano);
 
         Invoke(nameof(ResetarAtaque), tempoEntreAtaques);
     }
@@ -147,25 +197,29 @@ public class CriaturaArena : MonoBehaviour
 
     public void ReceberDano(int dano)
     {
-        vidaAtual -= dano;
-        vidaAtual = Mathf.Max(0, vidaAtual);
-
-        Debug.Log($"{gameObject.name} recebeu {dano} de dano. HP atual: {vidaAtual}");
-
-        if (hpBar != null)
-        {
-            hpBar.SetHP(vidaAtual);
-        }
-
-        if (vidaAtual <= 0)
-        {
-            Morrer();
-        }
+        if (vidaAtual <= 0) return;
+        vidaAtual = Mathf.Max(0, vidaAtual - dano);
+        if (hpBar != null) hpBar.SetHP(vidaAtual);
+        RecebeuDano?.Invoke(this, dano);
+        if (vidaAtual <= 0) Morrer();
     }
 
     void Morrer()
     {
-        Debug.Log($"{gameObject.name} morreu!");
+        podeLutar = false;
+        Derrotado?.Invoke(this);
+        // Some com uma pequena animação de encolher (antes era destruído na hora).
+        StartCoroutine(Sumir());
+    }
+
+    private System.Collections.IEnumerator Sumir()
+    {
+        var inicial = transform.localScale;
+        for (float t = 0; t < 1f; t += Time.deltaTime * 2.5f)
+        {
+            transform.localScale = Vector3.Lerp(inicial, Vector3.zero, t);
+            yield return null;
+        }
         Destroy(gameObject);
     }
 }

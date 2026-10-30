@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Patamon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Patamon
+  description_: Voa com as orelhas. Seu ataque Boom Bubble dispara um sopro de ar
+    comprimido.
+  prefab_: {fileID: 202858506904601552, guid: 3ef8d8e0b7b3aa54ea86ebc61f362bd1, type: 3}
+  animator_: {fileID: 5886722045072268586, guid: 3ef8d8e0b7b3aa54ea86ebc61f362bd1,
+    type: 3}
+  stage_: 2
+  atribute_: 5
+  personalities_: 0
+  type_: 2
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 45
+  DEF: 35
+  HP: 440
+  INT: 30
+  SP: 35
+  SPD: 45
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: 989f60120aa0141448156eafb6887041, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

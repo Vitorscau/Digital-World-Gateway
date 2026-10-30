@@ -6,7 +6,7 @@ public class Move : MonoBehaviour
 {
    
     public float velocidade = 5.0f; // Velocidade de movimento
-    public float pontoDeVolta = 88f; // Ponto onde o objeto deve voltar para o início
+    public float pontoDeVolta = 88f; // Ponto onde o objeto deve voltar para o inÃ­cio
 
     void Update()
     {
@@ -16,14 +16,14 @@ public class Move : MonoBehaviour
         // Verifique se o objeto atingiu o ponto de volta
         if (transform.position.z >= pontoDeVolta)
         {
-            // Se atingiu, volte para o início
+            // Se atingiu, volte para o inÃ­cio
             VoltarParaInicio();
         }
     }
 
     void VoltarParaInicio()
     {
-        // Reposicione o objeto para o início
+        // Reposicione o objeto para o inÃ­cio
         transform.position = new Vector3(transform.position.x, transform.position.y, -16f);
     }
 }

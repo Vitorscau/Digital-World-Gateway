@@ -30,6 +30,9 @@ public class GameObjectProbability
     [Tooltip("Camada do mapa que coloca o modelo deste Digimon.")]
     public LayerGameObjectPlacement gameObjectPlacement;
 
+    [Tooltip("Ficha de batalha. Vazio = procura em Resources/Digimons pelo nome da camada.")]
+    public DigimonBase digimon;
+
     [Tooltip("Peso relativo: 0.5 aparece 10x mais que 0.05. Não precisa somar 1.")]
     [Range(0f, 1f)]
     public float probability = 0.1f;

@@ -54,12 +54,27 @@ namespace Niantic.Lightship.Maps.SampleAssets.Cameras.OrbitCamera
             Apply(true);
         }
 
-        /// <summary>Usado pelo toggle da HUD: liga/desliga a câmera seguindo a direção do jogador.</summary>
-        public void OnToggleValueChanged(bool isOn) => SnapRotation = isOn;
+        /// <summary>Usado pelo botão-bússola da HUD: gira o mapa de volta com o norte para cima.</summary>
+        public void OnToggleValueChanged(bool isOn) => ApontarParaNorte();
+
+        /// <summary>Gira a câmera suavemente até o norte ficar para cima.</summary>
+        public void ApontarParaNorte()
+        {
+            SnapRotation = false;
+            _voltandoAoNorte = true;
+        }
+
+        private bool _voltandoAoNorte;
 
         private void LateUpdate()
         {
             HandleInput();
+            if (_dragging) _voltandoAoNorte = false;
+            if (_voltandoAoNorte)
+            {
+                _yaw = Mathf.LerpAngle(_yaw, 0f, 1f - Mathf.Exp(-8f * Time.deltaTime));
+                if (Mathf.Abs(Mathf.DeltaAngle(_yaw, 0f)) < 0.1f) { _yaw = 0f; _voltandoAoNorte = false; }
+            }
             if (SnapRotation && _focusObject != null)
                 _yaw = Mathf.LerpAngle(_yaw, _focusObject.transform.eulerAngles.y, 1f - Mathf.Exp(-4f * Time.deltaTime));
             _zoom = Mathf.Lerp(_zoom, _targetZoom, 1f - Mathf.Exp(-_smoothing * Time.deltaTime));

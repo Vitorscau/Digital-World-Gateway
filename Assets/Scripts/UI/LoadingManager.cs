@@ -1,7 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
+/// <summary>
+/// Tela de carregamento do menu. Enquanto a barra anda, a cena do mapa é carregada de verdade
+/// em segundo plano; o botão "Jogar" só aparece quando ela estiver pronta (e depois de um tempo mínimo,
+/// para a animação do logo não ficar corrida).
+/// </summary>
 public class LoadingManager : MonoBehaviour
 {
     public Slider loadingBar;
@@ -13,19 +19,26 @@ public class LoadingManager : MonoBehaviour
     public Vector3 logoStartScale = new Vector3(0.1f, 0.1f, 0.1f);
     public Vector3 logoEndScale = Vector3.one;
 
-    [Header("Tempo de Carregamento Aleatório")]
+    [Header("Tempo mínimo de carregamento")]
     public float minLoadTime = 2f;
     public float maxLoadTime = 5f;
 
-    private float totalLoadTime;
-    private float progress = 0f;
-    private bool loadingComplete = false;
+    [Header("Cena carregada em segundo plano")]
+    public string cenaParaCarregar = Cenas.Mapa;
+
+    private static AsyncOperation _preCarregamento;
+
+    /// <summary>Entra na cena que já foi carregada em segundo plano. Retorna false se não houver.</summary>
+    public static bool AtivarCenaPreCarregada()
+    {
+        if (_preCarregamento == null) return false;
+        _preCarregamento.allowSceneActivation = true;
+        _preCarregamento = null;
+        return true;
+    }
 
     void Start()
     {
-        // Define o tempo total aleatório
-        totalLoadTime = Random.Range(minLoadTime, maxLoadTime);
-
         loadingBar.value = 0f;
         playButton.SetActive(false);
 
@@ -35,34 +48,34 @@ public class LoadingManager : MonoBehaviour
             gameLogo.gameObject.SetActive(false);
         }
 
-        StartCoroutine(SimulateIrregularLoading());
+        StartCoroutine(Carregar());
     }
 
-    IEnumerator SimulateIrregularLoading()
+    IEnumerator Carregar()
     {
-        float elapsedTime = 0f;
-
-        while (elapsedTime < totalLoadTime)
+        var tempoMinimo = Random.Range(minLoadTime, maxLoadTime);
+        if (!string.IsNullOrEmpty(cenaParaCarregar) && _preCarregamento == null)
         {
-            float remainingTime = totalLoadTime - elapsedTime;
-            float increment = Random.Range(0.05f, 0.2f);
-            float targetProgress = Mathf.Clamp01(elapsedTime / totalLoadTime + increment * (remainingTime / totalLoadTime));
+            _preCarregamento = SceneManager.LoadSceneAsync(cenaParaCarregar);
+            if (_preCarregamento != null) _preCarregamento.allowSceneActivation = false;
+        }
 
-            while (progress < targetProgress && elapsedTime < totalLoadTime)
-            {
-                elapsedTime += Time.deltaTime;
-                progress = Mathf.Clamp01(elapsedTime / totalLoadTime);
-                loadingBar.value = progress;
-                yield return null;
-            }
-
-            float delay = Random.Range(0.1f, 0.5f);
-            yield return new WaitForSeconds(delay);
+        float tempo = 0f;
+        float mostrado = 0f;
+        while (true)
+        {
+            tempo += Time.deltaTime;
+            // O carregamento do Unity para em 0.9 enquanto espera a ativação.
+            var real = _preCarregamento != null ? Mathf.Clamp01(_preCarregamento.progress / 0.9f) : 1f;
+            var alvo = Mathf.Min(real, tempo / tempoMinimo);
+            mostrado = Mathf.MoveTowards(mostrado, alvo, Time.deltaTime * 1.5f);
+            loadingBar.value = mostrado;
+            if (mostrado >= 0.999f) break;
+            yield return null;
         }
 
         loadingBar.gameObject.SetActive(false);
 
-        // Ativa o logo com animação
         if (gameLogo != null)
         {
             gameLogo.gameObject.SetActive(true);
@@ -70,7 +83,6 @@ public class LoadingManager : MonoBehaviour
         }
 
         playButton.SetActive(true);
-        loadingComplete = true;
     }
 
     IEnumerator AnimateLogoScale()

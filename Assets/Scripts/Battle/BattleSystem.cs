@@ -25,6 +25,6 @@ public class BattleSystem : MonoBehaviour
 
     public void LoadMapScene()
     {
-        SceneManager.LoadScene("Map_Scene");
+        SceneManager.LoadScene(Cenas.Mapa);
     }
 }

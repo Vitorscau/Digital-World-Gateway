@@ -5,8 +5,8 @@ public class BattleController : MonoBehaviour
 {
     public static BattleController Instance { get; private set; }
 
-    [SerializeField] private string battleSceneName = "AR_Battle_Scene";
-    [SerializeField] private string mapSceneName = "Map_Scene";
+    [SerializeField] private string battleSceneName = Cenas.BatalhaAR;
+    [SerializeField] private string mapSceneName = Cenas.Mapa;
 
     private void Awake()
     {
@@ -30,12 +30,12 @@ public class BattleController : MonoBehaviour
     public void ReturnToMap()
     {
         Debug.Log("voltando para o mapa");
-        SceneManager.LoadScene("Map_Scene");
+        SceneManager.LoadScene(mapSceneName); // antes ignorava o campo
         
 
     }
      public void ReturnToAR()
     {
-        SceneManager.LoadScene("AR_Scene");
+        SceneManager.LoadScene(Cenas.AR);
     }
 }
