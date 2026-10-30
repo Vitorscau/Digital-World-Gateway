@@ -256,9 +256,11 @@ namespace Niantic.Lightship.Maps.Vector
                 // Monta a geometria fora da thread principal.
                 var k = Math.Cos(WebMercator.ToLat(tile.North - tile.Size / 2) * Math.PI / 180.0);
                 var data = bytes;
+                var build = _build; // cópia local: a tarefa roda em outra thread
+                if (build == null) yield break;
                 var task = Task.Run(() =>
                 {
-                    var built = VectorTileBuilder.Build(data, tile.West, tile.North, tile.Size, k, _build);
+                    var built = VectorTileBuilder.Build(data, tile.West, tile.North, tile.Size, k, build);
                     return (built, SurfaceIndex.From(built), PoiReader.Read(data, tile.West, tile.North, tile.Size));
                 });
                 while (!task.IsCompleted) yield return null;

@@ -29,8 +29,9 @@ public class RetratoVivo : MonoBehaviour
     private void Montar(DigimonBase ficha, int tamanho)
     {
         Ficha = ficha;
-        // Cada retrato no seu canto, longe de tudo.
-        transform.position = new Vector3(5000f * ++_contador, -10000f, 0f);
+        // Cada retrato no seu canto, abaixo do mapa. Não muito longe: a precisão dos números cai
+        // com a distância e os vértices começam a "pular" (modelo picotado).
+        transform.position = new Vector3(40f * ++_contador, -1000f, 0f);
 
         _suporte = new GameObject("Suporte").transform;
         _suporte.SetParent(transform, false);
@@ -52,6 +53,10 @@ public class RetratoVivo : MonoBehaviour
         _suporte.localRotation = Quaternion.Euler(0, RetratoDigimon.Giro, 0);
         foreach (var t in _modelo.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = Camada;
 
+        // Tamanho padrão (1 unidade de altura): alguns modelos têm só 1 cm e ficariam imprecisos.
+        var altura = AlturaModelo();
+        if (altura > 1e-6f) _suporte.localScale = Vector3.one / altura;
+
         Textura = new RenderTexture(tamanho, tamanho, 24, RenderTextureFormat.ARGB32) { name = "RetratoVivo", antiAliasing = 2 };
         Textura.Create();
         _cam = new GameObject("Camera").AddComponent<Camera>();
@@ -62,7 +67,9 @@ public class RetratoVivo : MonoBehaviour
         _cam.fieldOfView = 24f;
         _cam.targetTexture = Textura;
         _cam.allowHDR = false;
-        _cam.allowMSAA = false;
+        _cam.allowMSAA = true;
+        // As outras câmeras não desenham a camada dos retratos.
+        foreach (var c in Camera.allCameras) if (c != _cam) c.cullingMask &= ~(1 << Camada);
         Enquadrar();
     }
 
@@ -92,6 +99,18 @@ public class RetratoVivo : MonoBehaviour
         _cam.farClipPlane = dist * 6f + b.size.magnitude;
         _cam.transform.position = alvo + new Vector3(0, quadro * 0.08f, -(dist + b.extents.z));
         _cam.transform.LookAt(alvo);
+    }
+
+    private float AlturaModelo()
+    {
+        var ok = false;
+        var b = new Bounds();
+        foreach (var r in _modelo.GetComponentsInChildren<Renderer>())
+        {
+            if (!(r is MeshRenderer) && !(r is SkinnedMeshRenderer)) continue;
+            if (!ok) { b = r.bounds; ok = true; } else b.Encapsulate(r.bounds);
+        }
+        return ok ? b.size.y : 0f;
     }
 
     private void OnDestroy()

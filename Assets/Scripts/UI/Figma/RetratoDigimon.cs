@@ -24,7 +24,7 @@ public static class RetratoDigimon
 
         // Um objeto pai segura o giro: a animação de pose pode reescrever a rotação do próprio modelo.
         var suporte = new GameObject("RetratoSuporte");
-        suporte.transform.position = new Vector3(0, -10000, 0);
+        suporte.transform.position = new Vector3(0, -1000, 0); // não muito longe: precisão dos vértices
         var go = Object.Instantiate(origem, suporte.transform, false);
         go.transform.localPosition = Vector3.zero;
         try
@@ -43,6 +43,10 @@ public static class RetratoDigimon
             }
             suporte.transform.rotation = Quaternion.Euler(0, Giro, 0);
             foreach (var t in go.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = Camada;
+
+            // Tamanho padrão (1 unidade de altura): modelos de 1 cm ficariam picotados.
+            var bruto = Limites(go, out var temMalha);
+            if (temMalha && bruto.size.y > 1e-6f) suporte.transform.localScale = Vector3.one / bruto.size.y;
 
             // Enquadramento pelo tamanho real do modelo.
             var limites = Limites(go, out var ok);
