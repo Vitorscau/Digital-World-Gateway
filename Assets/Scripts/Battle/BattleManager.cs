@@ -114,6 +114,7 @@ public class BattleManager : MonoBehaviour
         if (hudInimigo != null) hudInimigo.SetData(dadosInimigo);
         novoJogador.Configurar(dadosJogador, novoInimigo, barraJogador);
         novoInimigo.Configurar(dadosInimigo, novoJogador, barraInimigo);
+        if (PerfilJogador.Atual.bandagemAtiva) novoJogador.AumentarVida(1.3f); // Bandage usada na Bag
 
         // Os de exemplo saem de cena.
         Destroy(playerCreatureGO);
@@ -239,14 +240,17 @@ public class BattleManager : MonoBehaviour
         Valor(raiz, 0.751f, $"{r.XpDigimon} EXP");   // Acquired Digimon EXP
         Valor(raiz, 0.646f, $"{r.Bits} BIT");        // Acquired Money
 
-        // Itens: o jogo ainda não dá itens; cobre os desenhados.
-        Remendo(raiz, new Vector2(0.09f, 0.335f), new Vector2(0.64f, 0.48f));
-        Rotulo(raiz, new Vector2(0.12f, 0.36f), new Vector2(0.64f, 0.46f), "Nenhum item", TextAlignmentOptions.Left, 0.85f);
+        // Itens: a imagem já mostra Bandage 1x e Meat 1x, que é o que a vitória dá.
+        // Na derrota não há itens: cobre os desenhados.
+        if (r.Itens.Count == 0)
+        {
+            Remendo(raiz, new Vector2(0.09f, 0.335f), new Vector2(0.64f, 0.48f));
+            Rotulo(raiz, new Vector2(0.12f, 0.36f), new Vector2(0.64f, 0.46f), "Nenhum item", TextAlignmentOptions.Left, 0.85f);
+        }
 
-        // Captura / subida de nível.
-        var linha = r.Venceu ? $"{r.NomeInimigo} nv. {r.NivelInimigo} entrou para a sua coleção!" : $"{r.NomeInimigo} fugiu...";
+        // Dados de Scan coletados (e subida de nível do parceiro).
+        var linha = r.LinhaScan;
         if (r.NivelParceiroNovo > 0) linha += $"\n{r.NomeParceiro} subiu para o nível {r.NivelParceiroNovo}!";
-        else if (r.NivelJogadorNovo > 0) linha += $"\nVocê subiu para o nível {r.NivelJogadorNovo}!";
         Rotulo(raiz, new Vector2(0.08f, 0.21f), new Vector2(0.92f, 0.33f), linha, TextAlignmentOptions.Center, 1f);
     }
 

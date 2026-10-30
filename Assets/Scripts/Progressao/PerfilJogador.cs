@@ -25,6 +25,22 @@ public class ProgressoMissao
     public bool resgatada;
 }
 
+/// <summary>Um item da Bag e quantos o jogador tem.</summary>
+[Serializable]
+public class ItemSalvo
+{
+    public string id;
+    public int quantidade;
+}
+
+/// <summary>Quanto dos dados de uma espécie o jogador já coletou batalhando (0 a 100%).</summary>
+[Serializable]
+public class ScanSalvo
+{
+    public string especie;
+    public int porcentagem;
+}
+
 /// <summary>
 /// Tudo o que o jogo precisa lembrar do jogador. Salvo como JSON no aparelho
 /// (Application.persistentDataPath/perfil.json).
@@ -46,6 +62,12 @@ public class PerfilJogador
     public double metrosAndados;
     public string diaMissoes;        // data (yyyy-MM-dd) das missões diárias atuais
     public List<ProgressoMissao> missoes = new List<ProgressoMissao>();
+    public List<ItemSalvo> itens = new List<ItemSalvo>();
+    public List<ScanSalvo> scans = new List<ScanSalvo>();
+    public int nivelMostrado = 1;    // último nível já anunciado na tela "Level Up"
+    public bool bandagemAtiva;       // a próxima batalha começa com vida extra
+    public bool somLigado = true;
+    public bool comecou;             // já recebeu os itens iniciais
 
     // ------------------------------------------------------------ Acesso global
 
@@ -94,9 +116,60 @@ public class PerfilJogador
     {
         colecao ??= new List<DigimonSalvo>();
         missoes ??= new List<ProgressoMissao>();
+        itens ??= new List<ItemSalvo>();
+        scans ??= new List<ScanSalvo>();
         colecao.RemoveAll(d => d == null || string.IsNullOrEmpty(d.especie));
         if (colecao.Count == 0) AdicionarNaColecao("Gabumon", 5);
         if (Parceiro == null) parceiroId = colecao[0].id;
+        if (nivelMostrado < 1) nivelMostrado = nivel;
+        if (!comecou)
+        {
+            comecou = true;
+            AdicionarItem("meat", 3);
+            AdicionarItem("bandage", 3);
+        }
+    }
+
+    // ------------------------------------------------------------ Bag
+
+    public int Quantidade(string itemId) => itens.Find(i => i.id == itemId)?.quantidade ?? 0;
+
+    public void AdicionarItem(string itemId, int quantidade = 1)
+    {
+        var i = itens.Find(x => x.id == itemId);
+        if (i == null) itens.Add(i = new ItemSalvo { id = itemId });
+        i.quantidade += quantidade;
+    }
+
+    public bool GastarItem(string itemId)
+    {
+        var i = itens.Find(x => x.id == itemId);
+        if (i == null || i.quantidade <= 0) return false;
+        i.quantidade--;
+        if (i.quantidade == 0) itens.Remove(i);
+        return true;
+    }
+
+    // ------------------------------------------------------------ Scan
+
+    public int Scan(string especie) => scans.Find(s => CatalogoDigimon.Normalizar(s.especie) == CatalogoDigimon.Normalizar(especie))?.porcentagem ?? 0;
+
+    /// <summary>Soma dados coletados de uma espécie (máximo 100%). Retorna o novo valor.</summary>
+    public int AdicionarScan(string especie, int pontos)
+    {
+        var s = scans.Find(x => CatalogoDigimon.Normalizar(x.especie) == CatalogoDigimon.Normalizar(especie));
+        if (s == null) scans.Add(s = new ScanSalvo { especie = especie });
+        s.porcentagem = Mathf.Clamp(s.porcentagem + pontos, 0, 100);
+        return s.porcentagem;
+    }
+
+    /// <summary>"Scan Data": com 100% dos dados, o Digimon é baixado para a coleção e o scan recomeça.</summary>
+    public DigimonSalvo ConcluirScan(string especie)
+    {
+        var s = scans.Find(x => CatalogoDigimon.Normalizar(x.especie) == CatalogoDigimon.Normalizar(especie));
+        if (s == null || s.porcentagem < 100) return null;
+        s.porcentagem = 0;
+        return AdicionarNaColecao(especie, 1);
     }
 
     public void Salvar()

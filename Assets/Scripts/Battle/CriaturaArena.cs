@@ -95,6 +95,18 @@ public class CriaturaArena : MonoBehaviour
         LerParametrosAnimator();
     }
 
+    /// <summary>Aumenta a vida máxima e atual (ex.: Bandage usada antes da batalha).</summary>
+    public void AumentarVida(float fator)
+    {
+        vidaMaxima = Mathf.RoundToInt(vidaMaxima * fator);
+        vidaAtual = vidaMaxima;
+        if (hpBar != null)
+        {
+            hpBar.SetMaxHP(vidaMaxima);
+            hpBar.SetHP(vidaAtual);
+        }
+    }
+
     void Start()
     {
         if (configurado) return; // já preparado por Configurar(...)

@@ -107,6 +107,7 @@ public class BatalhaDigimon : MonoBehaviour
         if (_hudInimigo != null) _hudInimigo.SetData(selvagem);
         _jogador.Configurar(parceiro, _inimigo, _barraJogador);
         _inimigo.Configurar(selvagem, _jogador, _barraInimigo);
+        if (PerfilJogador.Atual.bandagemAtiva) _jogador.AumentarVida(1.3f); // Bandage usada na Bag
         _jogador.Derrotado += _ => Terminar(false);
         _inimigo.Derrotado += _ => Terminar(true);
         _jogador.RecebeuDano += (c, d) => MostrarDano(c, d);
