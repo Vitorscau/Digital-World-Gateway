@@ -73,6 +73,20 @@ public class _DigimonGOP : MonoBehaviour
     public float RaioEncontroMetros => raioEncontroMetros;
     public LightshipMapView MapView => lightshipMapView;
 
+    /// <summary>As espécies da tabela de spawn (as que aparecem no mapa).</summary>
+    public IEnumerable<DigimonBase> Especies
+    {
+        get
+        {
+            foreach (var e in digimonLayers)
+            {
+                if (e == null) continue;
+                var ficha = e.digimon != null ? e.digimon : e.gameObjectPlacement != null ? CatalogoDigimon.Buscar(e.gameObjectPlacement.Name) : null;
+                if (ficha != null) yield return ficha;
+            }
+        }
+    }
+
     /// <summary>Digimons visíveis agora (para uma lista de "por perto", por exemplo).</summary>
     public IEnumerable<WildDigimon> Visiveis
     {

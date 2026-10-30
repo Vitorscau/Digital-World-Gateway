@@ -126,6 +126,19 @@ namespace Niantic.Lightship.Maps
             return _vector.GetSurface(WebMercator.ToMercX(location.Longitude), WebMercator.ToMercY(location.Latitude));
         }
 
+        /// <summary>Muda sempre que a lista de lugares (GetPois) muda.</summary>
+        public int PoisVersion => _vector != null ? _vector.PoisVersion : 0;
+
+        /// <summary>
+        /// Lugares com nome (praças, igrejas, lojas...) da área já carregada do mapa.
+        /// Só funciona no estilo Vetorial; no estilo Imagem não há lugares.
+        /// </summary>
+        public void GetPois(List<MapPoi> output)
+        {
+            EnsureInitialized();
+            if (_vector != null) _vector.GetPois(output);
+        }
+
         public LatLng SceneToLatLng(Vector3 scenePosition)
         {
             EnsureInitialized();

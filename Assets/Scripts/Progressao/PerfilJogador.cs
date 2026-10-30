@@ -41,6 +41,14 @@ public class ScanSalvo
     public int porcentagem;
 }
 
+/// <summary>Um Encrypted Data usado recentemente: só dá para decifrar de novo depois de "ate" (Unix, segundos).</summary>
+[Serializable]
+public class PontoUsado
+{
+    public string chave;
+    public long ate;
+}
+
 /// <summary>
 /// Tudo o que o jogo precisa lembrar do jogador. Salvo como JSON no aparelho
 /// (Application.persistentDataPath/perfil.json).
@@ -68,6 +76,9 @@ public class PerfilJogador
     public bool bandagemAtiva;       // a próxima batalha começa com vida extra
     public bool somLigado = true;
     public bool comecou;             // já recebeu os itens iniciais
+    public List<PontoUsado> pontosUsados = new List<PontoUsado>();
+    public List<string> pontosVisitados = new List<string>(); // Encrypted Data já decifrados alguma vez
+    public int dadosDecifrados;
 
     // ------------------------------------------------------------ Acesso global
 
@@ -118,6 +129,8 @@ public class PerfilJogador
         missoes ??= new List<ProgressoMissao>();
         itens ??= new List<ItemSalvo>();
         scans ??= new List<ScanSalvo>();
+        pontosUsados ??= new List<PontoUsado>();
+        pontosVisitados ??= new List<string>();
         colecao.RemoveAll(d => d == null || string.IsNullOrEmpty(d.especie));
         if (colecao.Count == 0) AdicionarNaColecao("Gabumon", 5);
         if (Parceiro == null) parceiroId = colecao[0].id;
@@ -170,6 +183,28 @@ public class PerfilJogador
         if (s == null || s.porcentagem < 100) return null;
         s.porcentagem = 0;
         return AdicionarNaColecao(especie, 1);
+    }
+
+    // ------------------------------------------------------------ Encrypted Data
+
+    /// <summary>Até quando (Unix, segundos) o ponto está recarregando. 0 = disponível.</summary>
+    public long RecargaAte(string chave)
+    {
+        var agora = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var p = pontosUsados.Find(x => x.chave == chave);
+        return p != null && p.ate > agora ? p.ate : 0;
+    }
+
+    /// <summary>Marca o ponto como usado. Retorna true se foi a primeira vez neste lugar.</summary>
+    public bool MarcarPontoUsado(string chave, int segundosDeRecarga)
+    {
+        var agora = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        pontosUsados.RemoveAll(x => x.ate <= agora || x.chave == chave);
+        pontosUsados.Add(new PontoUsado { chave = chave, ate = agora + segundosDeRecarga });
+        dadosDecifrados++;
+        if (pontosVisitados.Contains(chave)) return false;
+        pontosVisitados.Add(chave);
+        return true;
     }
 
     public void Salvar()

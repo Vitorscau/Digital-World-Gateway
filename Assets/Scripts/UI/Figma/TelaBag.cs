@@ -52,6 +52,21 @@ public class TelaBag : TelaFigma
         }
     }
 
+    /// <summary>
+    /// Ícone do item recortado como no Figma (esconde as bordas da imagem original) dentro de <paramref name="janela"/>.
+    /// Recortes: Meat 132% x 143% deslocado -17,6% / -16,5%; Bandage 127% deslocado -13,5%.
+    /// </summary>
+    public static void IconeRecortado(RectTransform janela, string itemId)
+    {
+        janela.gameObject.AddComponent<RectMask2D>();
+        var w = janela.sizeDelta.x;
+        var h = janela.sizeDelta.y;
+        var icone = itemId == Itens.Bandage
+            ? FigmaUI.Local(janela, "Imagem", -0.1354f * w, -0.1354f * h, 1.2708f * w, 1.2708f * h)
+            : FigmaUI.Local(janela, "Imagem", -0.176f * w, -0.1646f * h, 1.3232f * w, 1.4286f * h);
+        FigmaUI.Imagem(icone, Itens.Icone(itemId));
+    }
+
     /// <summary>Uma linha da Bag, no desenho do Figma: ícone com cantos, quantidade, nome e descrição.</summary>
     private void Linha(DefinicaoItem def, int quantidade)
     {
@@ -61,13 +76,7 @@ public class TelaBag : TelaFigma
         rt.sizeDelta = new Vector2(884f, 220f);
 
         // Ícone (188 x 188 em 11, 11) recortado como no Figma, com fundo cinza claro.
-        var janela = FigmaUI.Local(rt, "Icone", 11f, 16f, 188f, 188f);
-        janela.gameObject.AddComponent<RectMask2D>();
-        // (recortes do Figma: Meat 132% x 143% deslocado -17,6% / -16,5%; Bandage 127% deslocado -13,5%)
-        var icone = def.Id == Itens.Bandage
-            ? FigmaUI.Local(janela, "Imagem", -0.1354f * 188f, -0.1354f * 188f, 1.2708f * 188f, 1.2708f * 188f)
-            : FigmaUI.Local(janela, "Imagem", -0.176f * 188f, -0.1646f * 188f, 1.3232f * 188f, 1.4286f * 188f);
-        FigmaUI.Imagem(icone, Itens.Icone(def.Id));
+        IconeRecortado(FigmaUI.Local(rt, "Icone", 11f, 16f, 188f, 188f), def.Id);
 
         // Cantos de mira (62 x 56) nos quatro cantos do ícone, como no Figma.
         var a = FigmaUI.S("item_canto_a");

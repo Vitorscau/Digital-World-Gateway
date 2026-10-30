@@ -9,7 +9,8 @@ public enum TipoMissao
     CapturarDigimons,
     EncontrarNoHabitat,  // encontrar um Digimon num habitat específico
     AndarMetros,
-    VencerAtributo       // vencer um Digimon de um atributo (Fogo, Água...)
+    VencerAtributo,      // vencer um Digimon de um atributo (Fogo, Água...)
+    DecifrarDados        // decifrar Encrypted Data (os "PokéStops")
 }
 
 /// <summary>Definição de uma missão (fixa no código; o progresso fica no PerfilJogador).</summary>
@@ -44,6 +45,8 @@ public static class Missoes
         new DefinicaoMissao { Id = "andar3k", Titulo = "Ande 3 km", Tipo = TipoMissao.AndarMetros, Meta = 3000, RecompensaXp = 400, RecompensaBits = 120 },
         new DefinicaoMissao { Id = "fogo", Titulo = "Vença um Digimon de Fogo", Tipo = TipoMissao.VencerAtributo, Atributo = DigimonAttribute.Fire, Meta = 1, RecompensaXp = 150, RecompensaBits = 50 },
         new DefinicaoMissao { Id = "planta", Titulo = "Vença um Digimon de Planta", Tipo = TipoMissao.VencerAtributo, Atributo = DigimonAttribute.Plant, Meta = 1, RecompensaXp = 150, RecompensaBits = 50 },
+        new DefinicaoMissao { Id = "dados3", Titulo = "Decifre 3 Encrypted Data", Tipo = TipoMissao.DecifrarDados, Meta = 3, RecompensaXp = 150, RecompensaBits = 50 },
+        new DefinicaoMissao { Id = "dados10", Titulo = "Decifre 10 Encrypted Data", Tipo = TipoMissao.DecifrarDados, Meta = 10, RecompensaXp = 400, RecompensaBits = 120 },
     };
 
     private const int MissoesPorDia = 3;
@@ -85,6 +88,8 @@ public static class Missoes
 
     public static void RegistrarEncontro(HabitatDigimon habitat) =>
         Avancar(d => d.Tipo == TipoMissao.EncontrarNoHabitat && (d.Habitat & habitat) != 0, 1);
+
+    public static void RegistrarDecifrar() => Avancar(d => d.Tipo == TipoMissao.DecifrarDados, 1);
 
     public static void RegistrarCaminhada(int metros) => Avancar(d => d.Tipo == TipoMissao.AndarMetros, metros);
 

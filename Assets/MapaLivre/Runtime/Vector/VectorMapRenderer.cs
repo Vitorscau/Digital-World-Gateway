@@ -28,6 +28,7 @@ namespace Niantic.Lightship.Maps.Vector
             public bool Loading;
             public int Attempts;
             public SurfaceIndex Surface;
+            public List<MapPoi> Pois;
         }
 
         private LightshipMapView _view;
@@ -258,7 +259,7 @@ namespace Niantic.Lightship.Maps.Vector
                 var task = Task.Run(() =>
                 {
                     var built = VectorTileBuilder.Build(data, tile.West, tile.North, tile.Size, k, _build);
-                    return (built, SurfaceIndex.From(built));
+                    return (built, SurfaceIndex.From(built), PoiReader.Read(data, tile.West, tile.North, tile.Size));
                 });
                 while (!task.IsCompleted) yield return null;
                 if (task.IsFaulted)
@@ -269,6 +270,8 @@ namespace Niantic.Lightship.Maps.Vector
                 if (tile.Go == null) yield break;
                 CreateMeshes(tile.Go.transform, task.Result.built, _theme);
                 tile.Surface = task.Result.Item2;
+                tile.Pois = task.Result.Item3;
+                PoisVersion++;
             }
             finally
             {
@@ -286,6 +289,16 @@ namespace Niantic.Lightship.Maps.Vector
             var key = ((long)x << 32) | (uint)y;
             if (!_tiles.TryGetValue(key, out var tile) || tile.Surface == null) return MapSurface.Unknown;
             return tile.Surface.Query((float)(mercX - tile.West), (float)(mercY - tile.North));
+        }
+
+        /// <summary>Muda sempre que lugares entram ou saem (tiles carregados ou descartados).</summary>
+        public int PoisVersion { get; private set; }
+
+        /// <summary>Junta em <paramref name="output"/> os lugares com nome de todos os tiles carregados.</summary>
+        public void GetPois(List<MapPoi> output)
+        {
+            foreach (var t in _tiles.Values)
+                if (t.Pois != null) output.AddRange(t.Pois);
         }
 
         internal static byte[] Decompress(byte[] data)
@@ -322,8 +335,9 @@ namespace Niantic.Lightship.Maps.Vector
             }
         }
 
-        private static void DestroyTile(VTile t)
+        private void DestroyTile(VTile t)
         {
+            if (t.Pois != null) { t.Pois = null; PoisVersion++; }
             if (t.Go == null) return;
             foreach (var mf in t.Go.GetComponentsInChildren<MeshFilter>())
                 if (mf.sharedMesh != null) Destroy(mf.sharedMesh);
