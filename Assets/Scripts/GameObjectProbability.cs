@@ -48,4 +48,9 @@ public class GameObjectProbability
 
     [Tooltip("Para especialistas (não marcados em todos os habitats): multiplica o peso no habitat deles.")]
     public float bonusHabitat = 3f;
+
+    /// <summary>Entradas criadas pelo spawner a partir das fichas: o modelo a colocar (a camada só hospeda).</summary>
+    [NonSerialized] public GameObject modeloExtra;
+    /// <summary>Nível do Tamer a partir do qual aparece com frequência normal (0 = sempre).</summary>
+    [NonSerialized] public int tamerMinimo;
 }

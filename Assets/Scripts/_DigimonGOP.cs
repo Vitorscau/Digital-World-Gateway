@@ -78,7 +78,7 @@ public class _DigimonGOP : MonoBehaviour
     {
         get
         {
-            foreach (var e in digimonLayers)
+            foreach (var e in _tabela.Count > 0 ? _tabela : digimonLayers)
             {
                 if (e == null) continue;
                 var ficha = e.digimon != null ? e.digimon : e.gameObjectPlacement != null ? CatalogoDigimon.Buscar(e.gameObjectPlacement.Name) : null;
@@ -102,6 +102,84 @@ public class _DigimonGOP : MonoBehaviour
         Instance = this;
         if (lightshipMapView == null) lightshipMapView = FindFirstObjectByType<LightshipMapView>();
         CarregarVistos();
+        MontarTabela();
+    }
+
+    // ------------------------------------------------------------------ Tabela (cena + fichas)
+
+    [Header("Todos os Digimon com ficha")]
+    [Tooltip("Também sorteia os Digimon que têm ficha em Resources/Digimons mas não estão na tabela acima " +
+             "(raridade, habitat, horário e nível vêm do estágio e do elemento de cada um).")]
+    [SerializeField] private bool incluirTodasAsFichas = true;
+    [Tooltip("Multiplica a chance de todos esses Digimon extras juntos.")]
+    [SerializeField] private float pesoFichasExtras = 1f;
+
+    private readonly List<GameObjectProbability> _tabela = new List<GameObjectProbability>();
+
+    /// <summary>A tabela da cena mais uma entrada para cada ficha que ainda não está nela.</summary>
+    private void MontarTabela()
+    {
+        _tabela.Clear();
+        _tabela.AddRange(digimonLayers);
+        if (!incluirTodasAsFichas) return;
+
+        // Uma camada da cena serve de "anfitriã" para colocar os modelos no mapa.
+        LayerGameObjectPlacement anfitria = null;
+        var naTabela = new HashSet<string>();
+        foreach (var e in digimonLayers)
+        {
+            if (e?.gameObjectPlacement == null) continue;
+            if (anfitria == null) anfitria = e.gameObjectPlacement;
+            naTabela.Add(CatalogoDigimon.Normalizar(e.gameObjectPlacement.Name));
+            if (e.digimon != null) naTabela.Add(CatalogoDigimon.Normalizar(e.digimon.name));
+        }
+        if (anfitria == null) return;
+
+        var fichas = new List<DigimonBase>(CatalogoDigimon.Todos);
+        fichas.Sort((a, b) => string.CompareOrdinal(a.name, b.name)); // ordem fixa: o sorteio é igual para todos
+        var vistas = new HashSet<DigimonBase>();
+        foreach (var f in fichas)
+        {
+            if (f == null || f.Prefab == null || !vistas.Add(f)) continue;
+            if (naTabela.Contains(CatalogoDigimon.Normalizar(f.name)) || naTabela.Contains(CatalogoDigimon.Normalizar(f.Name ?? ""))) continue;
+            _tabela.Add(EntradaDaFicha(f, anfitria));
+        }
+    }
+
+    private GameObjectProbability EntradaDaFicha(DigimonBase f, LayerGameObjectPlacement anfitria)
+    {
+        var e = new GameObjectProbability
+        {
+            gameObjectPlacement = anfitria,
+            digimon = f,
+            modeloExtra = f.Prefab,
+            bonusHabitat = 2f
+        };
+        switch (f.Stage)
+        {
+            case DigimonStage.Fresh: e.probability = 0.02f; e.nivel = new Vector2Int(1, 3); break;
+            case DigimonStage.InTraining: e.probability = 0.025f; e.nivel = new Vector2Int(1, 5); break;
+            case DigimonStage.Rookie: e.probability = 0.02f; e.nivel = new Vector2Int(3, 12); break;
+            case DigimonStage.Champion:
+            case DigimonStage.Armor: e.probability = 0.008f; e.nivel = new Vector2Int(10, 22); e.tamerMinimo = 3; break;
+            case DigimonStage.Ultimate: e.probability = 0.003f; e.nivel = new Vector2Int(20, 35); e.tamerMinimo = 8; break;
+            default: e.probability = 0.001f; e.nivel = new Vector2Int(35, 50); e.tamerMinimo = 15; break;
+        }
+        e.probability *= Mathf.Max(0f, pesoFichasExtras);
+        switch (f.Atribute)
+        {
+            case DigimonAttribute.Water: e.habitats = HabitatDigimon.Agua; break;
+            case DigimonAttribute.Plant: e.habitats = HabitatDigimon.Parque; break;
+            case DigimonAttribute.Earth:
+            case DigimonAttribute.Wind: e.habitats = HabitatDigimon.Parque | HabitatDigimon.Urbano; break;
+            case DigimonAttribute.Fire:
+            case DigimonAttribute.Electric: e.habitats = HabitatDigimon.Urbano; break;
+            default: e.habitats = HabitatDigimon.Todos; break;
+        }
+        e.periodo = f.Atribute == DigimonAttribute.Dark ? PeriodoDoDia.Noite
+            : f.Atribute == DigimonAttribute.Light ? PeriodoDoDia.Dia
+            : PeriodoDoDia.Sempre;
+        return e;
     }
 
     private void OnDestroy()
@@ -199,13 +277,15 @@ public class _DigimonGOP : MonoBehaviour
             var giro = Quaternion.Euler(0f, (float)(U(Hash(ix, iy, s, 6, cicloAtual)) * 360.0), 0f);
             var fim = DateTime.UnixEpoch.AddMinutes(cicloAtual * ciclo + inicio + duracao);
 
-            var go = entrada.gameObjectPlacement.PlaceInstance(local, giro, $"{entrada.gameObjectPlacement.Name}_{id}");
+            // Entradas das fichas trazem o próprio modelo; as da cena usam o da camada.
+            var modelo = entrada.modeloExtra != null ? entrada.modeloExtra : entrada.gameObjectPlacement.Prefab;
+            var especie = entrada.modeloExtra != null && entrada.digimon != null ? entrada.digimon.name : entrada.gameObjectPlacement.Name;
+            var go = entrada.gameObjectPlacement.PlaceInstance(modelo, local, giro, $"{especie}_{id}");
             if (go == null) continue;
             var wild = go.GetComponent<WildDigimon>();
             if (wild == null) wild = go.AddComponent<WildDigimon>();
-            var ficha = entrada.digimon != null ? entrada.digimon : CatalogoDigimon.Buscar(entrada.gameObjectPlacement.Name);
-            wild.Configurar(this, id, entrada.gameObjectPlacement.Name, nivel, fim, local, habitat,
-                ficha, entrada.gameObjectPlacement.Prefab);
+            var ficha = entrada.digimon != null ? entrada.digimon : CatalogoDigimon.Buscar(especie);
+            wild.Configurar(this, id, especie, nivel, fim, local, habitat, ficha, modelo);
             _ativos[id] = new Ativo { Wild = wild, Layer = entrada.gameObjectPlacement, Fim = fim, Visto = true };
         }
 
@@ -217,12 +297,17 @@ public class _DigimonGOP : MonoBehaviour
         foreach (var id in _remover) Remover(id);
     }
 
+    /// <summary>Para testes: sorteia como no mapa (sorteio de 0 a 1).</summary>
+    public GameObjectProbability SortearParaTeste(HabitatDigimon habitat, bool ehDia, double sorteio) => Sortear(habitat, ehDia, sorteio);
+
     private GameObjectProbability Sortear(HabitatDigimon habitat, bool ehDia, double sorteio)
     {
         _candidatos.Clear();
         _pesos.Clear();
         var total = 0f;
-        foreach (var e in digimonLayers)
+        var nivelTamer = PerfilJogador.Atual.nivel;
+        if (_tabela.Count == 0) MontarTabela();
+        foreach (var e in _tabela)
         {
             if (e == null || e.gameObjectPlacement == null || e.probability <= 0f) continue;
             if ((e.habitats & habitat) == 0) continue;
@@ -231,6 +316,8 @@ public class _DigimonGOP : MonoBehaviour
             var peso = e.probability;
             // Especialistas (que não vivem em todo lugar) aparecem mais no habitat deles.
             if (e.habitats != HabitatDigimon.Todos) peso *= Mathf.Max(1f, e.bonusHabitat);
+            // Estágios fortes vão aparecendo conforme o Tamer sobe de nível (quase nunca antes disso).
+            if (e.tamerMinimo > 0) peso *= Mathf.Clamp((nivelTamer - e.tamerMinimo + 1) / 3f, 0.02f, 1f);
             _candidatos.Add(e);
             _pesos.Add(peso);
             total += peso;

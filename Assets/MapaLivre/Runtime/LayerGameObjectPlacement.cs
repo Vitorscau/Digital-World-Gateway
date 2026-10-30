@@ -38,14 +38,18 @@ namespace Niantic.Lightship.Maps.MapLayers.Components
         public GameObject PlaceInstance(LatLng location, string instanceName = null) =>
             PlaceInstance(location, Quaternion.identity, instanceName);
 
-        public GameObject PlaceInstance(LatLng location, Quaternion rotation, string instanceName = null)
-        {
-            if (_prefab == null || !EnsureMapView()) return null;
+        public GameObject PlaceInstance(LatLng location, Quaternion rotation, string instanceName = null) =>
+            PlaceInstance(_prefab, location, rotation, instanceName);
 
-            var go = Instantiate(_prefab, transform);
+        /// <summary>Coloca um prefab qualquer usando as regras desta camada (escala, altura, posição).</summary>
+        public GameObject PlaceInstance(GameObject prefab, LatLng location, Quaternion rotation, string instanceName = null)
+        {
+            if (prefab == null || !EnsureMapView()) return null;
+
+            var go = Instantiate(prefab, transform);
             go.name = string.IsNullOrEmpty(instanceName) ? $"{_name}_{_instances.Count}" : instanceName;
-            go.transform.rotation = rotation * _prefab.transform.rotation; // mantém a rotação própria do prefab
-            go.transform.localScale = _prefab.transform.localScale * CurrentScale();
+            go.transform.rotation = rotation * prefab.transform.rotation; // mantém a rotação própria do prefab
+            go.transform.localScale = prefab.transform.localScale * CurrentScale();
             var placed = new Placed { Go = go, Location = location };
             _instances.Add(placed);
             Position(placed);
