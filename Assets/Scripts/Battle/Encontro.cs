@@ -19,7 +19,10 @@ public class Encontro
     /// <summary>A batalha atual (null se a cena de batalha foi aberta direto, para testes).</summary>
     public static Encontro Atual { get; private set; }
 
-    /// <summary>Se true, usa a batalha em AR no celular. No Editor sempre usa a batalha comum.</summary>
+    /// <summary>
+    /// true (padrão): a batalha acontece em AR (AR_Battle_Scene), como no jogo original.
+    /// false: usa a Battle_Scene comum, sem câmera (útil para testar rápido).
+    /// </summary>
     public static bool UsarAR = true;
 
     public static void Limpar() => Atual = null;
@@ -52,8 +55,7 @@ public class Encontro
             ModeloInimigo = modelo
         };
 
-        var ar = UsarAR && !Application.isEditor;
-        SceneManager.LoadScene(ar ? Cenas.BatalhaAR : Cenas.Batalha);
+        SceneManager.LoadScene(UsarAR ? Cenas.BatalhaAR : Cenas.Batalha);
         return true;
     }
 

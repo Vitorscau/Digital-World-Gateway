@@ -148,43 +148,7 @@ public class BatalhaDigimon : MonoBehaviour
         if (_jogador != null) _jogador.podeLutar = false;
         if (_inimigo != null) _inimigo.podeLutar = false;
 
-        var perfil = PerfilJogador.Atual;
-        var nivelInimigo = Mathf.Max(1, _encontro.NivelInimigo);
-        var parceiro = _encontro.Parceiro;
-        var nomeParceiro = _encontro.FichaParceiro.Name.Trim();
-        var nomeInimigo = _encontro.FichaInimigo.Name.Trim();
-        string texto;
-
-        if (venceu)
-        {
-            var xpDigimon = 10 + nivelInimigo * 6;
-            var xpJogador = 50 + nivelInimigo * 10;
-            var bits = 10 + nivelInimigo * 2;
-            var subiuDigimon = PerfilJogador.GanharXp(parceiro, xpDigimon);
-            var subiuJogador = perfil.GanharXp(xpJogador);
-            perfil.bits += bits;
-            perfil.vitorias++;
-            perfil.AdicionarNaColecao(_encontro.EspecieInimigo, nivelInimigo);
-            perfil.Salvar();
-            Missoes.RegistrarVitoria(_encontro.FichaInimigo);
-            Missoes.RegistrarCaptura();
-
-            texto = $"<size=90><b>VITÓRIA!</b></size>\n\n" +
-                    $"{nomeInimigo} (nv. {nivelInimigo}) entrou para a sua coleção!\n\n" +
-                    $"{nomeParceiro}: +{xpDigimon} XP" + (subiuDigimon > 0 ? $"  <color=#FFE066>subiu para o nível {parceiro.nivel}!</color>" : "") + "\n" +
-                    $"Você: +{xpJogador} XP" + (subiuJogador > 0 ? $"  <color=#FFE066>nível {perfil.nivel}!</color>" : "") + "\n" +
-                    $"+{bits} bits";
-        }
-        else
-        {
-            var xpDigimon = 5 + nivelInimigo;
-            PerfilJogador.GanharXp(parceiro, xpDigimon);
-            perfil.derrotas++;
-            perfil.Salvar();
-            texto = $"<size=90><b>DERROTA</b></size>\n\n{nomeInimigo} fugiu.\n\n{nomeParceiro}: +{xpDigimon} XP";
-        }
-
-        StartCoroutine(MostrarResultado(texto));
+        StartCoroutine(MostrarResultado(ResultadoBatalha.Aplicar(_encontro, venceu).Texto));
     }
 
     private IEnumerator MostrarResultado(string texto)
