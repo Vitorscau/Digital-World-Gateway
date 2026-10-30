@@ -8,28 +8,26 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
-/// Painel "Digivice" no mapa (botão no canto da tela), com três abas:
+/// Painel "Digivice" no mapa (botão com o ícone do Digivice), com três abas:
 /// - Por perto: Digimons próximos, distância e tempo até sumir (tocar = batalhar).
 /// - Coleção: Digimons capturados (tocar = escolher como parceiro).
 /// - Missões: missões diárias e progresso.
-/// No topo mostra nível, XP e bits do Tamer. Montado por código ao abrir a Map_Scene.
+/// No topo mostra nível, XP e bits do Tamer. Visual no padrão das telas do jogo (EstiloUI).
+/// Montado por código ao abrir a Map_Scene.
 /// </summary>
 public class PainelDigivice : MonoBehaviour
 {
     private enum Aba { PorPerto, Colecao, Missoes }
 
-    private static readonly Color CorFundo = new Color(0.06f, 0.16f, 0.2f, 0.95f);
-    private static readonly Color CorBotao = new Color(0.35f, 0.82f, 0.6f);
-    private static readonly Color CorBotaoInativo = new Color(0.2f, 0.42f, 0.4f);
-    private static readonly Color CorLinha = new Color(1f, 1f, 1f, 0.07f);
-
-    private GameObject _painel;
+    private RectTransform _painel;
     private GameObject _botaoAbrir;
-    private TMP_Text _cabecalho;
+    private TMP_Text _titulo, _cabecalho;
     private RectTransform _conteudo;
-    private readonly Dictionary<Aba, Image> _abas = new Dictionary<Aba, Image>();
+    private readonly Dictionary<Aba, Button> _abas = new Dictionary<Aba, Button>();
     private Aba _aba = Aba.PorPerto;
     private float _proximaAtualizacao;
+
+    private static EstiloUI E => EstiloUI.Atual;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Registrar()
@@ -55,13 +53,27 @@ public class PainelDigivice : MonoBehaviour
 
     private void AoMudarPerfil()
     {
-        if (_painel != null && _painel.activeSelf) Atualizar();
+        if (_painel != null && _painel.gameObject.activeSelf) Atualizar();
     }
+
+    private GameObject _hud;
 
     private void Update()
     {
+        // O botão só aparece junto com a HUD do jogo (some na tela de aviso inicial, por exemplo).
+        if (_hud == null)
+        {
+            var telas = FindFirstObjectByType<UIScreenManager>();
+            if (telas != null) _hud = telas.HUD;
+        }
+        if (!_painel.gameObject.activeSelf)
+        {
+            var mostrar = _hud == null || _hud.activeInHierarchy;
+            if (_botaoAbrir.activeSelf != mostrar) _botaoAbrir.SetActive(mostrar);
+        }
+
         // "Por perto" muda o tempo todo (distâncias, tempo restante).
-        if (_painel.activeSelf && _aba == Aba.PorPerto && Time.unscaledTime >= _proximaAtualizacao)
+        if (_painel.gameObject.activeSelf && _aba == Aba.PorPerto && Time.unscaledTime >= _proximaAtualizacao)
             Atualizar();
     }
 
@@ -69,7 +81,7 @@ public class PainelDigivice : MonoBehaviour
 
     private void Abrir(bool abrir)
     {
-        _painel.SetActive(abrir);
+        _painel.gameObject.SetActive(abrir);
         _botaoAbrir.SetActive(!abrir);
         if (abrir) Atualizar();
     }
@@ -84,9 +96,9 @@ public class PainelDigivice : MonoBehaviour
     {
         _proximaAtualizacao = Time.unscaledTime + 1f;
         var p = PerfilJogador.Atual;
-        _cabecalho.text = $"<b>{p.nome}</b>  nível {p.nivel}    XP {p.xp}/{PerfilJogador.XpParaProximoNivel(p.nivel)}    {p.bits} bits\n" +
-                          $"<size=30>Vitórias {p.vitorias} · Derrotas {p.derrotas} · {p.metrosAndados / 1000:0.0} km andados</size>";
-        foreach (var kv in _abas) kv.Value.color = kv.Key == _aba ? CorBotao : CorBotaoInativo;
+        _cabecalho.text = $"<b>{p.nome}</b>   Lv.{p.nivel}   <size=80%>EXP {p.xp}/{PerfilJogador.XpParaProximoNivel(p.nivel)}   ·   {p.bits} BIT</size>\n" +
+                          $"<size=70%>Vitórias {p.vitorias} · Derrotas {p.derrotas} · {p.metrosAndados / 1000:0.0} km</size>";
+        foreach (var kv in _abas) UIPadrao.Selecionar(kv.Value, kv.Key == _aba);
 
         foreach (Transform c in _conteudo) Destroy(c.gameObject);
         switch (_aba)
@@ -101,22 +113,20 @@ public class PainelDigivice : MonoBehaviour
     {
         var spawner = _DigimonGOP.Instance;
         var mapa = spawner != null ? spawner.MapView : null;
-        if (spawner == null || mapa == null) { Linha("Mapa ainda carregando...", null); return; }
+        if (spawner == null || mapa == null) { Cartao("Mapa ainda carregando...", null, null); return; }
 
         var lista = spawner.Visiveis
             .Select(w => (w, d: LightshipMapView.DistanceMeters(mapa.MapCenter, w.Local)))
             .OrderBy(x => x.d).ToList();
-        if (lista.Count == 0) { Linha("Nenhum Digimon por perto. Ande um pouco!", null); return; }
+        if (lista.Count == 0) { Cartao("Nenhum Digimon por perto", "Ande um pouco para encontrar mais.", null); return; }
 
         foreach (var (w, d) in lista)
         {
             var resta = w.TempoRestante;
-            var perto = w.PodeEncontrar;
-            var texto = $"<b>{w.NomeExibicao}</b>  nv. {w.Nivel}   <size=30>{HabitatTexto(w.Habitat)}</size>\n" +
-                        $"<size=32>{d:0} m{(perto ? "  <color=#7CFFB2>· toque para batalhar</color>" : "")}" +
-                        $"   · some em {Math.Max(0, (int)resta.TotalMinutes)}:{Math.Max(0, resta.Seconds):00}</size>";
+            var titulo = $"{w.NomeExibicao}  <size=80%>Lv.{w.Nivel}</size>";
+            var detalhe = $"{d:0} m  ·  {HabitatTexto(w.Habitat)}  ·  some em {Math.Max(0, (int)resta.TotalMinutes)}:{Math.Max(0, resta.Seconds):00}";
             var alvo = w;
-            Linha(texto, () => { Abrir(false); alvo.TentarEncontro(); });
+            Cartao(titulo, detalhe, () => { Abrir(false); alvo.TentarEncontro(); }, "Batalhar");
         }
     }
 
@@ -127,24 +137,22 @@ public class PainelDigivice : MonoBehaviour
             var ficha = d.Ficha;
             var nome = ficha != null ? ficha.Name.Trim() : d.especie;
             var parceiro = d.id == p.parceiroId;
+            var titulo = $"{nome}  <size=80%>Lv.{d.nivel}</size>" + (parceiro ? $"  <color=#{ColorUtility.ToHtmlStringRGB(E.Destaque)}><size=70%>PARCEIRO</size></color>" : "");
             var info = ficha != null ? $"{EstagioTexto(ficha.Stage)} · {AtributoTexto(ficha.Atribute)} · {ficha.Type}" : "";
-            var texto = $"{(parceiro ? "<color=#FFE066>» </color>" : "")}<b>{nome}</b>  nv. {d.nivel}" +
-                        $"   <size=30>XP {d.xp}/{PerfilJogador.XpDigimonParaProximoNivel(d.nivel)}</size>\n<size=30>{info}" +
-                        $"{(parceiro ? "  · <color=#FFE066>parceiro</color>" : "  · toque para escolher como parceiro")}</size>";
+            var detalhe = $"{info}  ·  EXP {d.xp}/{PerfilJogador.XpDigimonParaProximoNivel(d.nivel)}";
             var alvo = d;
-            Linha(texto, parceiro ? (Action)null : () => EscolherParceiro(alvo));
+            Cartao(titulo, detalhe, parceiro ? (Action)null : () => EscolherParceiro(alvo), parceiro ? null : "Escolher");
         }
     }
 
     private void ListarMissoes()
     {
-        Linha("<b>Missões de hoje</b>  <size=30>(novas todo dia)</size>", null);
         foreach (var (def, prog) in Missoes.DeHoje())
         {
             var feita = prog.resgatada;
-            var texto = $"{(feita ? "<color=#7CFFB2>[feita]</color> " : "")}<b>{def.Titulo}</b>\n" +
-                        $"<size=30>{prog.progresso}/{def.Meta}   ·   recompensa: {def.RecompensaXp} XP, {def.RecompensaBits} bits</size>";
-            Linha(texto, null);
+            var titulo = def.Titulo + (feita ? $"  <color=#{ColorUtility.ToHtmlStringRGB(E.Destaque)}><size=70%>CONCLUÍDA</size></color>" : "");
+            var detalhe = $"{prog.progresso}/{def.Meta}   ·   EXP {def.RecompensaXp}   ·   {def.RecompensaBits} BIT";
+            Cartao(titulo, detalhe, null);
         }
     }
 
@@ -183,55 +191,54 @@ public class PainelDigivice : MonoBehaviour
 
     private void Montar()
     {
-        var canvasGo = new GameObject("UI_Digivice", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-        canvasGo.transform.SetParent(transform, false);
-        var canvas = canvasGo.GetComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 50;
-        var scaler = canvasGo.GetComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1080, 1920);
-        scaler.matchWidthOrHeight = 0.5f;
+        var canvas = UIPadrao.Canvas(transform, "UI_Digivice", 50);
 
-        // Botão que abre o painel (lado esquerdo, abaixo do ícone de clima).
-        var abrir = Botao(canvasGo.transform, "Digivice", CorBotao, () => Abrir(!_painel.activeSelf));
-        _botaoAbrir = abrir;
-        var art = (RectTransform)abrir.transform;
-        art.anchorMin = art.anchorMax = new Vector2(0, 1);
-        art.pivot = new Vector2(0, 1);
-        art.anchoredPosition = new Vector2(30, -260);
-        art.sizeDelta = new Vector2(230, 90);
-
-        _painel = new GameObject("Painel", typeof(RectTransform), typeof(Image));
-        _painel.transform.SetParent(canvasGo.transform, false);
-        var prt = (RectTransform)_painel.transform;
-        prt.anchorMin = new Vector2(0.04f, 0.12f);
-        prt.anchorMax = new Vector2(0.96f, 0.86f);
-        prt.offsetMin = prt.offsetMax = Vector2.zero;
-        _painel.GetComponent<Image>().color = CorFundo;
-
-        _cabecalho = Texto(_painel.transform, 38, TextAlignmentOptions.Left);
-        Ancorar(_cabecalho.rectTransform, new Vector2(0, 1), new Vector2(1, 1), new Vector2(30, -150), new Vector2(-130, -20));
-
-        var fechar = Botao(_painel.transform, "X", new Color(0.85f, 0.35f, 0.35f), () => Abrir(false));
-        Ancorar((RectTransform)fechar.transform, new Vector2(1, 1), new Vector2(1, 1), new Vector2(-110, -110), new Vector2(-20, -20));
-
-        var nomes = new[] { (Aba.PorPerto, "Por perto"), (Aba.Colecao, "Coleção"), (Aba.Missoes, "Missões") };
-        for (var i = 0; i < nomes.Length; i++)
+        // Botão com o ícone do Digivice (mesmo desenho dos botões da HUD), abaixo do ícone de clima.
+        var abrirRt = UIPadrao.Imagem(canvas.transform, "Digivice", E.IconeDigivice, Color.white, false);
+        abrirRt.anchorMin = abrirRt.anchorMax = new Vector2(0, 1);
+        abrirRt.pivot = new Vector2(0, 1);
+        abrirRt.anchoredPosition = new Vector2(36, -250);
+        abrirRt.sizeDelta = new Vector2(140, 140);
+        abrirRt.gameObject.AddComponent<Button>().onClick.AddListener(() => Abrir(true));
+        if (E.IconeDigivice == null)
         {
-            var (aba, nome) = nomes[i];
-            var b = Botao(_painel.transform, nome, CorBotaoInativo, () => TrocarAba(aba));
-            var x0 = 0.03f + i * 0.32f;
-            Ancorar((RectTransform)b.transform, new Vector2(x0, 1), new Vector2(x0 + 0.30f, 1), new Vector2(0, -260), new Vector2(0, -170));
-            _abas[aba] = b.GetComponent<Image>();
+            var t = UIPadrao.Texto(abrirRt, "Digivice", 30, true, TextAlignmentOptions.Center);
+            UIPadrao.Esticar(t.rectTransform);
+        }
+        _botaoAbrir = abrirRt.gameObject;
+
+        // Painel (como a tela de Missões).
+        _painel = UIPadrao.Painel(canvas.transform, "Painel");
+        // Termina acima do banner de missão da HUD (parte de baixo da tela).
+        UIPadrao.Ancorar(_painel, new Vector2(0.04f, 0.125f), new Vector2(0.96f, 0.88f), Vector2.zero, Vector2.zero);
+
+        _titulo = UIPadrao.Texto(_painel, "Digivice", 46, true, TextAlignmentOptions.Left);
+        UIPadrao.Ancorar(_titulo.rectTransform, new Vector2(0, 1), new Vector2(1, 1), new Vector2(44, -100), new Vector2(-150, -30));
+
+        var fechar = UIPadrao.Botao(_painel, "X", () => Abrir(false), false, 44);
+        UIPadrao.Ancorar((RectTransform)fechar.transform, new Vector2(1, 1), new Vector2(1, 1), new Vector2(-128, -118), new Vector2(-36, -30));
+
+        var abas = new[] { (Aba.PorPerto, "Por perto"), (Aba.Colecao, "Coleção"), (Aba.Missoes, "Missões") };
+        for (var i = 0; i < abas.Length; i++)
+        {
+            var (aba, nome) = abas[i];
+            var b = UIPadrao.Botao(_painel, nome, () => TrocarAba(aba), false, 38);
+            var x0 = 0.04f + i * 0.31f;
+            UIPadrao.Ancorar((RectTransform)b.transform, new Vector2(x0, 1), new Vector2(x0 + 0.29f, 1), new Vector2(0, -220), new Vector2(0, -130));
+            _abas[aba] = b;
         }
 
+        // Cartão do Tamer.
+        var tamer = UIPadrao.Cartao(_painel, "Tamer");
+        UIPadrao.Ancorar(tamer, new Vector2(0, 1), new Vector2(1, 1), new Vector2(36, -360), new Vector2(-36, -240));
+        _cabecalho = UIPadrao.Texto(tamer, "", 38, true, TextAlignmentOptions.Left);
+        UIPadrao.Esticar(_cabecalho.rectTransform, 28, 10);
+
         // Lista com rolagem.
-        var scroll = new GameObject("Lista", typeof(RectTransform), typeof(Image), typeof(ScrollRect), typeof(Mask));
-        scroll.transform.SetParent(_painel.transform, false);
-        Ancorar((RectTransform)scroll.transform, Vector2.zero, Vector2.one, new Vector2(20, 20), new Vector2(-20, -280));
-        scroll.GetComponent<Image>().color = new Color(0, 0, 0, 0.15f);
-        scroll.GetComponent<Mask>().showMaskGraphic = true;
+        var scroll = new GameObject("Lista", typeof(RectTransform), typeof(Image), typeof(ScrollRect), typeof(RectMask2D));
+        scroll.transform.SetParent(_painel, false);
+        UIPadrao.Ancorar((RectTransform)scroll.transform, Vector2.zero, Vector2.one, new Vector2(30, 36), new Vector2(-30, -380));
+        scroll.GetComponent<Image>().color = new Color(0, 0, 0, 0);
         var conteudo = new GameObject("Conteudo", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
         conteudo.transform.SetParent(scroll.transform, false);
         _conteudo = (RectTransform)conteudo.transform;
@@ -240,8 +247,8 @@ public class PainelDigivice : MonoBehaviour
         _conteudo.pivot = new Vector2(0.5f, 1);
         _conteudo.offsetMin = _conteudo.offsetMax = Vector2.zero;
         var layout = conteudo.GetComponent<VerticalLayoutGroup>();
-        layout.padding = new RectOffset(16, 16, 16, 16);
-        layout.spacing = 12;
+        layout.padding = new RectOffset(6, 6, 6, 6);
+        layout.spacing = 16;
         layout.childControlHeight = true;
         layout.childControlWidth = true;
         layout.childForceExpandHeight = false;
@@ -251,59 +258,28 @@ public class PainelDigivice : MonoBehaviour
         sr.horizontal = false;
         sr.scrollSensitivity = 30;
 
-        _painel.SetActive(false);
-
-        if (FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
-            new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.EventSystems.StandaloneInputModule));
+        _painel.gameObject.SetActive(false);
     }
 
-    private void Linha(string texto, Action aoTocar)
+    /// <summary>Cartão no padrão do cartão de missão: título em negrito, detalhe embaixo e botão opcional.</summary>
+    private void Cartao(string titulo, string detalhe, Action aoTocar, string rotuloBotao = null)
     {
-        var go = new GameObject("Linha", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
-        go.transform.SetParent(_conteudo, false);
-        go.GetComponent<Image>().color = CorLinha;
-        go.GetComponent<LayoutElement>().minHeight = 120;
-        if (aoTocar != null) go.AddComponent<Button>().onClick.AddListener(() => aoTocar());
-        else go.GetComponent<Image>().raycastTarget = false;
+        var rt = UIPadrao.Cartao(_conteudo, "Cartao");
+        rt.gameObject.AddComponent<LayoutElement>().minHeight = 150;
+        var margemDireita = aoTocar != null && rotuloBotao != null ? -250f : -28f;
 
-        var t = Texto(go.transform, 38, TextAlignmentOptions.Left);
-        t.text = texto;
-        Ancorar(t.rectTransform, Vector2.zero, Vector2.one, new Vector2(24, 10), new Vector2(-24, -10));
-        // A linha cresce conforme o texto.
-        go.GetComponent<LayoutElement>().preferredHeight = Mathf.Max(120, t.GetPreferredValues(texto, 900, 0).y + 30);
-    }
+        var t = UIPadrao.Texto(rt, titulo, 40, true, TextAlignmentOptions.TopLeft);
+        UIPadrao.Ancorar(t.rectTransform, new Vector2(0, 0.5f), new Vector2(1, 1), new Vector2(30, 0), new Vector2(margemDireita, -18));
+        if (!string.IsNullOrEmpty(detalhe))
+        {
+            var d = UIPadrao.Texto(rt, detalhe, 30, false, TextAlignmentOptions.BottomLeft);
+            UIPadrao.Ancorar(d.rectTransform, new Vector2(0, 0), new Vector2(1, 0.5f), new Vector2(30, 18), new Vector2(margemDireita, 0));
+        }
 
-    private static GameObject Botao(Transform pai, string rotulo, Color cor, Action aoTocar)
-    {
-        var go = new GameObject(rotulo, typeof(RectTransform), typeof(Image), typeof(Button));
-        go.transform.SetParent(pai, false);
-        go.GetComponent<Image>().color = cor;
-        go.GetComponent<Button>().onClick.AddListener(() => aoTocar());
-        var t = Texto(go.transform, 40, TextAlignmentOptions.Center);
-        t.text = $"<b>{rotulo}</b>";
-        t.color = new Color(0.04f, 0.14f, 0.12f);
-        Ancorar(t.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-        return go;
-    }
-
-    private static TMP_Text Texto(Transform pai, float tamanho, TextAlignmentOptions alinhamento)
-    {
-        var go = new GameObject("Texto", typeof(RectTransform), typeof(TextMeshProUGUI));
-        go.transform.SetParent(pai, false);
-        var t = go.GetComponent<TextMeshProUGUI>();
-        t.fontSize = tamanho;
-        t.color = Color.white;
-        t.alignment = alinhamento;
-        t.textWrappingMode = TextWrappingModes.Normal;
-        t.raycastTarget = false;
-        return t;
-    }
-
-    private static void Ancorar(RectTransform rt, Vector2 min, Vector2 max, Vector2 offMin, Vector2 offMax)
-    {
-        rt.anchorMin = min;
-        rt.anchorMax = max;
-        rt.offsetMin = offMin;
-        rt.offsetMax = offMax;
+        if (aoTocar != null && rotuloBotao != null)
+        {
+            var b = UIPadrao.Botao(rt, rotuloBotao, aoTocar, false, 32);
+            UIPadrao.Ancorar((RectTransform)b.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-230, -42), new Vector2(-24, 42));
+        }
     }
 }

@@ -177,6 +177,7 @@ public class BatalhaDigimon : MonoBehaviour
         var go = new GameObject("Dano", typeof(RectTransform), typeof(TextMeshProUGUI));
         go.transform.SetParent(_canvas.transform, false);
         var t = go.GetComponent<TextMeshProUGUI>();
+        if (EstiloUI.Atual.FontePesada != null) t.font = EstiloUI.Atual.FontePesada;
         t.text = dano.ToString();
         t.fontSize = 64;
         t.fontStyle = FontStyles.Bold;
@@ -212,32 +213,39 @@ public class BatalhaDigimon : MonoBehaviour
         _textoGrande = Texto(go.transform, "Contagem", 220, Color.white);
         Esticar((RectTransform)_textoGrande.transform, Vector2.zero, Vector2.one);
 
-        _painelResultado = new GameObject("Resultado", typeof(RectTransform), typeof(Image));
-        _painelResultado.transform.SetParent(go.transform, false);
-        var prt = (RectTransform)_painelResultado.transform;
-        prt.anchorMin = new Vector2(0.08f, 0.25f);
-        prt.anchorMax = new Vector2(0.92f, 0.75f);
+        // Painel no padrão da arena do AR: verde-água, borda branca, Lato e o botão OK original.
+        var estilo = EstiloUI.Atual;
+        var prt = UIPadrao.Imagem(go.transform, "Resultado", null, estilo.VerdeBatalha, false);
+        prt.anchorMin = new Vector2(0.06f, 0.28f);
+        prt.anchorMax = new Vector2(0.94f, 0.72f);
         prt.offsetMin = prt.offsetMax = Vector2.zero;
-        _painelResultado.GetComponent<Image>().color = new Color(0.07f, 0.18f, 0.22f, 0.94f);
+        if (estilo.Moldura != null)
+        {
+            var moldura = UIPadrao.Imagem(prt, "Moldura", estilo.Moldura, Color.white, true);
+            UIPadrao.Esticar(moldura);
+            moldura.GetComponent<Image>().raycastTarget = false;
+        }
+        _painelResultado = prt.gameObject;
 
         var corpo = Texto(_painelResultado.transform, "Texto", 44, Color.white);
         var crt = (RectTransform)corpo.transform;
-        crt.anchorMin = new Vector2(0, 0.25f);
+        crt.anchorMin = new Vector2(0, 0.28f);
         crt.anchorMax = Vector2.one;
-        crt.offsetMin = new Vector2(40, 0);
-        crt.offsetMax = new Vector2(-40, -40);
+        crt.offsetMin = new Vector2(50, 0);
+        crt.offsetMax = new Vector2(-50, -50);
 
-        var botao = new GameObject("Voltar", typeof(RectTransform), typeof(Image), typeof(Button));
-        botao.transform.SetParent(_painelResultado.transform, false);
-        var brt = (RectTransform)botao.transform;
-        brt.anchorMin = new Vector2(0.2f, 0.06f);
-        brt.anchorMax = new Vector2(0.8f, 0.2f);
+        var brt = UIPadrao.Imagem(_painelResultado.transform, "OK", estilo.BotaoOkBatalha, Color.white, false);
+        brt.anchorMin = new Vector2(0.27f, 0.06f);
+        brt.anchorMax = new Vector2(0.73f, 0.22f);
         brt.offsetMin = brt.offsetMax = Vector2.zero;
-        botao.GetComponent<Image>().color = new Color(0.35f, 0.82f, 0.6f);
-        botao.GetComponent<Button>().onClick.AddListener(VoltarAoMapa);
-        var rotulo = Texto(botao.transform, "Rotulo", 48, new Color(0.05f, 0.15f, 0.12f));
-        rotulo.text = "Voltar ao mapa";
-        Esticar((RectTransform)rotulo.transform, Vector2.zero, Vector2.one);
+        brt.GetComponent<Image>().preserveAspect = true;
+        brt.gameObject.AddComponent<Button>().onClick.AddListener(VoltarAoMapa);
+        if (estilo.BotaoOkBatalha == null)
+        {
+            var rotulo = Texto(brt, "Rotulo", 48, Color.white);
+            rotulo.text = "OK";
+            Esticar((RectTransform)rotulo.transform, Vector2.zero, Vector2.one);
+        }
 
         _painelResultado.SetActive(false);
 
@@ -250,6 +258,7 @@ public class BatalhaDigimon : MonoBehaviour
         var go = new GameObject(nome, typeof(RectTransform), typeof(TextMeshProUGUI));
         go.transform.SetParent(pai, false);
         var t = go.GetComponent<TextMeshProUGUI>();
+        if (EstiloUI.Atual.FonteNegrito != null) t.font = EstiloUI.Atual.FonteNegrito; // Lato, como no resto do jogo
         t.fontSize = tamanho;
         t.color = cor;
         t.alignment = TextAlignmentOptions.Center;

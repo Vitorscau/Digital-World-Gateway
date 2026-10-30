@@ -278,9 +278,11 @@ public class BattleManager : MonoBehaviour
         rt.anchorMax = max;
         rt.offsetMin = rt.offsetMax = Vector2.zero;
         var t = go.GetComponent<TextMeshProUGUI>();
+        // Mesma fonte dos rótulos desenhados ("Acquired Tamer EXP"...): Lato.
+        if (EstiloUI.Atual.FonteNegrito != null) t.font = EstiloUI.Atual.FonteNegrito;
+        else t.fontStyle = FontStyles.Bold;
         t.text = texto;
         t.alignment = alinhamento;
-        t.fontStyle = FontStyles.Bold;
         t.color = Color.white;
         t.enableAutoSizing = true;
         t.fontSizeMin = 0.5f;

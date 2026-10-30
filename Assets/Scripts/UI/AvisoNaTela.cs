@@ -42,33 +42,20 @@ public class AvisoNaTela : MonoBehaviour
 
     private void Montar(Transform raiz)
     {
-        var painel = new GameObject("Painel", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
-        painel.transform.SetParent(raiz, false);
-        var rt = (RectTransform)painel.transform;
+        // Cartão azul com borda branca e texto em Lato (padrão das telas do jogo).
+        var rt = UIPadrao.Cartao(raiz, "Painel");
         rt.anchorMin = new Vector2(0.06f, 1f);
         rt.anchorMax = new Vector2(0.94f, 1f);
         rt.pivot = new Vector2(0.5f, 1f);
         rt.anchoredPosition = new Vector2(0, -170);
-        rt.sizeDelta = new Vector2(0, 130);
-        painel.GetComponent<Image>().color = new Color(0.08f, 0.2f, 0.25f, 0.88f);
-        painel.GetComponent<Image>().raycastTarget = false;
-        _grupo = painel.GetComponent<CanvasGroup>();
+        rt.sizeDelta = new Vector2(0, 140);
+        rt.GetComponent<Image>().raycastTarget = false;
+        _grupo = rt.gameObject.AddComponent<CanvasGroup>();
         _grupo.alpha = 0;
         _grupo.blocksRaycasts = false;
 
-        var textoGo = new GameObject("Texto", typeof(RectTransform), typeof(TextMeshProUGUI));
-        textoGo.transform.SetParent(painel.transform, false);
-        var trt = (RectTransform)textoGo.transform;
-        trt.anchorMin = Vector2.zero;
-        trt.anchorMax = Vector2.one;
-        trt.offsetMin = new Vector2(30, 10);
-        trt.offsetMax = new Vector2(-30, -10);
-        _texto = textoGo.GetComponent<TextMeshProUGUI>();
-        _texto.alignment = TextAlignmentOptions.Center;
-        _texto.fontSize = 40;
-        _texto.color = Color.white;
-        _texto.textWrappingMode = TextWrappingModes.Normal;
-        _texto.raycastTarget = false;
+        _texto = UIPadrao.Texto(rt, "", 40, true, TextAlignmentOptions.Center);
+        UIPadrao.Esticar(_texto.rectTransform, 30, 10);
     }
 
     private IEnumerator Rodar()
