@@ -57,6 +57,47 @@ public static class Formas
         return _circulo = Sprite.Create(t, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100f);
     }
 
+    private static Sprite _raios, _brilho;
+
+    /// <summary>Raios de luz saindo do centro (fundo clássico de digivolução), em branco para colorir.</summary>
+    public static Sprite Raios()
+    {
+        if (_raios != null) return _raios;
+        const int n = 512;
+        var t = Nova(n);
+        const int fatias = 16;
+        for (var y = 0; y < n; y++)
+        for (var x = 0; x < n; x++)
+        {
+            var dx = x - n / 2f;
+            var dy = y - n / 2f;
+            var ang = Mathf.Atan2(dy, dx) / (Mathf.PI * 2f) * fatias;
+            var f = ang - Mathf.Floor(ang);
+            var raio = Mathf.Clamp01((0.5f - Mathf.Abs(f - 0.5f)) * 6f - 1f);
+            var dist = Mathf.Sqrt(dx * dx + dy * dy) / (n / 2f);
+            t.SetPixel(x, y, new Color(1f, 1f, 1f, raio * Mathf.Clamp01(1.1f - dist) * Mathf.Clamp01(dist * 4f)));
+        }
+        t.Apply();
+        return _raios = Sprite.Create(t, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100f);
+    }
+
+    /// <summary>Brilho redondo bem suave (luz atrás do Digimon).</summary>
+    public static Sprite Brilho()
+    {
+        if (_brilho != null) return _brilho;
+        const int n = 256;
+        var t = Nova(n);
+        for (var y = 0; y < n; y++)
+        for (var x = 0; x < n; x++)
+        {
+            var d = Vector2.Distance(new Vector2(x, y), new Vector2(n / 2f, n / 2f)) / (n / 2f);
+            var a = Mathf.Clamp01(1f - d);
+            t.SetPixel(x, y, new Color(1f, 1f, 1f, a * a));
+        }
+        t.Apply();
+        return _brilho = Sprite.Create(t, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100f);
+    }
+
     /// <summary>Mancha escura redonda e suave (sombra no chão, para o Digimon "pisar" no mundo real).</summary>
     public static Texture2D Sombra()
     {

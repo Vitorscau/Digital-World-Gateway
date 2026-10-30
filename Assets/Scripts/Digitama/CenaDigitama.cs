@@ -13,7 +13,7 @@ using UnityEngine.UI;
 /// </summary>
 public class CenaDigitama : MonoBehaviour
 {
-    private const float RaioCarrossel = 1.7f;
+    private const float RaioCarrossel = 2.3f;
 
     private Camera _cam;
     private Transform _carrossel;

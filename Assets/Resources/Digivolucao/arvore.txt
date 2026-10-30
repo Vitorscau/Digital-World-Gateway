@@ -1,0 +1,178 @@
+# Árvores de digivolução oficiais (Wikimon, 'Evolves To'), só com Digimon que existem no jogo.
+# Formato: Origem -> Destino1, Destino2, ...  (o primeiro é a linha principal da franquia).
+# Pode editar à mão: o jogo lê este arquivo.
+AeroVeedramon -> UlforceVeedramon, Imperialdramon Fighter Mode, UlforceVeedramon X, Slayerdramon, WarGreymon
+Agumon -> Greymon, GeoGreymon, Tyrannomon, Meramon, Growlmon
+Andromon -> HiAndromon, Machinedramon, MetalEtemon, WarGreymon, Chaosdromon
+Angemon -> MagnaAngemon, Angewomon, Andromon, Piximon, SkullGreymon
+Angewomon -> Ophanimon, Mastemon, Ophanimon Falldown Mode, Rosemon, Seraphimon
+Aquilamon -> Garudamon, Angewomon, AeroVeedramon, Paildramon, GrapLeomon
+Armadillomon -> Angemon, Aquilamon, Togemon, Geremon, Numemon
+Bakemon -> Piximon, Megadramon, SkullGreymon, LadyDevimon, SkullMeramon
+Betamon -> Seadramon, Numemon, Gekomon, Devimon, Meramon
+Birdramon -> Garudamon, SkullGreymon, Vademon, Megadramon, AeroVeedramon
+Biyomon -> Birdramon, Aquilamon, Numemon, Nanimon, Kabuterimon
+BlackGarurumon -> ShadowWereGarurumon, WereGarurumon, MachGaogamon, Pandamon, Etemon
+BlackGatomon -> LadyDevimon, Meicrackmon Vicious Mode, ShadowWereGarurumon, SkullMeramon, Pandamon
+BlackGreymon -> BlackMetalGreymon, MetalGreymon, SkullGreymon, Megadramon, Gigadramon
+BlackKingNumemon -> PlatinumNumemon, MetalEtemon, PrinceMamemon
+BlackMetalGreymon -> BlackWarGreymon, Machinedramon, Omnimon Zwart, BlackWarGreymon X, WarGreymon
+BlueMeramon -> SkullMeramon
+Botamon -> Koromon, Tokomon, Wanyamon, Pagumon
+Bukamon -> Gomamon, Syakomon, Betamon, Gumdramon, Veemon
+Cherrymon -> Puppetmon, GranKuwagamon, Piedmon, Jijimon, Rosemon
+Chibomon -> DemiVeemon
+Clockmon -> Andromon, MetalMamemon, MetalTyrannomon, Mamemon, Piximon
+Conomon -> Kokomon
+Coredramon Blue -> Groundramon, Wingdramon, Megadramon, WarGrowlmon, MegaSeadramon
+Coredramon Green -> Wingdramon, Megadramon, Groundramon, WarGrowlmon, MegaSeadramon
+Cyclonemon -> Megadramon, WarGrowlmon, SkullGreymon, BlackMetalGreymon, Andromon
+DemiDevimon -> Devimon, Bakemon, IceDevimon, Wizardmon, Numemon
+DemiVeemon -> Veemon
+Devimon -> SkullGreymon, LadyDevimon, MetalGreymon, Kimeramon, BlackMetalGreymon
+Dodomon -> Dorimon, Wanyamon
+Dorimon -> Dorumon, Armadillomon, Lopmon
+DoruGreymon -> Alphamon, Breakdramon, SaberLeomon, MetalGarurumon, MetalSeadramon
+Dorugamon -> DoruGreymon, Groundramon, Megadramon, BlackMetalGreymon, RizeGreymon
+Dorumon -> Dorugamon, Guardromon, Waspmon, Ginryumon, Aquilamon
+Dracomon -> Coredramon Green, Coredramon Blue, Veedramon, GeoGreymon, Tyrannomon
+Duramon -> Durandamon, Jesmon, Gallantmon, Ouryumon, ShineGreymon
+Etemon -> MetalEtemon, KingEtemon, BanchoLeomon, PlatinumNumemon, Piedmon
+ExVeemon -> Paildramon, AeroVeedramon, MetalGreymon, Wingdramon, Megadramon
+Falcomon -> Peckmon, Aquilamon, Stingmon, ExVeemon, Reppamon
+Frigimon -> MetalMamemon, Mamemon, Monzaemon, Zudomon, Whamon
+Gabumon -> Garurumon, BlackGarurumon, Frigimon, Numemon, Angemon
+Gaogamon -> MachGaogamon, WereGarurumon, GrapLeomon, ShadowWereGarurumon, Pandamon
+Gaomon -> Gaogamon, Leomon, Garurumon, Gargomon, GeoGreymon
+Gargomon -> Rapidmon, MachGaogamon, GrapLeomon, MetalMamemon, Pandamon
+Garudamon -> Phoenixmon, UlforceVeedramon, Jesmon, Seraphimon, Beelzemon
+Garurumon -> WereGarurumon, SkullGreymon, MetalMamemon, ShadowWereGarurumon, MachGaogamon
+Gatomon -> Angewomon, LadyDevimon, MagnaAngemon, Lilamon, Pandamon
+Gazimon -> Leomon, Dorugamon, Gaogamon, BlackGarurumon, Nanimon
+Gekomon -> ShogunGekomon, Etemon, MegaSeadramon, Whamon, Piximon
+GeoGreymon -> RizeGreymon, MetalGreymon, SkullGreymon, BlackMetalGreymon, WarGrowlmon
+Geremon -> Etemon, Monzaemon, Vademon, BlackKingNumemon, SuperStarmon
+Gigadramon -> Machinedramon, Chaosdromon, MetalSeadramon, HiAndromon, WarGreymon
+Gigimon -> Guilmon, Agumon, Goblimon, Hagurumon, Shoutmon
+Ginryumon -> Hisyaryumon, Duramon, MegaSeadramon, SkullGreymon
+Goblimon -> Ogremon, Nanimon, Numemon, Gaogamon, Growlmon
+GoldNumemon -> Monzaemon, BlackKingNumemon, Vademon
+Gomamon -> Ikkakumon, Seadramon, Frigimon, Numemon, Sukamon
+GrapLeomon -> BanchoLeomon, SaberLeomon, Vikemon, MetalGarurumon X
+Greymon -> MetalGreymon, SkullGreymon, BlackMetalGreymon, Mamemon, MetalTyrannomon
+Groundramon -> Breakdramon, Slayerdramon, Volcanicdramon, ShineGreymon, Chaosdromon
+Growlmon -> WarGrowlmon, MetalGreymon, SkullGreymon, MetalTyrannomon, Megadramon
+Guardromon -> Andromon, MetalMamemon, Rapidmon, MetalTyrannomon, Megadramon
+Guilmon -> Growlmon, GeoGreymon, Tyrannomon, Meramon, Veedramon
+Gumdramon -> Veedramon, Gatomon, Geremon, Numemon, Sukamon
+Gummymon -> Renamon, Gaomon, Dorumon, ToyAgumon, Armadillomon
+Hagurumon -> Guardromon, Clockmon, Starmon, Kuwagamon, Numemon
+Hawkmon -> Aquilamon, Peckmon, Tyrannomon, Birdramon, Meramon
+Hisyaryumon -> Ouryumon, Alphamon, Durandamon, Gallantmon X, TigerVespamon
+IceDevimon -> LadyDevimon, Gigadramon, Zudomon, Cherrymon, Taomon
+IceLeomon -> GrapLeomon, Vademon
+Ikkakumon -> Zudomon, Whamon, MegaSeadramon, Megadramon, Andromon
+Jazamon -> Jazardmon, Birdramon
+Jazardmon -> Jazarichmon
+Jazarichmon -> Metallicdramon, TigerVespamon, Phoenixmon
+Jyarimon -> Gigimon
+Kabuterimon -> MegaKabuterimon, SkullGreymon, MetalMamemon, Vademon, Okuwamon
+Kimeramon -> Millenniummon, Machinedramon, Armageddemon, Chaosdromon, BanchoLeomon
+Kokomon -> Lopmon, DemiDevimon, Wormmon, Ryudamon, Jazamon
+Koromon -> Agumon, Betamon, ToyAgumon, Guilmon, Shoutmon
+Kudamon -> Reppamon, Angemon, Peckmon, Magnamon X, GoldNumemon
+Kuramon -> Tsumemon, Pagumon
+Kuwagamon -> Okuwamon, Vademon, Megadramon, Cherrymon, MetalMamemon
+Kyubimon -> Taomon, Monzaemon, LadyDevimon, WereGarurumon
+LadyDevimon -> Lilithmon, Daemon, Mastemon, Beelzemon, Kuzuhamon
+Lalamon -> Sunflowmon, Woodmon, Togemon, Vegiemon, Seadramon
+Lavogaritamon -> Volcanicdramon
+Lavorvomon -> Lavogaritamon
+Leomon -> GrapLeomon, MetalMamemon, Mamemon, Andromon, Monzaemon
+Lilamon -> Rosemon, Rosemon Burst Mode, Lilithmon, Minervamon, Puppetmon
+Lopmon -> Gargomon, BlackGatomon, Wizardmon, Numemon, Sukamon
+Lucemon -> Angemon, Devimon, IceDevimon, Wizardmon, Numemon
+Lucemon Chaos Mode -> Daemon, Barbamon, Beelzemon X, WarGreymon X, Seraphimon
+MachGaogamon -> MirageGaogamon, BanchoLeomon, MirageGaogamon Burst Mode, MetalGarurumon, ShineGreymon
+MagnaAngemon -> Seraphimon, Magnadramon, Phoenixmon, Ophanimon, MarineAngemon
+Magnamon -> Paildramon, Garudamon
+Magnamon X -> Paildramon, Garudamon
+Mamemon -> PrinceMamemon, WarGreymon, Puppetmon, PlatinumNumemon, Machinedramon
+MegaKabuterimon -> HerculesKabuterimon, GranKuwagamon, ChaosGallantmon, Magnadramon, Gallantmon
+MegaSeadramon -> MetalSeadramon, Plesiomon, MarineAngemon, Leviamon, Boltmon
+Megadramon -> Machinedramon, BlackWarGreymon, UlforceVeedramon, Chaosdromon, Millenniummon
+Meicoomon -> Meicrackmon Vicious Mode, LadyDevimon, Angewomon, RizeGreymon, Duramon
+Meicrackmon Vicious Mode -> Raguelmon, Mastemon, Ophanimon, Rosemon
+Meramon -> SkullMeramon, Andromon, SkullGreymon, Etemon, Lavogaritamon
+MetalGreymon -> WarGreymon, BlitzGreymon, Machinedramon, BlackWarGreymon, WarGreymon X
+MetalMamemon -> Machinedramon, MetalGarurumon, PrinceMamemon, HiAndromon, Ebemon
+MetalTyrannomon -> Machinedramon, RustTyranomon, Chaosdromon, WarGreymon, MetalSeadramon
+Monzaemon -> BanchoLeomon, Lilithmon, PlatinumNumemon, Minervamon, Machinedramon
+Motimon -> Tentomon, Hagurumon, Solarmon, Goblimon, Lalamon
+Nanimon -> Etemon, Vademon, SuperStarmon, MetalMamemon, Mamemon
+Numemon -> Monzaemon, Vademon, Etemon, BlackKingNumemon, MetalMamemon
+Nyaromon -> Salamon, Hawkmon, Armadillomon, Renamon, Agumon
+Ogremon -> Andromon, Vademon, Etemon, MetalTyrannomon, SkullGreymon
+Okuwamon -> GranKuwagamon, HerculesKabuterimon, MetalEtemon, Magnadramon, TigerVespamon
+Pabumon -> Motimon, Yokomon, Tanemon, Nyaromon
+Pagumon -> Gazimon, DemiDevimon, Goblimon, Lopmon
+Paildramon -> Imperialdramon Fighter Mode, UlforceVeedramon, Imperialdramon Paladin Mode
+Palmon -> Togemon, Sunflowmon, Woodmon, Vegiemon, Kuwagamon
+Pandamon -> MetalGarurumon, BanchoLeomon, Jijimon, KingEtemon, Minervamon
+Patamon -> Angemon, Sukamon, Ogremon, Bakemon, Devimon
+Peckmon -> MachGaogamon, RizeGreymon, Jazarichmon, MegaSeadramon
+Pichimon -> Bukamon, Tokomon, Tsunomon, Nyaromon
+Piximon -> MarineAngemon, SaberLeomon, Ophanimon, Phoenixmon, Magnadramon
+PlatinumSukamon -> Etemon, MetalMamemon, Vademon, Mamemon
+Poyomon -> Tokomon, Bukamon, Nyaromon, Motimon, Yokomon
+Punimon -> Tsunomon, Nyaromon, Bukamon
+Rapidmon -> Vikemon, Machinedramon, Chaosdromon, HiAndromon, Seraphimon
+Rapidmon Armor -> Rapidmon, WarGrowlmon
+Renamon -> Kyubimon, Gatomon, Leomon, Reppamon, BlackGatomon
+Reppamon -> MachGaogamon, RizeGreymon, MegaSeadramon, Piximon, Rapidmon
+RizeGreymon -> ShineGreymon, WarGreymon, ShineGreymon Burst Mode, Gallantmon, Slayerdramon
+Ryudamon -> Ginryumon, Coredramon Green, GeoGreymon, Greymon, Reppamon
+Salamon -> Gatomon, BlackGatomon, Angemon, Meicoomon, Leomon
+Seadramon -> MegaSeadramon, Whamon, Mamemon, Megadramon, Vademon
+ShadowWereGarurumon -> BlackMetalGarurumon, MetalGarurumon, CresGarurumon, Minervamon, BanchoLeomon
+ShellNumemon -> BlackKingNumemon, MegaSeadramon, MachGaogamon, Monzaemon, RizeGreymon
+ShogunGekomon -> MetalEtemon, Plesiomon, Leviamon, Vikemon, KingEtemon
+Shoutmon -> Growlmon, Greymon, ZubaEagermon, Gargomon, Reppamon
+SkullGreymon -> Machinedramon, WarGreymon, BlackWarGreymon, Titamon, Daemon
+SkullMeramon -> Beelzemon, Boltmon, Gankoomon, Barbamon, Daemon
+Solarmon -> Clockmon, Guardromon, Meramon, Starmon, Birdramon
+Sorcermon -> MagnaAngemon, Piximon, Cherrymon
+Starmon -> SuperStarmon, Mamemon, MetalMamemon, Monzaemon, Vademon
+Stingmon -> Paildramon, Okuwamon, MegaKabuterimon, Lilamon, MetalGreymon
+Sukamon -> Etemon, Vademon, SuperStarmon, Monzaemon, BlackKingNumemon
+Sunflowmon -> Lilamon, Angewomon, RizeGreymon, MachGaogamon, Mamemon
+SuperStarmon -> Gankoomon, PlatinumNumemon, PrinceMamemon, MarineAngemon, Susanoomon
+Syakomon -> Ikkakumon, Seadramon, Gekomon, Wizardmon, Numemon
+Tanemon -> Palmon, Lalamon, Renamon, Biyomon, Goblimon
+Taomon -> Sakuyamon, Kuzuhamon, Phoenixmon, Ophanimon, BanchoLeomon
+Tentomon -> Kabuterimon, Kuwagamon, Guardromon, Waspmon, Stingmon
+Togemon -> Cherrymon, Lilamon, MachGaogamon, Mamemon, Garudamon
+Tokomon -> Patamon, Lucemon, Hawkmon, Falcomon, Biyomon
+ToyAgumon -> Guardromon, Greymon, Starmon, Clockmon, Leomon
+Tsukaimon -> Devimon, Bakemon, IceDevimon, BlackGatomon, BlackGarurumon
+Tsumemon -> DemiDevimon, Gazimon
+Tsunomon -> Gabumon, Veemon, Goblimon, Gaomon, Gumdramon
+Tyrannomon -> MetalTyrannomon, Mamemon, MetalGreymon, Megadramon, SkullGreymon
+Vademon -> Ebemon, HiAndromon, HerculesKabuterimon, Puppetmon, KingEtemon
+Veedramon -> AeroVeedramon, MetalGreymon, MetalTyrannomon, Paildramon, SkullGreymon
+Veemon -> ExVeemon, Magnamon, Veedramon, Coredramon Blue, Growlmon
+Vegiemon -> Vademon, Cherrymon, Piximon, Lilamon, Mamemon
+Vorvomon -> Lavorvomon, Meramon, Birdramon, Tyrannomon
+Wanyamon -> Gaomon, Renamon, Kudamon, Dorumon, Agumon
+WarGrowlmon -> Gallantmon, ChaosGallantmon, Gallantmon X, RustTyranomon, Chaosdromon
+Waspmon -> Hisyaryumon, MegaKabuterimon, Okuwamon, Rapidmon
+WereGarurumon -> MetalGarurumon, CresGarurumon, AncientGarurumon, Omnimon, BlackMetalGarurumon
+Whamon -> MarineAngemon, Plesiomon, MetalSeadramon, Vikemon, Rosemon
+Wingdramon -> Slayerdramon, Breakdramon, ShineGreymon, WarGreymon, UlforceVeedramon
+Wizardmon -> WereGarurumon, MagnaAngemon, Angewomon, LadyDevimon, Piximon
+Woodmon -> Cherrymon, MegaSeadramon, Lilamon, Taomon, Piximon
+Wormmon -> Stingmon, Kuwagamon, Kabuterimon, Waspmon, Woodmon
+Yokomon -> Biyomon, Falcomon, Wormmon, Palmon, DemiDevimon
+ZubaEagermon -> Duramon, Hisyaryumon, Etemon
+Zubamon -> ZubaEagermon, Ginryumon, GoldNumemon
+Zudomon -> Vikemon, Plesiomon, MarineAngemon, SaberLeomon, MetalSeadramon

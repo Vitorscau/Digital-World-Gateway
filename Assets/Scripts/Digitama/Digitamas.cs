@@ -11,7 +11,7 @@ using UnityEngine;
 /// </summary>
 public static class Digitamas
 {
-    public enum Padrao { Bolinhas, Manchas, Ondas, Circulos, Losangos }
+    public enum Padrao { Bolinhas, Manchas, Ondas, Circulos, Losangos, MeioAMeio, Nuvens, Liso, Escamas }
 
     public class Tipo
     {
@@ -30,6 +30,12 @@ public static class Digitamas
         new Tipo { Fresh = "Poyomon", Descricao = "Ovo azul-escuro com fios ondulados roxos", Base = H("#23306E"), Detalhe = H("#A15BD6"), Padrao = Padrao.Ondas },
         new Tipo { Fresh = "Pabumon", Descricao = "Ovo fúcsia com círculos roxo-escuros", Base = H("#E5409A"), Detalhe = H("#4E1A63"), Padrao = Padrao.Circulos },
         new Tipo { Fresh = "Kuramon", Descricao = "Ovo branco com losangos pretos na metade de baixo", Base = H("#F2F2F2"), Detalhe = H("#1A1A1A"), Padrao = Padrao.Losangos },
+        // Ovos de Next Order / Re:Digitize / Digimon Story (descrições curtas: cor e, quando há, o desenho).
+        new Tipo { Fresh = "Pichimon", Descricao = "Ovo azul-céu com nuvens brancas", Base = H("#6EC6F5"), Detalhe = H("#FFFFFF"), Padrao = Padrao.Nuvens },
+        new Tipo { Fresh = "Conomon", Descricao = "Ovo de duas metades, branco em cima e laranja embaixo", Base = H("#F4F1EA"), Detalhe = H("#E8873A"), Padrao = Padrao.MeioAMeio },
+        new Tipo { Fresh = "Jyarimon", Descricao = "Ovo vermelho", Base = H("#D6312A"), Detalhe = H("#9E1B17"), Padrao = Padrao.Liso },
+        new Tipo { Fresh = "Dodomon", Descricao = "Ovo azul", Base = H("#2F5FD0"), Detalhe = H("#1E3F96"), Padrao = Padrao.Liso },
+        new Tipo { Fresh = "Chibomon", Descricao = "Ovo vermelho-claro", Base = H("#F06A5E"), Detalhe = H("#C9443B"), Padrao = Padrao.Liso },
     };
 
     // ------------------------------------------------------------ Malha
@@ -94,12 +100,12 @@ public static class Digitamas
 
     // ------------------------------------------------------------ Estampa
 
-    private static readonly Dictionary<Padrao, Texture2D> _texturas = new Dictionary<Padrao, Texture2D>();
+    private static readonly Dictionary<string, Texture2D> _texturas = new Dictionary<string, Texture2D>();
 
     /// <summary>Textura da estampa (512 x 256): u dá a volta no ovo, v vai da base ao topo.</summary>
     public static Texture2D Textura(Tipo t)
     {
-        if (_texturas.TryGetValue(t.Padrao, out var pronta) && pronta != null) return pronta;
+        if (_texturas.TryGetValue(t.Fresh, out var pronta) && pronta != null) return pronta;
         const int w = 512, h = 256;
         var tex = new Texture2D(w, h, TextureFormat.RGBA32, true) { name = "Digitama_" + t.Fresh, wrapModeU = TextureWrapMode.Repeat, wrapModeV = TextureWrapMode.Clamp };
         var px = new Color[w * h];
@@ -115,7 +121,7 @@ public static class Digitamas
         }
         tex.SetPixels(px);
         tex.Apply(true);
-        _texturas[t.Padrao] = tex;
+        _texturas[t.Fresh] = tex;
         return tex;
     }
 
@@ -184,6 +190,39 @@ public static class Digitamas
                 }
                 return m;
             }
+            case Padrao.MeioAMeio:
+                // Cápsula: metade de cima de uma cor, de baixo de outra, com a "junta" levemente ondulada.
+                return Mathf.Clamp01((0.62f + 0.015f * Mathf.Sin(x / volta * Mathf.PI * 2f * 6f) - y) * 80f);
+            case Padrao.Nuvens:
+            {
+                // Nuvens brancas: grupos de bolinhas fofas.
+                var m = 0f;
+                for (var i = 0; i < 7; i++)
+                {
+                    var cx = (i + Ruido(i, 4) * 0.5f) * volta / 7f;
+                    var cy = 0.25f + Ruido(i, 8) * 0.8f;
+                    for (var k = 0; k < 4; k++)
+                    {
+                        var ox = (k - 1.5f) * 0.075f;
+                        var oy = (k % 2) * 0.035f;
+                        m = Mathf.Max(m, Borda(Distancia(x, y, cx + ox, cy + oy, volta), 0.06f + (k % 2) * 0.015f));
+                    }
+                }
+                return m;
+            }
+            case Padrao.Escamas:
+            {
+                // Escamas: meias-luas escuras em fileiras.
+                var linha = Mathf.Floor(y / 0.11f);
+                var cy = (linha + 1f) * 0.11f;
+                var passo = volta / 18f;
+                var cx = (Mathf.Floor(x / passo + (linha % 2) * 0.5f) + 0.5f - (linha % 2) * 0.5f) * passo;
+                var d = Distancia(x, y, cx, cy, volta);
+                return Mathf.Clamp01((Mathf.Abs(d - 0.07f) < 0.012f && y < cy) ? 1f : 0f);
+            }
+            case Padrao.Liso:
+                // Só um degradê suave para a base (o ovo é de uma cor só).
+                return Mathf.Clamp01(0.35f - y * 0.3f);
             default:
             {
                 // Losangos pretos numa faixa da metade de baixo.
