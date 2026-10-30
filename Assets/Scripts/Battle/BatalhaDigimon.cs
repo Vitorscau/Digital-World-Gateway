@@ -106,12 +106,11 @@ public class BatalhaDigimon : MonoBehaviour
         if (_hudJogador != null) _hudJogador.SetData(parceiro);
         if (_hudInimigo != null) _hudInimigo.SetData(selvagem);
         _jogador.Configurar(parceiro, _inimigo, _barraJogador);
+        _jogador.doJogador = true;
         _inimigo.Configurar(selvagem, _jogador, _barraInimigo);
         if (PerfilJogador.Atual.bandagemAtiva) _jogador.AumentarVida(1.3f); // Bandage usada na Bag
         _jogador.Derrotado += _ => Terminar(false);
         _inimigo.Derrotado += _ => Terminar(true);
-        _jogador.RecebeuDano += (c, d) => MostrarDano(c, d);
-        _inimigo.RecebeuDano += (c, d) => MostrarDano(c, d);
 
         // Contagem regressiva.
         foreach (var t in new[] { "3", "2", "1", "LUTE!" })
@@ -163,38 +162,6 @@ public class BatalhaDigimon : MonoBehaviour
     {
         Encontro.Limpar();
         SceneManager.LoadScene(Cenas.Mapa);
-    }
-
-    private void MostrarDano(CriaturaArena alvo, int dano)
-    {
-        if (alvo == null) return;
-        StartCoroutine(NumeroDeDano(alvo.transform.position + Vector3.up * _altura * 1.1f, dano, alvo == _inimigo));
-    }
-
-    private IEnumerator NumeroDeDano(Vector3 posicao, int dano, bool noInimigo)
-    {
-        var cam = Camera.main;
-        if (cam == null) yield break;
-        var go = new GameObject("Dano", typeof(RectTransform), typeof(TextMeshProUGUI));
-        go.transform.SetParent(_canvas.transform, false);
-        var t = go.GetComponent<TextMeshProUGUI>();
-        if (EstiloUI.Atual.FontePesada != null) t.font = EstiloUI.Atual.FontePesada;
-        t.text = dano.ToString();
-        t.fontSize = 64;
-        t.fontStyle = FontStyles.Bold;
-        t.color = noInimigo ? new Color(1f, 0.85f, 0.2f) : new Color(1f, 0.35f, 0.35f);
-        t.alignment = TextAlignmentOptions.Center;
-        t.raycastTarget = false;
-        var rt = (RectTransform)go.transform;
-        rt.sizeDelta = new Vector2(300, 100);
-        for (float k = 0; k < 1f; k += Time.deltaTime * 1.2f)
-        {
-            var tela = cam.WorldToScreenPoint(posicao);
-            rt.position = tela + new Vector3(0, k * 120f, 0);
-            t.alpha = 1f - k;
-            yield return null;
-        }
-        Destroy(go);
     }
 
     // ------------------------------------------------------------ Interface (criada por código)

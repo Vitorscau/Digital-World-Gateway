@@ -113,6 +113,7 @@ public class BattleManager : MonoBehaviour
         if (hudJogador != null) hudJogador.SetData(dadosJogador);
         if (hudInimigo != null) hudInimigo.SetData(dadosInimigo);
         novoJogador.Configurar(dadosJogador, novoInimigo, barraJogador);
+        novoJogador.doJogador = true;
         novoInimigo.Configurar(dadosInimigo, novoJogador, barraInimigo);
         if (PerfilJogador.Atual.bandagemAtiva) novoJogador.AumentarVida(1.3f); // Bandage usada na Bag
 
