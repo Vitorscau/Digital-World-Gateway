@@ -25,6 +25,8 @@ public class NavMeshHowTo : MonoBehaviour
     {
         mainCameraTransform = Camera.main.transform;
         transform.rotation = Quaternion.identity;
+        // Primeira vez nesta tela de AR: explica como chamar o Digimon.
+        InstrucoesAR.Mostrar(gameObject.scene.name);
     }
 
     void Update()
@@ -43,6 +45,12 @@ public class NavMeshHowTo : MonoBehaviour
 
     private void HandleDoubleTap()
     {
+        // Com as instruções abertas (ou o toque em "Entendi"), não conta como toque no chão.
+        if (InstrucoesAR.BloqueiaToques)
+        {
+            ultimoToque = -10f;
+            return;
+        }
 #if UNITY_EDITOR
         // Duplo clique com o mouse
         if (Input.GetMouseButtonDown(0))
@@ -84,6 +92,7 @@ public class NavMeshHowTo : MonoBehaviour
                 _creature = Instantiate(_agentPrefab);
                 _creature.transform.position = hit.point;
                 _agent = _creature.GetComponent<LightshipNavMeshAgent>();
+                InstrucoesAR.Posicionado();
             }
             else
             {

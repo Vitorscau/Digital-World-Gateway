@@ -96,6 +96,7 @@ public class PerfilJogador
     public List<PontoUsado> pontosUsados = new List<PontoUsado>();
     public List<string> pontosVisitados = new List<string>(); // Encrypted Data já decifrados alguma vez
     public int dadosDecifrados;
+    public List<string> instrucoesVistas = new List<string>(); // telas de instrução já mostradas (ex.: AR)
 
     // ------------------------------------------------------------ Acesso global
 
@@ -148,6 +149,7 @@ public class PerfilJogador
         scans ??= new List<ScanSalvo>();
         pontosUsados ??= new List<PontoUsado>();
         pontosVisitados ??= new List<string>();
+        instrucoesVistas ??= new List<string>();
         colecao.RemoveAll(d => d == null || string.IsNullOrEmpty(d.especie));
         // Saves antigos (que já tinham Digimon) pulam a escolha do Digitama.
         if (colecao.Count > 0) inicioFeito = true;
