@@ -32,7 +32,18 @@ public class CenaDigitama : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float volumeMusica = 0.5f;
 
     private Transform _anelLuz;
-    private TMP_Text _contador;
+    private TMP_Text _contador, _textoConfirmacao;
+    private bool _sorteando;
+
+    // Paleta do mapa (tema "Original" do MapaLivre).
+    private static readonly Color CorCeu = Hex("#3D6878");
+    private static readonly Color CorChao = Hex("#78F898");
+    private static readonly Color CorParque = Hex("#08A888");
+    private static readonly Color CorRua = Hex("#58A090");
+    private static readonly Color CorBorda = Hex("#F0F8C0");
+    private static readonly Color CorPredio = Hex("#D8D0F8");
+
+    private static Color Hex(string h) => ColorUtility.TryParseHtmlString(h, out var c) ? c : Color.magenta;
 
     private void Start()
     {
@@ -61,7 +72,7 @@ public class CenaDigitama : MonoBehaviour
             _cam.tag = "MainCamera";
         }
         _cam.clearFlags = CameraClearFlags.SolidColor;
-        _cam.backgroundColor = new Color(0.03f, 0.12f, 0.3f);
+        _cam.backgroundColor = CorCeu;
         _cam.fieldOfView = 40f;
         _cam.transform.position = new Vector3(0f, 2.1f, -5.2f);
         _cam.transform.LookAt(new Vector3(0f, 0.15f, 0.9f));
@@ -75,32 +86,28 @@ public class CenaDigitama : MonoBehaviour
             sol.color = new Color(0.9f, 0.95f, 1f);
             sol.transform.rotation = Quaternion.Euler(45f, -30f, 0f);
         }
-        RenderSettings.ambientLight = new Color(0.45f, 0.55f, 0.7f);
-        // Névoa azul: o chão some suavemente no horizonte.
+        RenderSettings.ambientLight = new Color(0.6f, 0.66f, 0.7f);
+        // Névoa na cor do céu do mapa: o chão some suavemente no horizonte.
         RenderSettings.fog = true;
         RenderSettings.fogMode = FogMode.Linear;
-        RenderSettings.fogColor = new Color(0.05f, 0.33f, 0.5f);
+        RenderSettings.fogColor = CorCeu;
         RenderSettings.fogStartDistance = 6f;
         RenderSettings.fogEndDistance = 16f;
 
-        // Chão: grade digital brilhante (o Digital World).
+        // Chão: o mesmo material do chão do mapa (verde com circuito).
         var chao = GameObject.CreatePrimitive(PrimitiveType.Plane);
         chao.name = "Chao";
         Destroy(chao.GetComponent<Collider>());
         chao.transform.position = new Vector3(0, 0f, RaioCarrossel);
         chao.transform.localScale = Vector3.one * 4f;
-        var matChao = Material(new Color(0.12f, 0.45f, 0.62f));
-        var grade = TexturaGrade();
-        if (matChao.HasProperty("_BaseMap")) { matChao.SetTexture("_BaseMap", grade); matChao.SetTextureScale("_BaseMap", new Vector2(40, 40)); }
-        matChao.mainTexture = grade;
-        matChao.mainTextureScale = new Vector2(40, 40);
-        if (matChao.HasProperty("_EmissionColor"))
-        {
-            matChao.EnableKeyword("_EMISSION");
-            matChao.SetColor("_EmissionColor", new Color(0.05f, 0.25f, 0.35f));
-            if (matChao.HasProperty("_EmissionMap")) { matChao.SetTexture("_EmissionMap", grade); }
-        }
-        chao.GetComponent<Renderer>().material = matChao;
+        chao.GetComponent<Renderer>().material = MaterialChaoDoMapa();
+
+        // Rotatória como as do mapa: rua verde-petróleo com bordas creme e um parque no meio.
+        var centro = new Vector3(0f, 0f, RaioCarrossel);
+        Disco("Borda", centro, RaioCarrossel + 0.75f, 0f, 0.004f, CorBorda);
+        Disco("Rua", centro, RaioCarrossel + 0.65f, RaioCarrossel - 0.65f, 0.008f, CorRua);
+        Disco("BordaParque", centro, RaioCarrossel - 0.55f, 0f, 0.006f, CorBorda);
+        Disco("Parque", centro, RaioCarrossel - 0.65f, 0f, 0.01f, CorParque);
 
         // Luz de destaque no ovo da frente e um anel de luz girando no chão embaixo dele.
         var foco = new GameObject("Foco").AddComponent<Light>();
@@ -117,7 +124,7 @@ public class CenaDigitama : MonoBehaviour
         anel.transform.position = new Vector3(0f, 0.012f, 0f);
         anel.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
         anel.transform.localScale = Vector3.one * 1.25f;
-        anel.GetComponent<Renderer>().material = Formas.MaterialSemLuz(new Color(0.55f, 0.95f, 1f, 0.9f), Formas.Anel().texture, true);
+        anel.GetComponent<Renderer>().material = Formas.MaterialSemLuz(new Color(CorBorda.r, CorBorda.g, CorBorda.b, 0.95f), Formas.Anel().texture, true);
         _anelLuz = anel.transform;
 
         // Dados flutuando (partículas subindo devagar).
@@ -146,7 +153,7 @@ public class CenaDigitama : MonoBehaviour
         }
     }
 
-    /// <summary>Fundo em degradê (azul-escuro no alto, azul-esverdeado no horizonte) atrás de tudo.</summary>
+    /// <summary>Fundo em degradê na cor do céu do mapa (mais escuro no alto) atrás de tudo.</summary>
     private void FundoDegrade()
     {
         var go = new GameObject("Fundo", typeof(Canvas));
@@ -160,26 +167,51 @@ public class CenaDigitama : MonoBehaviour
         FigmaUI.Esticar(img.rectTransform);
         var t = new Texture2D(1, 64, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
         for (var y = 0; y < 64; y++)
-            t.SetPixel(0, y, Color.Lerp(new Color(0.05f, 0.33f, 0.5f), new Color(0.02f, 0.06f, 0.2f), y / 63f));
+            t.SetPixel(0, y, Color.Lerp(CorCeu, new Color(CorCeu.r * 0.55f, CorCeu.g * 0.55f, CorCeu.b * 0.55f), Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(56f, 63f, y))));
         t.Apply();
         img.texture = t;
         img.raycastTarget = false;
     }
 
-    /// <summary>Quadrado da grade do chão: linhas claras nas bordas.</summary>
-    private static Texture2D TexturaGrade()
+    /// <summary>Cópia do material do chão do mapa, com o circuito num tamanho que aparece bem de perto.</summary>
+    private static Material MaterialChaoDoMapa()
     {
-        const int n = 64;
-        var t = new Texture2D(n, n, TextureFormat.RGBA32, true) { wrapMode = TextureWrapMode.Repeat };
-        for (var y = 0; y < n; y++)
-        for (var x = 0; x < n; x++)
+        var tema = Resources.Load<Niantic.Lightship.Maps.MapaLivreTheme>("MapaLivre/TemaOriginal");
+        if (tema == null || tema.Ground == null) return Material(CorChao);
+        var m = new Material(tema.Ground);
+        var escala = new Vector2(6f, 6f);
+        if (m.HasProperty("_BaseMap")) m.SetTextureScale("_BaseMap", escala);
+        m.mainTextureScale = escala;
+        return m;
+    }
+
+    /// <summary>Disco (ou anel, se raioDentro > 0) achatado no chão.</summary>
+    private static void Disco(string nome, Vector3 centro, float raioFora, float raioDentro, float altura, Color cor)
+    {
+        const int lados = 96;
+        var verts = new List<Vector3>();
+        var tris = new List<int>();
+        for (var i = 0; i <= lados; i++)
         {
-            var borda = Mathf.Min(Mathf.Min(x, n - 1 - x), Mathf.Min(y, n - 1 - y));
-            var linha = Mathf.Clamp01(1f - borda / 2.5f);
-            t.SetPixel(x, y, Color.Lerp(new Color(0.1f, 0.35f, 0.5f), new Color(0.55f, 1f, 1f), linha));
+            var a = i / (float)lados * Mathf.PI * 2f;
+            var d = new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a));
+            verts.Add(d * raioDentro);
+            verts.Add(d * raioFora);
         }
-        t.Apply(true);
-        return t;
+        for (var i = 0; i < lados; i++)
+        {
+            var p = i * 2;
+            tris.Add(p); tris.Add(p + 3); tris.Add(p + 1);
+            tris.Add(p); tris.Add(p + 2); tris.Add(p + 3);
+        }
+        var m = new Mesh { name = nome };
+        m.SetVertices(verts);
+        m.SetTriangles(tris, 0);
+        m.RecalculateNormals();
+        var go = new GameObject(nome);
+        go.transform.position = centro + Vector3.up * altura;
+        go.AddComponent<MeshFilter>().sharedMesh = m;
+        go.AddComponent<MeshRenderer>().sharedMaterial = Material(cor);
     }
 
     /// <summary>Ninho em forma de anel (toro), com a parte de cima mais grossa, como palha trançada.</summary>
@@ -228,7 +260,7 @@ public class CenaDigitama : MonoBehaviour
         main.startLifetime = 6f;
         main.startSpeed = 0.25f;
         main.startSize = new ParticleSystem.MinMaxCurve(0.04f, 0.1f);
-        main.startColor = new ParticleSystem.MinMaxGradient(new Color(0.5f, 1f, 1f, 0.8f), new Color(1f, 1f, 0.7f, 0.8f));
+        main.startColor = new ParticleSystem.MinMaxGradient(new Color(CorBorda.r, CorBorda.g, CorBorda.b, 0.85f), new Color(CorPredio.r, CorPredio.g, CorPredio.b, 0.85f));
         main.maxParticles = 120;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
         var emissao = ps.emission;
@@ -279,7 +311,7 @@ public class CenaDigitama : MonoBehaviour
                 _ovos[i].localRotation = Quaternion.Euler(0, Time.time * 20f + i * 70f, balanco);
             }
         }
-        if (!_chocando) Toques();
+        if (!_chocando && !_sorteando) Toques();
     }
 
     private Vector2 _inicioArraste;
@@ -314,8 +346,14 @@ public class CenaDigitama : MonoBehaviour
         var alvo = -_atual * 360f / n;
         _anguloAlvo = _angulo + Mathf.DeltaAngle(_angulo, alvo);
         if (imediato) _angulo = _anguloAlvo;
-        _descricao.text = Digitamas.Todos[_atual].Descricao;
+        _descricao.text = NomeDoFresh(Digitamas.Todos[_atual].Fresh);
         if (_contador != null) _contador.text = $"Digitama {_atual + 1} de {n}";
+    }
+
+    private static string NomeDoFresh(string especie)
+    {
+        var ficha = CatalogoDigimon.Buscar(especie);
+        return ficha != null && !string.IsNullOrWhiteSpace(ficha.Name) ? ficha.Name.Trim() : especie;
     }
 
     // ------------------------------------------------------------ Interface
@@ -330,23 +368,34 @@ public class CenaDigitama : MonoBehaviour
         _controles = new GameObject("Controles", typeof(RectTransform));
         _controles.transform.SetParent(_raiz, false);
         FigmaUI.Esticar((RectTransform)_controles.transform);
-        // Painel de vidro com a descrição do ovo, o contador e as setas.
-        FigmaUI.CaixaVidro(_controles.transform, 50f, 1430f, 929f, 330f);
+        // Painel de vidro com o nome do Digimon do ovo, o contador e as setas.
+        var vidro = FigmaUI.CaixaVidro(_controles.transform, 50f, 1430f, 929f, 330f);
+        // Fundo escuro (azul-petróleo do céu do mapa) para o texto aparecer sobre o chão verde.
+        var fundoPainel = FigmaUI.Imagem(FigmaUI.Ret(_controles.transform, "FundoPainel", 50f, 1430f, 929f, 330f), FigmaUI.Arredondado(), new Color(CorCeu.r * 0.55f, CorCeu.g * 0.55f, CorCeu.b * 0.55f, 0.85f));
+        fundoPainel.type = Image.Type.Sliced;
+        fundoPainel.raycastTarget = false;
+        vidro.SetAsLastSibling();
         _contador = FigmaUI.TextoEm(_controles.transform, 50f, 1455f, 929f, 50f, "", 34f, FigmaUI.Peso.Normal);
         _contador.color = new Color(1f, 1f, 1f, 0.8f);
-        _descricao = FigmaUI.TextoEm(_controles.transform, 300f, 1510f, 429f, 200f, "", 40f, FigmaUI.Peso.Negrito);
-        _descricao.textWrappingMode = TextWrappingModes.Normal;
+        _descricao = FigmaUI.TextoEm(_controles.transform, 300f, 1530f, 429f, 160f, "", 58f, FigmaUI.Peso.Negrito);
+        _descricao.textWrappingMode = TextWrappingModes.NoWrap;
         _descricao.enableAutoSizing = true;
-        _descricao.fontSizeMin = 28f;
-        _descricao.fontSizeMax = 42f;
+        _descricao.fontSizeMin = 30f;
+        _descricao.fontSizeMax = 58f;
         Seta(_controles.transform, 70f, "<", -1);
         Seta(_controles.transform, FigmaUI.Largura - 70f - 230f, ">", 1);
-        FigmaUI.BotaoLargo(_controles.transform, 87f, 1810f, "Escolher este ovo", Confirmar);
+        FigmaUI.BotaoLargo(_controles.transform, 87f, 1800f, "Escolher este ovo", Confirmar);
+        // Destino: a roleta gira e para num ovo qualquer.
+        FigmaUI.BotaoBack(_controles.transform, (FigmaUI.Largura - 395f) / 2f, 1965f, () => StartCoroutine(Destino()), "Destino");
 
         _confirmacao = new GameObject("Confirmacao", typeof(RectTransform));
         _confirmacao.transform.SetParent(_raiz, false);
         FigmaUI.Esticar((RectTransform)_confirmacao.transform);
-        FigmaUI.TextoEm(_confirmacao.transform, 60f, 1500f, 909f, 100f, "Chocar este Digitama?", 52f, FigmaUI.Peso.Negrito);
+        var fundoConfirmacao = FigmaUI.Imagem(FigmaUI.Ret(_confirmacao.transform, "FundoPainel", 50f, 1430f, 929f, 420f), FigmaUI.Arredondado(), new Color(CorCeu.r * 0.55f, CorCeu.g * 0.55f, CorCeu.b * 0.55f, 0.85f));
+        fundoConfirmacao.type = Image.Type.Sliced;
+        fundoConfirmacao.raycastTarget = false;
+        _textoConfirmacao = FigmaUI.TextoEm(_confirmacao.transform, 60f, 1460f, 909f, 180f, "", 52f, FigmaUI.Peso.Negrito);
+        _textoConfirmacao.textWrappingMode = TextWrappingModes.Normal;
         FigmaUI.BotaoBack(_confirmacao.transform, 107f, 1680f, () => StartCoroutine(Chocar()), "Sim");
         FigmaUI.BotaoBack(_confirmacao.transform, 527f, 1680f, () => { _confirmacao.SetActive(false); _controles.SetActive(true); }, "Não");
         _confirmacao.SetActive(false);
@@ -367,10 +416,34 @@ public class CenaDigitama : MonoBehaviour
         b.GetComponentInChildren<TMP_Text>().fontSize = 60f;
     }
 
-    public void Confirmar()
+    public void Confirmar() => Confirmar("Chocar este Digitama?");
+
+    private void Confirmar(string pergunta)
     {
+        _textoConfirmacao.text = pergunta;
         _controles.SetActive(false);
         _confirmacao.SetActive(true);
+    }
+
+    /// <summary>Roleta: os ovos passam cada vez mais devagar até parar num ovo sorteado.</summary>
+    public IEnumerator Destino()
+    {
+        if (_sorteando || _chocando) yield break;
+        _sorteando = true;
+        _controles.SetActive(false);
+        var n = Digitamas.Todos.Length;
+        var sorteado = Random.Range(0, n);
+        // Pelo menos duas voltas inteiras antes de parar no sorteado.
+        var passos = n * 2 + ((sorteado - _atual) % n + n) % n;
+        for (var i = 1; i <= passos; i++)
+        {
+            Selecionar(_atual + 1);
+            var t = i / (float)passos;
+            yield return new WaitForSeconds(Mathf.Lerp(0.05f, 0.42f, t * t * t));
+        }
+        yield return new WaitForSeconds(0.6f);
+        _sorteando = false;
+        Confirmar($"O destino escolheu {NomeDoFresh(Digitamas.Todos[_atual].Fresh)}!\nChocar este Digitama?");
     }
 
     // ------------------------------------------------------------ Chocar
