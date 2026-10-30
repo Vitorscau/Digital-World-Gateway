@@ -346,12 +346,19 @@ public static class Digitamas
         go.transform.SetParent(pai, false);
         go.AddComponent<MeshFilter>().sharedMesh = Malha();
         var r = go.AddComponent<MeshRenderer>();
-        var shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
-        var mat = new Material(shader) { name = "Digitama_" + t.Fresh };
+        // Cel shading (OToon), o mesmo shader dos Digimons; sem o modelo, cai no Lit comum.
+        var modelo = Resources.Load<Material>("Digitama/DigitamaCelShading");
+        Material mat;
+        if (modelo != null) mat = new Material(modelo);
+        else
+        {
+            mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+            if (mat.HasProperty("_Smoothness")) mat.SetFloat("_Smoothness", 0.62f);
+        }
+        mat.name = "Digitama_" + t.Fresh;
         var tex = Textura(t);
         if (mat.HasProperty("_BaseMap")) mat.SetTexture("_BaseMap", tex);
         mat.mainTexture = tex;
-        if (mat.HasProperty("_Smoothness")) mat.SetFloat("_Smoothness", 0.62f);
         r.sharedMaterial = mat;
         var col = go.AddComponent<CapsuleCollider>();
         col.center = new Vector3(0, Altura / 2f, 0);

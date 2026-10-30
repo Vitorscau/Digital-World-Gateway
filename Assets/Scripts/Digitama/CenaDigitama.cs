@@ -113,7 +113,7 @@ public class CenaDigitama : MonoBehaviour
         var foco = new GameObject("Foco").AddComponent<Light>();
         foco.type = LightType.Spot;
         foco.color = new Color(1f, 0.95f, 0.8f);
-        foco.intensity = 6f;
+        foco.intensity = 2.5f; // fraco: com o cel shading, luz forte vira um círculo no ovo
         foco.range = 6f;
         foco.spotAngle = 40f;
         foco.transform.position = new Vector3(0f, 3.2f, -0.6f);
