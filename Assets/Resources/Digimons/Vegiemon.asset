@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Vegiemon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Vegiemon
+  description_: Vegiemon, Digimon adulto do tipo Data.
+  prefab_: {fileID: 7227388240200260038, guid: f68f6ef1a1999bc40a1906cfbef42b92, type: 3}
+  animator_: {fileID: 4172351099186272518, guid: f68f6ef1a1999bc40a1906cfbef42b92,
+    type: 3}
+  stage_: 3
+  atribute_: 2
+  personalities_: 0
+  type_: 1
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 73
+  DEF: 51
+  HP: 540
+  INT: 49
+  SP: 46
+  SPD: 51
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: fa0fa255b6e5d614ea3bc3c8e27ce7e8, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

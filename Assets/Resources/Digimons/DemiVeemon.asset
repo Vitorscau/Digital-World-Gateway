@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: DemiVeemon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: DemiVeemon
+  description_: DemiVeemon, Digimon em treinamento do tipo Data.
+  prefab_: {fileID: 9122681463519508654, guid: f174be34cd76c7f49bb08b05fca25403, type: 3}
+  animator_: {fileID: 2536012630717593710, guid: f174be34cd76c7f49bb08b05fca25403,
+    type: 3}
+  stage_: 1
+  atribute_: 8
+  personalities_: 0
+  type_: 1
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 31
+  DEF: 27
+  HP: 429
+  INT: 23
+  SP: 26
+  SPD: 27
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

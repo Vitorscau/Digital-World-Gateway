@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: MetalGreymon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: MetalGreymon
+  description_: MetalGreymon, Digimon perfeito do tipo Vaccine.
+  prefab_: {fileID: 933909757856989329, guid: 85d54dbb7fc9fcf4aa10b0b27af4f541, type: 3}
+  animator_: {fileID: 5863147413352202321, guid: 85d54dbb7fc9fcf4aa10b0b27af4f541,
+    type: 3}
+  stage_: 4
+  atribute_: 0
+  personalities_: 0
+  type_: 2
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 96
+  DEF: 77
+  HP: 763
+  INT: 72
+  SP: 77
+  SPD: 65
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: b713d7643663b594994afe974e33a1f2, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

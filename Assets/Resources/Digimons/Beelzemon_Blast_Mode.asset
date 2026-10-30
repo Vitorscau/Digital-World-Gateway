@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Beelzemon_Blast_Mode
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Beelzemon Blast Mode
+  description_: Beelzemon Blast Mode, Digimon supremo do tipo Virus.
+  prefab_: {fileID: 4684790968007919287, guid: 797e0344e2648ac4b93751e541675692, type: 3}
+  animator_: {fileID: 2064976194131953271, guid: 797e0344e2648ac4b93751e541675692,
+    type: 3}
+  stage_: 5
+  atribute_: 7
+  personalities_: 0
+  type_: 0
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 130
+  DEF: 86
+  HP: 953
+  INT: 86
+  SP: 87
+  SPD: 89
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

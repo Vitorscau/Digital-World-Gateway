@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Tentomon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Tentomon
+  description_: "Tentomon, Digimon crian\xE7a do tipo Data."
+  prefab_: {fileID: 2158891785850526305, guid: ae768eda796435b49b41c1ca8e11431d, type: 3}
+  animator_: {fileID: 8400165956483003556, guid: ae768eda796435b49b41c1ca8e11431d,
+    type: 3}
+  stage_: 2
+  atribute_: 3
+  personalities_: 0
+  type_: 1
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 46
+  DEF: 38
+  HP: 417
+  INT: 29
+  SP: 38
+  SPD: 46
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

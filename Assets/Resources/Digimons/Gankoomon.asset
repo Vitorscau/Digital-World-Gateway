@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Gankoomon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Gankoomon
+  description_: Gankoomon, Digimon supremo do tipo Vaccine.
+  prefab_: {fileID: 5762469367914235461, guid: b36962ea701fe16478eff0eca90beae6, type: 3}
+  animator_: {fileID: 1320569694273701509, guid: b36962ea701fe16478eff0eca90beae6,
+    type: 3}
+  stage_: 5
+  atribute_: 6
+  personalities_: 0
+  type_: 2
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 111
+  DEF: 97
+  HP: 1047
+  INT: 82
+  SP: 83
+  SPD: 79
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

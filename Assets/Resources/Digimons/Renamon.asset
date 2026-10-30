@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Renamon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Renamon
+  description_: "Renamon, Digimon crian\xE7a do tipo Data."
+  prefab_: {fileID: 1993338464732282422, guid: f8f733de483e2124182363c980e48d3b, type: 3}
+  animator_: {fileID: 5044663517780705014, guid: f8f733de483e2124182363c980e48d3b,
+    type: 3}
+  stage_: 2
+  atribute_: 4
+  personalities_: 0
+  type_: 1
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 41
+  DEF: 35
+  HP: 405
+  INT: 31
+  SP: 33
+  SPD: 46
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

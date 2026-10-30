@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Kokomon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Kokomon
+  description_: Kokomon, Digimon em treinamento do tipo Data.
+  prefab_: {fileID: 22430258632581101, guid: 2558eb4a3aac034439a113a99eae6348, type: 3}
+  animator_: {fileID: 6765616427669806893, guid: 2558eb4a3aac034439a113a99eae6348,
+    type: 3}
+  stage_: 1
+  atribute_: 8
+  personalities_: 0
+  type_: 1
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 26
+  DEF: 26
+  HP: 413
+  INT: 24
+  SP: 26
+  SPD: 28
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

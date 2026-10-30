@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Lucemon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Lucemon
+  description_: "Lucemon, Digimon crian\xE7a do tipo Virus."
+  prefab_: {fileID: 4362784940247233392, guid: dc7a591125bfe6a40b483e28ef0b0a72, type: 3}
+  animator_: {fileID: 6998670451154203568, guid: dc7a591125bfe6a40b483e28ef0b0a72,
+    type: 3}
+  stage_: 2
+  atribute_: 7
+  personalities_: 0
+  type_: 0
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 48
+  DEF: 38
+  HP: 471
+  INT: 34
+  SP: 32
+  SPD: 41
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

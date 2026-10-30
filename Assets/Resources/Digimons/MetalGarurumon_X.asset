@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: MetalGarurumon_X
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: MetalGarurumon X
+  description_: MetalGarurumon X, Digimon supremo do tipo Vaccine.
+  prefab_: {fileID: 2670847738549330695, guid: ba7a560064c51164db4673a5616e5aeb, type: 3}
+  animator_: {fileID: 8699614888616453063, guid: ba7a560064c51164db4673a5616e5aeb,
+    type: 3}
+  stage_: 5
+  atribute_: 3
+  personalities_: 0
+  type_: 2
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 114
+  DEF: 96
+  HP: 1100
+  INT: 79
+  SP: 88
+  SPD: 76
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: d772f4ca8ef7b4f4faadc7ec658ec018, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

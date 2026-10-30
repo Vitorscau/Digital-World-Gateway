@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: AncientGreymon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: AncientGreymon
+  description_: AncientGreymon, Digimon supremo do tipo Vaccine.
+  prefab_: {fileID: 1368717452912253332, guid: ee815f5548ef3de49be3767c384bfbd5, type: 3}
+  animator_: {fileID: 5716569025006000468, guid: ee815f5548ef3de49be3767c384bfbd5,
+    type: 3}
+  stage_: 5
+  atribute_: 0
+  personalities_: 0
+  type_: 2
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 116
+  DEF: 101
+  HP: 940
+  INT: 83
+  SP: 87
+  SPD: 86
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: b713d7643663b594994afe974e33a1f2, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

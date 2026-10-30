@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: MagnaAngemon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: MagnaAngemon
+  description_: MagnaAngemon, Digimon perfeito do tipo Vaccine.
+  prefab_: {fileID: 5968811640386365854, guid: 1cfab3ee0b983834a82208fccc0ce5f4, type: 3}
+  animator_: {fileID: 1116478088822106462, guid: 1cfab3ee0b983834a82208fccc0ce5f4,
+    type: 3}
+  stage_: 4
+  atribute_: 5
+  personalities_: 0
+  type_: 2
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 86
+  DEF: 71
+  HP: 773
+  INT: 70
+  SP: 76
+  SPD: 76
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: 989f60120aa0141448156eafb6887041, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Sunflowmon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Sunflowmon
+  description_: Sunflowmon, Digimon adulto do tipo Data.
+  prefab_: {fileID: 2796101964900590242, guid: 1805dc13793d8df4daba7871da3e95eb, type: 3}
+  animator_: {fileID: 8891868817935196770, guid: 1805dc13793d8df4daba7871da3e95eb,
+    type: 3}
+  stage_: 3
+  atribute_: 2
+  personalities_: 0
+  type_: 1
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 63
+  DEF: 53
+  HP: 652
+  INT: 52
+  SP: 54
+  SPD: 55
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: fa0fa255b6e5d614ea3bc3c8e27ce7e8, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

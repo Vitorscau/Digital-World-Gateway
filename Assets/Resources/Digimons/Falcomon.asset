@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: Falcomon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: Falcomon
+  description_: "Falcomon, Digimon crian\xE7a do tipo Data."
+  prefab_: {fileID: 1582000924779774572, guid: d048a0b0c10d9f6488a627af726ba2f6, type: 3}
+  animator_: {fileID: 5215055176982528684, guid: d048a0b0c10d9f6488a627af726ba2f6,
+    type: 3}
+  stage_: 2
+  atribute_: 5
+  personalities_: 0
+  type_: 1
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 45
+  DEF: 39
+  HP: 423
+  INT: 33
+  SP: 36
+  SPD: 41
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: 989f60120aa0141448156eafb6887041, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6

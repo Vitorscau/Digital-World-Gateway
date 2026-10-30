@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e18f3ccabe201a4a98914ec2a406acf, type: 3}
+  m_Name: MegaSeadramon
+  m_EditorClassIdentifier: Assembly-CSharp::DigimonBase
+  name_: MegaSeadramon
+  description_: MegaSeadramon, Digimon perfeito do tipo Data.
+  prefab_: {fileID: 1084671973426933196, guid: 05318cc6764ab734ab1f17553b66bfc3, type: 3}
+  animator_: {fileID: 5955582872976010508, guid: 05318cc6764ab734ab1f17553b66bfc3,
+    type: 3}
+  stage_: 4
+  atribute_: 1
+  personalities_: 0
+  type_: 1
+  move_:
+    KnownMoves: []
+    SelectedMoves: []
+    PassiveSkill: []
+  drops_:
+    Drops: []
+  ATK: 99
+  DEF: 80
+  HP: 741
+  INT: 72
+  SP: 74
+  SPD: 69
+  CAM: 0
+  MU: 0
+  ABI: 0
+  learnableMoves_:
+  - movebase: {fileID: 11400000, guid: 6823d8c759f37c549b70a23dcfb8d0b8, type: 2}
+    level: 1
+  - movebase: {fileID: 11400000, guid: 2cdc681c0161631429815db68cdc6b41, type: 2}
+    level: 6
