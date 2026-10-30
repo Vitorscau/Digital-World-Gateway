@@ -44,7 +44,7 @@ namespace Niantic.Lightship.Maps.MapLayers.Components
 
             var go = Instantiate(_prefab, transform);
             go.name = string.IsNullOrEmpty(instanceName) ? $"{_name}_{_instances.Count}" : instanceName;
-            go.transform.rotation = rotation;
+            go.transform.rotation = rotation * _prefab.transform.rotation; // mantém a rotação própria do prefab
             go.transform.localScale = _prefab.transform.localScale * CurrentScale();
             var placed = new Placed { Go = go, Location = location };
             _instances.Add(placed);
