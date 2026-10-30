@@ -280,6 +280,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   digimon: {fileID: 11400000, guid: 6a0b8304e66950b48b57b23c1e28ca09, type: 2}
   spawnPoint: {fileID: 120377905}
+  usarParceiroDoPerfil: 1
+  alturaNoMapa: 14
 --- !u!114 &120377908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2639,10 +2641,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb59f72921df0604e9062293315dd5a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fonte: 0
   rotationSpeed: 1
   axisOffset: 45
   rotationAxis: 2
   positionOffset: {x: 0, y: 0, z: 0}
+  bussolaDoMapaAutomatica: 1
 --- !u!114 &696416642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4702,8 +4706,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mapView: {fileID: 0}
   _cubeGOP: {fileID: 0}
-  _queryRadius: 0
-  _areaBorder: {fileID: 0}
+  raioVisivelMetros: 350
+  distanciaMinimaMetros: 60
+  pontosExtras: 1
+  celulaExtrasMetros: 220
+  sementeDoMundo: 2024
+  exigirDistancia: 0
+  raioUsoMetros: 40
+  recargaMinutos: 5
 --- !u!1001 &1250839317
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4712,6 +4722,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1036847418}
     m_Modifications:
+    - target: {fileID: 6614101381701084589, guid: 88c6861d76b4c49e18329bfbc54d44b5,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6614101381701084589, guid: 88c6861d76b4c49e18329bfbc54d44b5,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6614101381701084589, guid: 88c6861d76b4c49e18329bfbc54d44b5,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6614101382141779484, guid: 88c6861d76b4c49e18329bfbc54d44b5,
         type: 3}
       propertyPath: m_Name
@@ -5215,6 +5240,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   digimon: {fileID: 11400000, guid: 6a0b8304e66950b48b57b23c1e28ca09, type: 2}
   spawnPoint: {fileID: 120377905}
+  usarParceiroDoPerfil: 1
+  alturaNoMapa: 14
 --- !u!4 &1322956580
 Transform:
   m_ObjectHideFlags: 0
@@ -6210,8 +6237,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mapView: {fileID: 581387685}
   _cubeGOP: {fileID: 1334384492}
-  _queryRadius: 100
-  _areaBorder: {fileID: 0}
+  raioVisivelMetros: 350
+  distanciaMinimaMetros: 60
+  pontosExtras: 1
+  celulaExtrasMetros: 220
+  sementeDoMundo: 2024
+  exigirDistancia: 0
+  raioUsoMetros: 40
+  recargaMinutos: 5
 --- !u!114 &1822905904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6228,78 +6261,91 @@ MonoBehaviour:
   _mapCamera: {fileID: 1241327187}
   digimonLayers:
   - gameObjectPlacement: {fileID: 906883953}
+    digimon: {fileID: 0}
     probability: 0.05
     habitats: 1
     periodo: 2
     nivel: {x: 1, y: 5}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 1055539543}
+    digimon: {fileID: 0}
     probability: 0.05
     habitats: 7
     periodo: 0
     nivel: {x: 1, y: 5}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 2130217112}
+    digimon: {fileID: 0}
     probability: 0.05
     habitats: 2
     periodo: 1
     nivel: {x: 1, y: 5}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 978491582}
+    digimon: {fileID: 0}
     probability: 0.2
     habitats: 3
     periodo: 0
     nivel: {x: 3, y: 12}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 1034948121}
+    digimon: {fileID: 0}
     probability: 0.05
     habitats: 7
     periodo: 0
     nivel: {x: 1, y: 5}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 1743304370}
+    digimon: {fileID: 0}
     probability: 0.1
     habitats: 3
     periodo: 1
     nivel: {x: 3, y: 12}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 1446379435}
+    digimon: {fileID: 0}
     probability: 0.1
     habitats: 2
     periodo: 0
     nivel: {x: 1, y: 5}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 1954484666}
+    digimon: {fileID: 0}
     probability: 0.1
     habitats: 1
     periodo: 2
     nivel: {x: 3, y: 12}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 1628100497}
+    digimon: {fileID: 0}
     probability: 0.1
     habitats: 4
     periodo: 0
     nivel: {x: 3, y: 12}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 2095971628}
+    digimon: {fileID: 0}
     probability: 0.1
     habitats: 4
     periodo: 0
     nivel: {x: 1, y: 5}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 500344643}
+    digimon: {fileID: 0}
     probability: 0.1
     habitats: 6
     periodo: 1
     nivel: {x: 3, y: 12}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 1962751816}
+    digimon: {fileID: 0}
     probability: 0.5
     habitats: 1
     periodo: 0
     nivel: {x: 3, y: 12}
     bonusHabitat: 3
   - gameObjectPlacement: {fileID: 2090817991}
+    digimon: {fileID: 0}
     probability: 0.15
     habitats: 2
     periodo: 0
@@ -6314,6 +6360,7 @@ MonoBehaviour:
   horaInicioDoDia: 6
   horaFimDoDia: 18
   raioVisivelMetros: 200
+  exigirDistanciaParaBatalhar: 0
   raioEncontroMetros: 40
   intervaloAtualizacao: 1
 --- !u!1001 &1824991154
@@ -7180,10 +7227,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb59f72921df0604e9062293315dd5a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fonte: 0
   rotationSpeed: 1
   axisOffset: 0
   rotationAxis: 2
   positionOffset: {x: 0, y: 0, z: 0}
+  bussolaDoMapaAutomatica: 1
 --- !u!4 &2006642845 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6614101382141779490, guid: 88c6861d76b4c49e18329bfbc54d44b5,
