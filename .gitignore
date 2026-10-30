@@ -86,3 +86,10 @@ crashlytics-build.properties
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
+
+# --- Digimon Nexus ---
+# Chave da API Lightship (ARDK): fica só na máquina, nunca no repositório.
+/Assets/XR/Settings/LightshipSettings.asset
+/Assets/XR/Settings/LightshipSettings.asset.meta
+# Lixo de build do Burst
+*_BurstDebugInformation_DoNotShip/

@@ -21,7 +21,7 @@ public class MinMaxDrawer : MaterialPropertyDrawer
 
     public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
     {
-        if (prop.type != MaterialProperty.PropType.Vector)
+        if (prop.propertyType != UnityEngine.Rendering.ShaderPropertyType.Vector)
         {
             Debug.LogWarning(prop.name + " is not a supported type for MinMax Material Property");
         }

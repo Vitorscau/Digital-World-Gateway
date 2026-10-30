@@ -93,13 +93,13 @@ public class CriaturaArena : MonoBehaviour
 
         if (distancia > distanciaParada)
         {
-            rb.velocity = direcao * velocidadeMovimento;
+            rb.linearVelocity = direcao * velocidadeMovimento;
             estaMovendo = true;
             transform.LookAt(new Vector3(alvo.position.x, transform.position.y, alvo.position.z));
         }
         else
         {
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
             estaMovendo = false;
 
             if (podeAtacar)

@@ -48,6 +48,7 @@ public class DigimonController : MonoBehaviour
 
                 // Acessar o componente PlayerModel no mesmo GameObject
                 PlayerModel playerModel = GetComponent<PlayerModel>();
+                if (playerModel == null) playerModel = FindFirstObjectByType<PlayerModel>();
 
                  //Verificar se o componente PlayerModel foi encontrado
                 if (playerModel != null)

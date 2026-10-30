@@ -12,7 +12,7 @@ public class ToggleExDrawer : MaterialPropertyDrawer
 
     static bool IsPropertyTypeSuitable(MaterialProperty prop)
     {
-        return prop.type == MaterialProperty.PropType.Float || prop.type == MaterialProperty.PropType.Range;
+        return prop.propertyType == UnityEngine.Rendering.ShaderPropertyType.Float || prop.propertyType == UnityEngine.Rendering.ShaderPropertyType.Range;
     }
 
     public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)

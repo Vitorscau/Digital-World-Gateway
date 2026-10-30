@@ -29,6 +29,7 @@ public class CoverageManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (_mapView == null || _cubeGOP == null) { enabled = false; return; }
         _coverageClient = CoverageClientFactory.Create();
         RequestAreasAroundMapCenter();
     }

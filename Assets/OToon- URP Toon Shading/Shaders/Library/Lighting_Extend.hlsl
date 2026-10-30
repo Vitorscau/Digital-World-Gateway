@@ -554,7 +554,7 @@ half4 UniversalFragmentToon_Extend(InputData inputData, half3 diffuse, half4 spe
     BRDFData brdfData;
     half3 albedo = _BaseColor.rgb * SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap)).rgb;
 
-    InitializeBRDFData(albedo, 1.0 - 1.0 / kDieletricSpec.a, 0, 0, alpha, brdfData);
+    InitializeBRDFData(albedo, 1.0 - 1.0 / kDielectricSpec.a, 0, 0, alpha, brdfData);
     half3 color = GlobalIllumination(brdfData, inputData.bakedGI, 1.0, inputData.normalWS, inputData.viewDirectionWS);
 
     color += LightingToon_Extend(mainLight, albedo, specularGloss, inputData.normalWS, inputData.viewDirectionWS, inputData.positionWS, uv, screenUV, otoonSurface);

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19ba6f4b1a27e6c4593000018b9b6001, type: 3}
+  m_Name: TemaOriginal
+  m_EditorClassIdentifier: Niantic.Lightship.Maps::Niantic.Lightship.Maps.MapaLivreTheme
+  Ground: {fileID: 2100000, guid: 572ebceb5430cf545bb350da992f7846, type: 2}
+  Park: {fileID: 2100000, guid: 2d57c4d14145bce4c839fec62a892f3e, type: 2}
+  Forest: {fileID: 2100000, guid: 49e876a542e8ff542b76c861fc34fe72, type: 2}
+  Sand: {fileID: 2100000, guid: 0fa5d95979f7a9240925c09e908dd15c, type: 2}
+  Water: {fileID: 2100000, guid: 6fa7963d26a784d4882b0bd5d6b418d9, type: 2}
+  Special: {fileID: 2100000, guid: 572ebceb5430cf545bb350da992f7846, type: 2}
+  MajorRoad: {fileID: 2100000, guid: b18f03c51deff2e48988fedd7dad6f33, type: 2}
+  MinorRoad: {fileID: 2100000, guid: 89b51f5e2bf46484c92529c4d64b1332, type: 2}
+  Path: {fileID: 2100000, guid: 12e81812515398046afebce8a79664b1, type: 2}
+  MajorRoadWidth: 12
+  MinorRoadWidth: 6
+  PathWidth: 2
+  WaterwayWidth: 5
+  RoadOutline: {fileID: 2100000, guid: ecd5253226df90941b3aa644cf8042fd, type: 2}
+  RoadOutlineWidth: 1.6
+  ShowBuildings: 1
+  BuildingTop: {fileID: 2100000, guid: 1464661b7a788f14aaad6f876a5ee1a1, type: 2}
+  BuildingWall: {fileID: 2100000, guid: 4285af21c900a614ebb3534ddee472ca, type: 2}
+  BuildingHeightScale: 0
+  BuildingMinHeight: 0.3
+  BuildingMaxHeight: 0.3
+  TextureRepeatMeters: 60
+  SkyColor: {r: 0.23921569, g: 0.40784314, b: 0.47058824, a: 1}
+  UseFog: 1
+  FogStart: 380
+  FogEnd: 700

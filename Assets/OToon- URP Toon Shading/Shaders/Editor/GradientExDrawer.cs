@@ -30,7 +30,7 @@ public class GradientExDrawer : MaterialPropertyDrawer
     public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
     {
         //  EditorGUI.PropertyField(position, prop);
-        if (prop.type != MaterialProperty.PropType.Texture)
+        if (prop.propertyType != UnityEngine.Rendering.ShaderPropertyType.Texture)
         {
             Debug.LogError($"[GradientEx] used on non-texture property \"{prop.name}\"");
             return;

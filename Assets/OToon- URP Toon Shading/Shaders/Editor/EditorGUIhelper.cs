@@ -338,7 +338,7 @@ namespace OToon
             {
                 materialEditor.ShaderProperty(property, guiContent);
             }
-            if (property.displayName.Contains("[AlphaBlend]") && property.type == MaterialProperty.PropType.Color)
+            if (property.displayName.Contains("[AlphaBlend]") && property.propertyType == UnityEngine.Rendering.ShaderPropertyType.Color)
             {
                 var alphaBlendColor = property.colorValue;
                 alphaBlendColor.a = EditorGUILayout.Slider(displayName + " Alpha Blend", property.colorValue.a, 0f, 1f);

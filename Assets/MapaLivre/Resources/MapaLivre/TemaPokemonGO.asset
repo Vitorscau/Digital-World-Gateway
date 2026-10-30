@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19ba6f4b1a27e6c4593000018b9b6001, type: 3}
+  m_Name: TemaPokemonGO
+  m_EditorClassIdentifier: Niantic.Lightship.Maps::Niantic.Lightship.Maps.MapaLivreTheme
+  Ground: {fileID: 2100000, guid: b7fe5c8dfff819642b4a05106ccb84f9, type: 2}
+  Park: {fileID: 2100000, guid: 9941d04bca88f7c45bfd880a6df84a79, type: 2}
+  Forest: {fileID: 2100000, guid: 9da8fde0331e31349878b690ada58746, type: 2}
+  Sand: {fileID: 2100000, guid: a3b66eddc0ddebf4187cd9267f50ccc3, type: 2}
+  Water: {fileID: 2100000, guid: d68d961d4bbe0704c970fa1df409ed56, type: 2}
+  Special: {fileID: 2100000, guid: 6ece5b3fcd16be848865a8d8b40e6761, type: 2}
+  MajorRoad: {fileID: 2100000, guid: 178b60a0608c6c64eaac86f99bfd5c30, type: 2}
+  MinorRoad: {fileID: 2100000, guid: 5f467a32ff57a42418ecc96bf38fc817, type: 2}
+  Path: {fileID: 2100000, guid: 934ce2285cc0dfd4ea9e1fc17828fcbd, type: 2}
+  MajorRoadWidth: 14
+  MinorRoadWidth: 9
+  PathWidth: 3.5
+  WaterwayWidth: 5
+  RoadOutline: {fileID: 0}
+  RoadOutlineWidth: 1.5
+  ShowBuildings: 0
+  BuildingTop: {fileID: 2100000, guid: bc21822b93dee6a4b8cdfe745a4da1ea, type: 2}
+  BuildingWall: {fileID: 2100000, guid: 5332a6ab000f93041837d0362e6d2d91, type: 2}
+  BuildingHeightScale: 0.15
+  BuildingMinHeight: 1.5
+  BuildingMaxHeight: 6
+  TextureRepeatMeters: 8
+  SkyColor: {r: 0.56078434, g: 0.827451, b: 0.9607843, a: 1}
+  UseFog: 1
+  FogStart: 350
+  FogEnd: 650
