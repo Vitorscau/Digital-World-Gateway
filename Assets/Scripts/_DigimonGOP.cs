@@ -48,7 +48,9 @@ public class _DigimonGOP : MonoBehaviour
     [Header("Distâncias")]
     [Tooltip("Raio em volta do jogador em que os Digimons aparecem no mapa.")]
     [SerializeField] private float raioVisivelMetros = 200f;
-    [Tooltip("Distância máxima para tocar no Digimon e começar o encontro.")]
+    [Tooltip("Se ligado, só dá para batalhar com Digimons dentro do raio de encontro. Desligado: qualquer Digimon visível.")]
+    [SerializeField] private bool exigirDistanciaParaBatalhar = false;
+    [Tooltip("Distância máxima para tocar no Digimon e começar o encontro (se a opção acima estiver ligada).")]
     [SerializeField] private float raioEncontroMetros = 40f;
     [SerializeField] private float intervaloAtualizacao = 1f;
 
@@ -246,6 +248,7 @@ public class _DigimonGOP : MonoBehaviour
 
     /// <summary>O jogador está perto o bastante para começar o encontro?</summary>
     public bool PodeEncontrar(WildDigimon wild) =>
+        wild != null && !exigirDistanciaParaBatalhar ||
         wild != null && lightshipMapView != null &&
         LightshipMapView.DistanceMeters(lightshipMapView.MapCenter, wild.Local) <= raioEncontroMetros;
 

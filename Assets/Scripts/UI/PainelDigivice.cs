@@ -111,9 +111,9 @@ public class PainelDigivice : MonoBehaviour
         foreach (var (w, d) in lista)
         {
             var resta = w.TempoRestante;
-            var perto = d <= spawner.RaioEncontroMetros;
+            var perto = w.PodeEncontrar;
             var texto = $"<b>{w.NomeExibicao}</b>  nv. {w.Nivel}   <size=30>{HabitatTexto(w.Habitat)}</size>\n" +
-                        $"<size=32>{d:0} m{(perto ? "  <color=#7CFFB2>· perto, toque para batalhar</color>" : "")}" +
+                        $"<size=32>{d:0} m{(perto ? "  <color=#7CFFB2>· toque para batalhar</color>" : "")}" +
                         $"   · some em {Math.Max(0, (int)resta.TotalMinutes)}:{Math.Max(0, resta.Seconds):00}</size>";
             var alvo = w;
             Linha(texto, () => { Abrir(false); alvo.TentarEncontro(); });
