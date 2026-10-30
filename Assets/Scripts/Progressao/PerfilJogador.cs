@@ -13,6 +13,17 @@ public class DigimonSalvo
     public int xp;
     public long capturadoEm;   // data (Unix, segundos)
 
+    // Cuidado (estilo V-Pet). Valores de 0 a 100. Veja CuidadoDigimon.
+    public float fome = 70f;     // 100 = satisfeito, 0 = faminto
+    public float energia = 100f; // 0 = exausto
+    public float humor = 70f;    // 0 = triste
+    public int amizade;          // laço com o Tamer
+    public int cocos;            // sujeira para limpar (máx. 4)
+    public long ultimoCuidado;   // quando as necessidades foram atualizadas (Unix)
+    public long proximoCoco;     // quando sai o próximo cocô (Unix)
+    // Treino: bônus de 0 a 100 em cada status (100 = +50% na batalha).
+    public int treinoOffense, treinoDefense, treinoSpeed, treinoBrains;
+
     public DigimonBase Ficha => CatalogoDigimon.Buscar(especie);
 }
 

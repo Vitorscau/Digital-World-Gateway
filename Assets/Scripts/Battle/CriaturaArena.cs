@@ -481,6 +481,7 @@ public class CriaturaArena : MonoBehaviour
         if (Personalidade == DigimonPersonalities.Defender) chance += 0.2f;
         if (vidaAtual < vidaMaxima * 0.3f) chance += 0.1f;
         if (!t.Basica) chance += 0.05f; // técnica grande é mais fácil de ver
+        if (Dados != null) chance += Dados.Amizade / 400f; // confia no Tamer: fica mais atento
         if (Random.value > chance) return;
         _estado = Estado.Defendendo;
         _fimDefesa = Time.time + (t.ADistancia ? 1.4f : 0.9f);
@@ -552,9 +553,19 @@ public class CriaturaArena : MonoBehaviour
 
     // ------------------------------------------------------------ Vida
 
+    private bool _aguentou;
+
     public void ReceberDano(int dano)
     {
         if (vidaAtual <= 0) return;
+        // Amizade alta: uma vez por luta, pode aguentar firme com 1 de vida.
+        if (dano >= vidaAtual && !_aguentou && Dados != null && Dados.Amizade >= 50 && vidaAtual > 1 &&
+            Random.value < Dados.Amizade / 250f)
+        {
+            _aguentou = true;
+            dano = vidaAtual - 1;
+            TextoDeBatalha.Mostrar(Topo() + Vector3.up * _altura * 0.3f, "Aguentou firme!", new Color(1f, 0.6f, 0.8f), 44f);
+        }
         vidaAtual = Mathf.Max(0, vidaAtual - dano);
         if (hpBar != null) hpBar.SetHP(vidaAtual);
         TextoDeBatalha.Mostrar(Topo(), dano.ToString(), EhParceiro() ? TextoDeBatalha.CorDanoParceiro : TextoDeBatalha.CorDanoInimigo, 64f);

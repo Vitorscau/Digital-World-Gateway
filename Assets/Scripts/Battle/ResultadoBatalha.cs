@@ -78,6 +78,7 @@ public static class ResultadoBatalha
 
         if (PerfilJogador.GanharXp(parceiro, r.XpDigimon) > 0 && parceiro != null) r.NivelParceiroNovo = parceiro.nivel;
         if (perfil.GanharXp(r.XpJogador) > 0) r.NivelJogadorNovo = perfil.nivel;
+        CuidadoDigimon.DepoisDaBatalha(parceiro, venceu); // cansa, dá fome e mexe no humor
         perfil.bandagemAtiva = false; // a bandagem vale para uma batalha
         perfil.Salvar();
         return r;

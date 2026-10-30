@@ -9,4 +9,5 @@ public static class Cenas
     public const string AR = "AR_Scene";
     public const string Batalha = "Battle_Scene";
     public const string BatalhaAR = "AR_Battle_Scene";
+    public const string Cuidado = "Care_Scene";
 }

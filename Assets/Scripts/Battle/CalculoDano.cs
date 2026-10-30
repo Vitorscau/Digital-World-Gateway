@@ -83,6 +83,7 @@ public static class CalculoDano
     {
         var c = 0.05f + 0.06f * Relativo(a.Speed, d.Speed) + 0.04f * a.Esperteza;
         if (a.Personalidade == DigimonPersonalities.Searcher) c += 0.07f;
+        c += a.Amizade * 0.0008f; // parceiro amigo acerta mais em cheio
         return Mathf.Clamp(c, 0.03f, 0.25f);
     }
 

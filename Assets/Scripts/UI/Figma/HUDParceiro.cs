@@ -28,6 +28,9 @@ public class HUDParceiro : MonoBehaviour
     private RectTransform _barra;
     private Image _retrato2D;
     private RawImage _retrato3D;
+    private RetratoVivo _vivo;
+    private GameObject _aviso;
+    private float _proximoAviso;
     private TMP_Text _nivel, _nome;
     private RectTransform _xpFundo, _xp;
     private bool _levelUpVerificado;
@@ -67,10 +70,20 @@ public class HUDParceiro : MonoBehaviour
         Atualizar();
     }
 
-    private void OnDestroy() => PerfilJogador.Mudou -= Atualizar;
+    private void OnDestroy()
+    {
+        PerfilJogador.Mudou -= Atualizar;
+        if (_vivo != null) Destroy(_vivo.gameObject);
+    }
+
+    private void AtualizarAviso()
+    {
+        if (_aviso != null) _aviso.SetActive(CuidadoDigimon.PrecisaDeAtencao(PerfilJogador.Atual.Parceiro));
+    }
 
     private void Update()
     {
+        if (Time.unscaledTime > _proximoAviso) { _proximoAviso = Time.unscaledTime + 30f; AtualizarAviso(); }
         // Espera a tela de aviso inicial ("Stay Aware") sair antes de anunciar o Level Up.
         if (_levelUpVerificado || _barra == null || !_barra.gameObject.activeInHierarchy || TelaFigma.AlgumaAberta) return;
         _levelUpVerificado = true;
@@ -118,7 +131,18 @@ public class HUDParceiro : MonoBehaviour
         _retrato2D.preserveAspect = true;
         var foto = Peca("Foto", 0f, -10f, 235f, 235f);
         _retrato3D = foto.gameObject.AddComponent<RawImage>();
-        _retrato3D.raycastTarget = false;
+        _retrato3D.raycastTarget = true;
+        // Tocar no rosto do parceiro abre a cena de cuidado (V-Pet em AR).
+        var botao = foto.gameObject.AddComponent<Button>();
+        botao.targetGraphic = _retrato3D;
+        botao.onClick.AddListener(() => { if (!TelaFigma.AlgumaAberta) SceneManager.LoadScene(Cenas.Cuidado); });
+
+        // Aviso "!" quando ele precisa de atenção (fome, tristeza, cansaço, sujeira).
+        var aviso = Peca("Aviso", 170f, 0f, 62f, 62f);
+        FigmaUI.Imagem(aviso, FigmaUI.Arredondado(), new Color(1f, 0.25f, 0.3f)).type = Image.Type.Sliced;
+        FigmaUI.Esticar(FigmaUI.Texto(aviso, "!", 46f * k, FigmaUI.Peso.Negrito, TMPro.TextAlignmentOptions.Center).rectTransform);
+        _aviso = aviso.gameObject;
+        _aviso.SetActive(false);
 
         _nivel = FigmaUI.Texto(Peca("Nivel", 160f, 139f, 105f, 84f), "", 70f * k, FigmaUI.Peso.Negrito, TextAlignmentOptions.Right);
         _nivel.characterSpacing = 6f;
@@ -144,9 +168,16 @@ public class HUDParceiro : MonoBehaviour
         _nome.text = nome;
         _xp.GetComponent<Image>().fillAmount = d != null ? Mathf.Clamp01((float)d.xp / PerfilJogador.XpDigimonParaProximoNivel(d.nivel)) : 0f;
 
-        var usa2D = CatalogoDigimon.Normalizar(nome) == "gabumon"; // única arte 2D desenhada no Figma
-        _retrato2D.gameObject.SetActive(usa2D);
-        _retrato3D.gameObject.SetActive(!usa2D);
-        if (!usa2D) _retrato3D.texture = RetratoDigimon.Obter(ficha, 256);
+        // Rosto 3D animado do parceiro (no lugar da arte 2D do Gabumon).
+        if (_vivo == null || _vivo.Ficha != ficha)
+        {
+            if (_vivo != null) Destroy(_vivo.gameObject);
+            _vivo = RetratoVivo.Criar(ficha);
+        }
+        var temVivo = _vivo != null;
+        _retrato2D.gameObject.SetActive(!temVivo);
+        _retrato3D.texture = temVivo ? _vivo.Textura : RetratoDigimon.Obter(ficha, 256);
+        _retrato3D.color = _retrato3D.texture != null ? Color.white : new Color(1, 1, 1, 0);
+        AtualizarAviso();
     }
 }

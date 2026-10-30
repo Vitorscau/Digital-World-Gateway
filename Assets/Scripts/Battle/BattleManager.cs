@@ -106,7 +106,7 @@ public class BattleManager : MonoBehaviour
         novoInimigo.transform.LookAt(new Vector3(novoJogador.transform.position.x, novoInimigo.transform.position.y, novoJogador.transform.position.z));
 
         // Ficha + nível de cada um, ligados às barras de vida da HUD da arena.
-        var dadosJogador = new Digimon(encontro.FichaParceiro, Mathf.Max(1, encontro.Parceiro?.nivel ?? 5));
+        var dadosJogador = new Digimon(encontro.FichaParceiro, Mathf.Max(1, encontro.Parceiro?.nivel ?? 5)).AplicarParceiro(encontro.Parceiro);
         var dadosInimigo = new Digimon(encontro.FichaInimigo, Mathf.Max(1, encontro.NivelInimigo));
         AcharHud("Enemy", out var hudInimigo, out var barraInimigo);
         AcharHud("Player", out var hudJogador, out var barraJogador);

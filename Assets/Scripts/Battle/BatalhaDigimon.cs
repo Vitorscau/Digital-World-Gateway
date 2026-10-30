@@ -88,7 +88,7 @@ public class BatalhaDigimon : MonoBehaviour
         MontarUI();
         AcharHuds();
 
-        var parceiro = new Digimon(_encontro.FichaParceiro, Mathf.Max(1, _encontro.Parceiro?.nivel ?? 5));
+        var parceiro = new Digimon(_encontro.FichaParceiro, Mathf.Max(1, _encontro.Parceiro?.nivel ?? 5)).AplicarParceiro(_encontro.Parceiro);
         var selvagem = new Digimon(_encontro.FichaInimigo, Mathf.Max(1, _encontro.NivelInimigo));
 
         _jogador = DigimonVisual.Criar(_encontro.FichaParceiro, null, _pontoJogador, _altura, _pai);

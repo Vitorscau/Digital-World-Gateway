@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AR_Battle_Scene.unity
     guid: d0a48be00229ee5459fbc19717623763
+  - enabled: 1
+    path: Assets/Scenes/Care_Scene.unity
+    guid: 37ac5ea8f7bd3c341a1125c212c6e88d
   m_configObjects:
     Niantic.Lightship.AR.LightshipSettings: {fileID: 11400000, guid: e871c1ddb1273c64eaef34ceac4cff33,
       type: 2}
@@ -33,3 +36,4 @@ EditorBuildSettings:
       type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: ac34648d4f793c9478e9040914be85aa,
       type: 2}
+  m_UseUCBPForAssetBundles: 0

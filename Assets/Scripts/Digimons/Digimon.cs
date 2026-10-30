@@ -37,16 +37,34 @@ public class Digimon
 
     // ------------------------------------------------------------ Status (estilo Digimon World)
 
+    // Bônus de treino (0 a 100 = até +50%) e amizade do parceiro (0 a 100). Selvagens ficam em 0.
+    public int TreinoOffense, TreinoDefense, TreinoSpeed, TreinoBrains;
+    public int Amizade;
+
+    /// <summary>Usa o treino e a amizade do parceiro do jogador nesta batalha.</summary>
+    public Digimon AplicarParceiro(DigimonSalvo d)
+    {
+        if (d == null) return this;
+        TreinoOffense = d.treinoOffense;
+        TreinoDefense = d.treinoDefense;
+        TreinoSpeed = d.treinoSpeed;
+        TreinoBrains = d.treinoBrains;
+        Amizade = d.amizade;
+        return this;
+    }
+
+    private static int ComTreino(int valor, int treino) => Mathf.RoundToInt(valor * (1f + Mathf.Clamp(treino, 0, 100) / 200f));
+
     public int MaxHp => Escala(Base.MaxHp, 10);
     /// <summary>Pontos para usar técnicas. Vem do SP da ficha.</summary>
     public int MaxMp => Escala(Base.SpecialPoints, 8);
     /// <summary>Força dos golpes físicos.</summary>
-    public int Offense => Escala(Base.Attack, 5);
-    public int Defense => Escala(Base.Defense, 5);
+    public int Offense => ComTreino(Escala(Base.Attack, 5), TreinoOffense);
+    public int Defense => ComTreino(Escala(Base.Defense, 5), TreinoDefense);
     /// <summary>Velocidade: agir mais vezes, andar mais rápido e desviar.</summary>
-    public int Speed => Escala(Base.SpecialDefense, 5); // o campo "SPD" da ficha
+    public int Speed => ComTreino(Escala(Base.SpecialDefense, 5), TreinoSpeed); // o campo "SPD" da ficha
     /// <summary>Inteligência: força das técnicas mágicas e qualidade das decisões na luta.</summary>
-    public int Brains => Escala(Base.Inteligence, 5);
+    public int Brains => ComTreino(Escala(Base.Inteligence, 5), TreinoBrains);
 
     /// <summary>
     /// Quão bem ele escolhe o que fazer (0 a 1), pela inteligência da espécie.
