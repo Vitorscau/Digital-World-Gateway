@@ -116,13 +116,86 @@ public static class Digitamas
         {
             var u = (x + 0.5f) / w;
             var v = (y + 0.5f) / h;
-            var m = Mascara(t.Padrao, u * volta, v * Altura, volta, v);
+            var m = EmPontos(t.Padrao)
+                ? Mascara3D(t.Padrao, Ponto(u, v))
+                : Mascara(t.Padrao, u * volta, v * Altura, volta, v);
             px[y * w + x] = Color.Lerp(t.Base, t.Detalhe, m);
         }
         tex.SetPixels(px);
         tex.Apply(true);
         _texturas[t.Fresh] = tex;
         return tex;
+    }
+
+    // ------------------------------------------------------------ Estampas espalhadas na superfície 3D
+    // Bolinhas, círculos, manchas e nuvens são colocados em pontos espalhados por igual sobre o ovo
+    // (espiral de Fibonacci) e medidos em 3D: não se espremem perto das pontas do ovo.
+
+    private static bool EmPontos(Padrao p) =>
+        p == Padrao.Bolinhas || p == Padrao.Circulos || p == Padrao.Manchas || p == Padrao.Nuvens;
+
+    /// <summary>Ponto da superfície do ovo para (u, v) da textura.</summary>
+    private static Vector3 Ponto(float u, float v)
+    {
+        var r = Raio(v);
+        var a = u * Mathf.PI * 2f;
+        return new Vector3(Mathf.Cos(a) * r, v * Altura, Mathf.Sin(a) * r);
+    }
+
+    private static readonly Dictionary<Padrao, List<(Vector3 c, float r)>> _centros = new Dictionary<Padrao, List<(Vector3, float)>>();
+
+    /// <summary>Centros (e raios) dos desenhos de cada padrão, espalhados por igual pelo ovo.</summary>
+    private static List<(Vector3 c, float r)> Centros(Padrao p)
+    {
+        if (_centros.TryGetValue(p, out var pronto)) return pronto;
+        int n; float raio, variacao;
+        switch (p)
+        {
+            case Padrao.Bolinhas: n = 64; raio = 0.058f; variacao = 0.012f; break;
+            case Padrao.Circulos: n = 24; raio = 0.095f; variacao = 0.01f; break;
+            case Padrao.Manchas: n = 11; raio = 0.1f; variacao = 0.03f; break;
+            default: n = 9; raio = 0.05f; variacao = 0.01f; break; // nuvens
+        }
+        var lista = new List<(Vector3, float)>();
+        for (var i = 0; i < n; i++)
+        {
+            var y = 1f - 2f * (i + 0.5f) / n;           // -1..1 (espiral de Fibonacci)
+            var v = (y + 1f) * 0.5f;
+            if (v < 0.07f || v > 0.95f) continue;       // as pontas ficam lisas
+            var u = Mathf.Repeat(i * 0.381966f + Ruido(i, 11) * 0.05f, 1f);
+            var r = raio + (Ruido(i, 5) - 0.5f) * 2f * variacao;
+            var centro = Ponto(u, v);
+            if (p == Padrao.Manchas)
+            {
+                // Mancha irregular: três círculos encostados.
+                for (var k = 0; k < 3; k++)
+                {
+                    var du = (Ruido(i, 20 + k) - 0.5f) * 0.06f;
+                    var dv = (Ruido(i, 30 + k) - 0.5f) * 0.12f;
+                    lista.Add((Ponto(Mathf.Repeat(u + du, 1f), Mathf.Clamp01(v + dv)), r * (0.7f + Ruido(i, 40 + k) * 0.5f)));
+                }
+            }
+            else if (p == Padrao.Nuvens)
+            {
+                // Nuvem: quatro bolinhas fofas em fila.
+                for (var k = 0; k < 4; k++)
+                    lista.Add((Ponto(Mathf.Repeat(u + (k - 1.5f) * 0.035f, 1f), v + (k % 2) * 0.025f), r + (k % 2) * 0.015f));
+            }
+            else lista.Add((centro, r));
+        }
+        _centros[p] = lista;
+        return lista;
+    }
+
+    private static float Mascara3D(Padrao p, Vector3 ponto)
+    {
+        var m = 0f;
+        foreach (var (c, r) in Centros(p))
+        {
+            var d = Vector3.Distance(ponto, c);
+            if (d < r + 0.02f) m = Mathf.Max(m, Borda(d, r));
+        }
+        return m;
     }
 
     /// <summary>Quanto do desenho cobre o ponto (0 = cor do ovo, 1 = cor do detalhe), com borda suave.</summary>

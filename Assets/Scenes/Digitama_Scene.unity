@@ -148,6 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26ae6939b66bd7c4c8f7a72f0d86af02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CenaDigitama
+  musica: {fileID: 8300000, guid: 2bad16c703b8d574eab9cf0d412ec73b, type: 3}
+  volumeMusica: 0.5
 --- !u!4 &838205474
 Transform:
   m_ObjectHideFlags: 0

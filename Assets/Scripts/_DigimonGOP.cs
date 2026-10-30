@@ -212,7 +212,33 @@ public class _DigimonGOP : MonoBehaviour
         var metros = Mathf.FloorToInt(_metrosPendentes);
         _metrosPendentes -= metros;
         PerfilJogador.Atual.metrosAndados += metros;
+        GanharXpAndando(metros);
         Missoes.RegistrarCaminhada(metros); // já salva o perfil
+    }
+
+    [Header("Caminhada")]
+    [Tooltip("A cada tantos metros andados na vida real, o Tamer e o parceiro ganham EXP.")]
+    [SerializeField] private int metrosPorRecompensa = 100;
+    [SerializeField] private int xpTamerPorRecompensa = 10;
+    [SerializeField] private int xpParceiroPorRecompensa = 5;
+
+    /// <summary>Andar na vida real dá EXP ao Tamer e ao parceiro (como os ovos/doces do Pokémon GO).</summary>
+    private void GanharXpAndando(int metros)
+    {
+        var perfil = PerfilJogador.Atual;
+        perfil.metrosParaXp += metros;
+        var vezes = metrosPorRecompensa > 0 ? perfil.metrosParaXp / metrosPorRecompensa : 0;
+        if (vezes <= 0) return;
+        perfil.metrosParaXp -= vezes * metrosPorRecompensa;
+        var xpTamer = xpTamerPorRecompensa * vezes;
+        var xpParceiro = xpParceiroPorRecompensa * vezes;
+        perfil.GanharXp(xpTamer);
+        var parceiro = perfil.Parceiro;
+        var subiu = PerfilJogador.GanharXp(parceiro, xpParceiro);
+        var nome = parceiro?.Ficha != null ? parceiro.Ficha.Name.Trim() : "Parceiro";
+        AvisoNaTela.Mostrar($"Caminhada: +{xpTamer} EXP Tamer, +{xpParceiro} EXP {nome}" +
+                            (subiu > 0 ? $"  ({nome} subiu para o nível {parceiro.nivel}!)" : ""));
+        if (!TelaFigma.AlgumaAberta) TelaLevelUp.MostrarSePreciso();
     }
 
     private void Atualizar(DateTime agoraUtc)

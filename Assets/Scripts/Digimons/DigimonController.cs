@@ -115,6 +115,21 @@ public class DigimonController : MonoBehaviour
         if (alturaNoMapa <= 0f) return;
         var h = DigimonVisual.Altura(go);
         if (h <= 0.0001f) return;
-        go.transform.localScale *= alturaNoMapa / h;
+        // A altura vale para um Rookie; bebês ficam menores e estágios fortes, maiores.
+        go.transform.localScale *= alturaNoMapa * Proporcao(digimon != null ? digimon.Stage : DigimonStage.Rookie) / h;
+    }
+
+    public static float Proporcao(DigimonStage e)
+    {
+        switch (e)
+        {
+            case DigimonStage.Fresh: return 0.5f;
+            case DigimonStage.InTraining: return 0.65f;
+            case DigimonStage.Rookie: return 1f;
+            case DigimonStage.Champion:
+            case DigimonStage.Armor: return 1.25f;
+            case DigimonStage.Ultimate: return 1.45f;
+            default: return 1.6f;
+        }
     }
 }

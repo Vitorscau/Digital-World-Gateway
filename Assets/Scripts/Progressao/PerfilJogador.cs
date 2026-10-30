@@ -83,6 +83,7 @@ public class PerfilJogador
     public int vitorias;
     public int derrotas;
     public double metrosAndados;
+    public int metrosParaXp;         // metros andados que ainda não viraram EXP
     public string diaMissoes;        // data (yyyy-MM-dd) das missões diárias atuais
     public List<ProgressoMissao> missoes = new List<ProgressoMissao>();
     public List<ItemSalvo> itens = new List<ItemSalvo>();

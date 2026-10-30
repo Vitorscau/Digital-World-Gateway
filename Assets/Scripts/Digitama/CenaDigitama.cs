@@ -27,8 +27,24 @@ public class CenaDigitama : MonoBehaviour
     private GameObject _controles, _confirmacao, _final;
     private Image _clarao;
 
+    [Tooltip("Música de fundo (a mesma do mapa).")]
+    [SerializeField] private AudioClip musica;
+    [SerializeField, Range(0f, 1f)] private float volumeMusica = 0.5f;
+
+    private Transform _anelLuz;
+    private TMP_Text _contador;
+
     private void Start()
     {
+        TelaSettings.AplicarSom();
+        if (musica != null)
+        {
+            var som = gameObject.AddComponent<AudioSource>();
+            som.clip = musica;
+            som.loop = true;
+            som.volume = volumeMusica;
+            som.Play();
+        }
         MontarMundo();
         MontarUI();
         Selecionar(0, true);
@@ -45,48 +61,189 @@ public class CenaDigitama : MonoBehaviour
             _cam.tag = "MainCamera";
         }
         _cam.clearFlags = CameraClearFlags.SolidColor;
-        _cam.backgroundColor = new Color(0.04f, 0.32f, 0.62f);
+        _cam.backgroundColor = new Color(0.03f, 0.12f, 0.3f);
         _cam.fieldOfView = 40f;
         _cam.transform.position = new Vector3(0f, 2.1f, -5.2f);
         _cam.transform.LookAt(new Vector3(0f, 0.15f, 0.9f));
+        FundoDegrade();
 
         if (FindFirstObjectByType<Light>() == null)
         {
             var sol = new GameObject("Luz").AddComponent<Light>();
             sol.type = LightType.Directional;
-            sol.intensity = 1.2f;
-            sol.transform.rotation = Quaternion.Euler(40f, -30f, 0f);
+            sol.intensity = 1.0f;
+            sol.color = new Color(0.9f, 0.95f, 1f);
+            sol.transform.rotation = Quaternion.Euler(45f, -30f, 0f);
         }
-        RenderSettings.ambientLight = new Color(0.55f, 0.6f, 0.7f);
+        RenderSettings.ambientLight = new Color(0.45f, 0.55f, 0.7f);
+        // Névoa azul: o chão some suavemente no horizonte.
+        RenderSettings.fog = true;
+        RenderSettings.fogMode = FogMode.Linear;
+        RenderSettings.fogColor = new Color(0.05f, 0.33f, 0.5f);
+        RenderSettings.fogStartDistance = 6f;
+        RenderSettings.fogEndDistance = 16f;
 
-        // Ninho: um disco de grama e um anel de "palha" em volta dos ovos.
-        var chao = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        // Chão: grade digital brilhante (o Digital World).
+        var chao = GameObject.CreatePrimitive(PrimitiveType.Plane);
         chao.name = "Chao";
-        chao.transform.position = new Vector3(0, -0.05f, RaioCarrossel);
-        chao.transform.localScale = new Vector3(30f, 0.05f, 30f);
-        chao.GetComponent<Renderer>().material = Material(new Color(0.42f, 0.78f, 0.45f));
         Destroy(chao.GetComponent<Collider>());
+        chao.transform.position = new Vector3(0, 0f, RaioCarrossel);
+        chao.transform.localScale = Vector3.one * 4f;
+        var matChao = Material(new Color(0.12f, 0.45f, 0.62f));
+        var grade = TexturaGrade();
+        if (matChao.HasProperty("_BaseMap")) { matChao.SetTexture("_BaseMap", grade); matChao.SetTextureScale("_BaseMap", new Vector2(40, 40)); }
+        matChao.mainTexture = grade;
+        matChao.mainTextureScale = new Vector2(40, 40);
+        if (matChao.HasProperty("_EmissionColor"))
+        {
+            matChao.EnableKeyword("_EMISSION");
+            matChao.SetColor("_EmissionColor", new Color(0.05f, 0.25f, 0.35f));
+            if (matChao.HasProperty("_EmissionMap")) { matChao.SetTexture("_EmissionMap", grade); }
+        }
+        chao.GetComponent<Renderer>().material = matChao;
+
+        // Luz de destaque no ovo da frente e um anel de luz girando no chão embaixo dele.
+        var foco = new GameObject("Foco").AddComponent<Light>();
+        foco.type = LightType.Spot;
+        foco.color = new Color(1f, 0.95f, 0.8f);
+        foco.intensity = 6f;
+        foco.range = 6f;
+        foco.spotAngle = 40f;
+        foco.transform.position = new Vector3(0f, 3.2f, -0.6f);
+        foco.transform.LookAt(new Vector3(0f, 0.3f, 0f));
+        var anel = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        Destroy(anel.GetComponent<Collider>());
+        anel.name = "AnelDeLuz";
+        anel.transform.position = new Vector3(0f, 0.012f, 0f);
+        anel.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        anel.transform.localScale = Vector3.one * 1.25f;
+        anel.GetComponent<Renderer>().material = Formas.MaterialSemLuz(new Color(0.55f, 0.95f, 1f, 0.9f), Formas.Anel().texture, true);
+        _anelLuz = anel.transform;
+
+        // Dados flutuando (partículas subindo devagar).
+        Particulas();
 
         _carrossel = new GameObject("Carrossel").transform;
         _carrossel.position = new Vector3(0, 0, RaioCarrossel);
         var n = Digitamas.Todos.Length;
+        var malhaNinho = Ninho();
+        var matNinho = Material(new Color(0.55f, 0.38f, 0.2f));
         for (var i = 0; i < n; i++)
         {
             var apoio = new GameObject("Apoio_" + i).transform;
             apoio.SetParent(_carrossel, false);
             var ang = i * 360f / n;
             apoio.localPosition = Quaternion.Euler(0, ang, 0) * new Vector3(0, 0, -RaioCarrossel);
-            // Ninho de cada ovo.
-            var ninho = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Destroy(ninho.GetComponent<Collider>());
+            // Ninho em anel; o ovo fica apoiado dentro dele.
+            var ninho = new GameObject("Ninho");
             ninho.transform.SetParent(apoio, false);
-            ninho.transform.localScale = new Vector3(0.75f, 0.06f, 0.75f);
-            ninho.GetComponent<Renderer>().material = Material(new Color(0.72f, 0.55f, 0.3f));
+            ninho.AddComponent<MeshFilter>().sharedMesh = malhaNinho;
+            ninho.AddComponent<MeshRenderer>().sharedMaterial = matNinho;
             var ovo = Digitamas.Criar(Digitamas.Todos[i], apoio);
             ovo.transform.localScale = Vector3.one * 0.55f;
             ovo.transform.localPosition = Vector3.up * 0.04f;
             _ovos.Add(ovo.transform);
         }
+    }
+
+    /// <summary>Fundo em degradê (azul-escuro no alto, azul-esverdeado no horizonte) atrás de tudo.</summary>
+    private void FundoDegrade()
+    {
+        var go = new GameObject("Fundo", typeof(Canvas));
+        var c = go.GetComponent<Canvas>();
+        c.renderMode = RenderMode.ScreenSpaceCamera;
+        c.worldCamera = _cam;
+        c.planeDistance = _cam.farClipPlane * 0.95f;
+        c.sortingOrder = -100;
+        var img = new GameObject("Degrade", typeof(RectTransform), typeof(RawImage)).GetComponent<RawImage>();
+        img.transform.SetParent(go.transform, false);
+        FigmaUI.Esticar(img.rectTransform);
+        var t = new Texture2D(1, 64, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+        for (var y = 0; y < 64; y++)
+            t.SetPixel(0, y, Color.Lerp(new Color(0.05f, 0.33f, 0.5f), new Color(0.02f, 0.06f, 0.2f), y / 63f));
+        t.Apply();
+        img.texture = t;
+        img.raycastTarget = false;
+    }
+
+    /// <summary>Quadrado da grade do chão: linhas claras nas bordas.</summary>
+    private static Texture2D TexturaGrade()
+    {
+        const int n = 64;
+        var t = new Texture2D(n, n, TextureFormat.RGBA32, true) { wrapMode = TextureWrapMode.Repeat };
+        for (var y = 0; y < n; y++)
+        for (var x = 0; x < n; x++)
+        {
+            var borda = Mathf.Min(Mathf.Min(x, n - 1 - x), Mathf.Min(y, n - 1 - y));
+            var linha = Mathf.Clamp01(1f - borda / 2.5f);
+            t.SetPixel(x, y, Color.Lerp(new Color(0.1f, 0.35f, 0.5f), new Color(0.55f, 1f, 1f), linha));
+        }
+        t.Apply(true);
+        return t;
+    }
+
+    /// <summary>Ninho em forma de anel (toro), com a parte de cima mais grossa, como palha trançada.</summary>
+    private static Mesh Ninho()
+    {
+        const int voltas = 32, gomos = 12;
+        const float raio = 0.36f, grossura = 0.07f;
+        var verts = new List<Vector3>();
+        var tris = new List<int>();
+        for (var i = 0; i <= voltas; i++)
+        {
+            var a = i / (float)voltas * Mathf.PI * 2f;
+            var centro = new Vector3(Mathf.Cos(a) * raio, grossura, Mathf.Sin(a) * raio);
+            var fora = new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a));
+            for (var j = 0; j <= gomos; j++)
+            {
+                var b = j / (float)gomos * Mathf.PI * 2f;
+                // Um pouco irregular, como galhos.
+                var g = grossura * (1f + 0.12f * Mathf.Sin(a * 9f + b * 3f));
+                verts.Add(centro + fora * Mathf.Cos(b) * g + Vector3.up * Mathf.Sin(b) * g);
+            }
+        }
+        for (var i = 0; i < voltas; i++)
+        for (var j = 0; j < gomos; j++)
+        {
+            var p = i * (gomos + 1) + j;
+            var q = p + gomos + 1;
+            tris.Add(p); tris.Add(p + 1); tris.Add(q);
+            tris.Add(p + 1); tris.Add(q + 1); tris.Add(q);
+        }
+        var m = new Mesh { name = "Ninho" };
+        m.SetVertices(verts);
+        m.SetTriangles(tris, 0);
+        m.RecalculateNormals();
+        m.RecalculateBounds();
+        return m;
+    }
+
+    /// <summary>Pontinhos de luz subindo devagar (dados do Digital World).</summary>
+    private void Particulas()
+    {
+        var go = new GameObject("Dados");
+        go.transform.position = new Vector3(0f, 0f, RaioCarrossel);
+        var ps = go.AddComponent<ParticleSystem>();
+        var main = ps.main;
+        main.startLifetime = 6f;
+        main.startSpeed = 0.25f;
+        main.startSize = new ParticleSystem.MinMaxCurve(0.04f, 0.1f);
+        main.startColor = new ParticleSystem.MinMaxGradient(new Color(0.5f, 1f, 1f, 0.8f), new Color(1f, 1f, 0.7f, 0.8f));
+        main.maxParticles = 120;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        var emissao = ps.emission;
+        emissao.rateOverTime = 14f;
+        var forma = ps.shape;
+        forma.shapeType = ParticleSystemShapeType.Circle;
+        forma.radius = 5f;
+        forma.rotation = new Vector3(-90f, 0f, 0f);
+        var cor = ps.colorOverLifetime;
+        cor.enabled = true;
+        var g = new Gradient();
+        g.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+            new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, 0.2f), new GradientAlphaKey(0f, 1f) });
+        cor.color = g;
+        go.GetComponent<ParticleSystemRenderer>().material = Formas.MaterialSemLuz(Color.white, Formas.Brilho().texture, true);
     }
 
     private static Material Material(Color cor)
@@ -100,6 +257,11 @@ public class CenaDigitama : MonoBehaviour
 
     private void Update()
     {
+        if (_anelLuz != null)
+        {
+            _anelLuz.rotation = Quaternion.Euler(90f, Time.time * 40f, 0f);
+            _anelLuz.localScale = Vector3.one * (1.2f + Mathf.Sin(Time.time * 3f) * 0.06f);
+        }
         // Carrossel gira até o ovo escolhido ficar na frente.
         _angulo = Mathf.LerpAngle(_angulo, _anguloAlvo, Time.deltaTime * 6f);
         _carrossel.rotation = Quaternion.Euler(0, _angulo, 0);
@@ -153,6 +315,7 @@ public class CenaDigitama : MonoBehaviour
         _anguloAlvo = _angulo + Mathf.DeltaAngle(_angulo, alvo);
         if (imediato) _angulo = _anguloAlvo;
         _descricao.text = Digitamas.Todos[_atual].Descricao;
+        if (_contador != null) _contador.text = $"Digitama {_atual + 1} de {n}";
     }
 
     // ------------------------------------------------------------ Interface
@@ -167,11 +330,18 @@ public class CenaDigitama : MonoBehaviour
         _controles = new GameObject("Controles", typeof(RectTransform));
         _controles.transform.SetParent(_raiz, false);
         FigmaUI.Esticar((RectTransform)_controles.transform);
-        _descricao = FigmaUI.TextoEm(_controles.transform, 60f, 1480f, 909f, 110f, "", 44f, FigmaUI.Peso.Negrito);
+        // Painel de vidro com a descrição do ovo, o contador e as setas.
+        FigmaUI.CaixaVidro(_controles.transform, 50f, 1430f, 929f, 330f);
+        _contador = FigmaUI.TextoEm(_controles.transform, 50f, 1455f, 929f, 50f, "", 34f, FigmaUI.Peso.Normal);
+        _contador.color = new Color(1f, 1f, 1f, 0.8f);
+        _descricao = FigmaUI.TextoEm(_controles.transform, 300f, 1510f, 429f, 200f, "", 40f, FigmaUI.Peso.Negrito);
         _descricao.textWrappingMode = TextWrappingModes.Normal;
-        Seta(_controles.transform, 60f, "<", -1);
-        Seta(_controles.transform, FigmaUI.Largura - 60f - 230f, ">", 1);
-        FigmaUI.BotaoLargo(_controles.transform, 87f, 1800f, "Escolher este ovo", Confirmar);
+        _descricao.enableAutoSizing = true;
+        _descricao.fontSizeMin = 28f;
+        _descricao.fontSizeMax = 42f;
+        Seta(_controles.transform, 70f, "<", -1);
+        Seta(_controles.transform, FigmaUI.Largura - 70f - 230f, ">", 1);
+        FigmaUI.BotaoLargo(_controles.transform, 87f, 1810f, "Escolher este ovo", Confirmar);
 
         _confirmacao = new GameObject("Confirmacao", typeof(RectTransform));
         _confirmacao.transform.SetParent(_raiz, false);
@@ -193,7 +363,7 @@ public class CenaDigitama : MonoBehaviour
 
     private void Seta(Transform pai, float x, string rotulo, int passo)
     {
-        var b = FigmaUI.BotaoBack(pai, x, 1620f, () => Selecionar(_atual + passo), rotulo, 230f / 395f);
+        var b = FigmaUI.BotaoBack(pai, x, 1545f, () => Selecionar(_atual + passo), rotulo, 230f / 395f);
         b.GetComponentInChildren<TMP_Text>().fontSize = 60f;
     }
 
