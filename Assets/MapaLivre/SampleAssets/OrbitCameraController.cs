@@ -48,6 +48,10 @@ namespace Niantic.Lightship.Maps.SampleAssets.Cameras.OrbitCamera
 
         private void Awake()
         {
+            // Componentes de giroscópio no próprio rig brigam com a rotação da câmera.
+            foreach (var b in GetComponents<MonoBehaviour>())
+                if (b != this && b.GetType().Name == "FollowGyro") b.enabled = false;
+
             _camera = GetComponentInChildren<Camera>(true);
             _zoom = _targetZoom = _startZoom;
             _yaw = transform.eulerAngles.y;

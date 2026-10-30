@@ -34,27 +34,44 @@ public class DigimonController : MonoBehaviour
     {
         return digimon;
     }
+    [Tooltip("Altura do parceiro no mapa (metros). Os modelos têm escalas diferentes; todos são ajustados para esta altura.")]
+    [SerializeField]
+    private float alturaNoMapa = 14f;
+
+    private GameObject instanciaAtual;
+    private bool iniciado;
+
     private void SetDigimonController()
     {
+        iniciado = true;
+        if (instanciaAtual != null) Destroy(instanciaAtual); // troca de parceiro
+
         if (digimon.Prefab != null)
         {
             // Instanciar o GameObject do DigimonBase
             GameObject digimonInstance = Instantiate(digimon.Prefab, spawnPoint.position, spawnPoint.rotation);
+            instanciaAtual = digimonInstance;
+
+            // Scripts de mapa/batalha que vêm em alguns prefabs não servem para o parceiro.
+            foreach (var c in digimonInstance.GetComponents<CriaturaArena>()) Destroy(c);
+            foreach (var c in digimonInstance.GetComponents<DigimonMapa>()) Destroy(c);
+            foreach (var c in digimonInstance.GetComponents<WildDigimon>()) Destroy(c);
 
             // Tornar o DigimonInstance um filho do DigimonController
             digimonInstance.transform.parent = transform;
-
-            // Definir a escala do GameObject instanciado para (1, 1, 1)
             digimonInstance.transform.localScale = Vector3.one;
+            AjustarAltura(digimonInstance);
 
             // Obtém o Animator do GameObject instanciado
-            Animator digimonAnimator = digimonInstance.GetComponent<Animator>();
+            Animator digimonAnimator = digimonInstance.GetComponentInChildren<Animator>();
 
             // Verifica se o GameObject instanciado possui um Animator
             if (digimonAnimator != null)
             {
                 // Configurar o Animator do GameObject instanciado
-                digimonAnimator.runtimeAnimatorController = digimon.Animator.runtimeAnimatorController;
+                if (digimon.Animator != null)
+                    digimonAnimator.runtimeAnimatorController = digimon.Animator.runtimeAnimatorController;
+                digimonAnimator.enabled = true;
 
                 // Acessar o componente PlayerModel no mesmo GameObject
                 PlayerModel playerModel = GetComponent<PlayerModel>();
@@ -86,9 +103,18 @@ public class DigimonController : MonoBehaviour
     {
         digimon = newDigimon;
 
-        if (animator != null)
+        if (iniciado && digimon != null)
         {
             SetDigimonController();
         }
+    }
+
+    /// <summary>Deixa o modelo com a altura definida, com os pés no ponto de spawn.</summary>
+    private void AjustarAltura(GameObject go)
+    {
+        if (alturaNoMapa <= 0f) return;
+        var h = DigimonVisual.Altura(go);
+        if (h <= 0.0001f) return;
+        go.transform.localScale *= alturaNoMapa / h;
     }
 }

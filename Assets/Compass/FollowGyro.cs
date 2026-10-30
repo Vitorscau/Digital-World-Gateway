@@ -31,10 +31,17 @@ public class FollowGyro : MonoBehaviour
     [Tooltip("Deslocamento aplicado uma vez ao iniciar.")]
     [SerializeField] private Vector3 positionOffset;
 
+    [Tooltip("Na tela do mapa, um ponteiro de bússola da HUD passa a mostrar o norte do mapa automaticamente.")]
+    [SerializeField] private bool bussolaDoMapaAutomatica = true;
+
     void Start()
     {
         // Antes era somado a cada frame, e o objeto ia "fugindo" da tela.
         transform.position += positionOffset;
+
+        if (bussolaDoMapaAutomatica && fonte == Fonte.Giroscopio && GetComponentInParent<Canvas>() != null &&
+            FindFirstObjectByType<Niantic.Lightship.Maps.SampleAssets.Cameras.OrbitCamera.OrbitCameraController>() != null)
+            fonte = Fonte.CameraDoMapa;
 
         if (fonte == Fonte.Giroscopio) GyroManager.Instance.EnanbleGyro();
         if (fonte == Fonte.Bussola) Input.compass.enabled = true;
