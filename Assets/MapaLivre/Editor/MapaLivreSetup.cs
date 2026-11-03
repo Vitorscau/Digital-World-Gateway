@@ -106,7 +106,7 @@ public static class MapaLivreSetup
         o.BuildingHeightScale = 0f;
         o.BuildingMinHeight = 0.3f;
         o.BuildingMaxHeight = 0.3f;
-        o.TextureRepeatMeters = 60f;
+        o.TextureRepeatMeters = 90f; // circuito 50% maior que os 60 m originais
         o.SkyColor = Hex("#3D6878");
         o.FogStart = 380f;
         o.FogEnd = 700f;

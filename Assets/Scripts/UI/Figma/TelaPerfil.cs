@@ -94,7 +94,7 @@ public class TelaPerfil : TelaFigma
         var y = 110f;
         if (golpes == null || golpes.Count == 0)
         {
-            var t = FigmaUI.Texto(painel, "Nenhum golpe cadastrado na ficha.", 34f, FigmaUI.Peso.Normal, TextAlignmentOptions.Center);
+            var t = FigmaUI.Texto(painel, "No moves registered.", 34f, FigmaUI.Peso.Normal, TextAlignmentOptions.Center);
             t.rectTransform.anchorMin = t.rectTransform.anchorMax = new Vector2(0.5f, 1);
             t.rectTransform.anchoredPosition = new Vector2(0, -y - 30);
             return;
@@ -107,7 +107,7 @@ public class TelaPerfil : TelaFigma
             FigmaUI.Esticar(nome.rectTransform);
             var info = FigmaUI.Texto(linha, aprendido
                     ? $"Power {g.movebase.Power}  ·  Cost {g.movebase.Cost}  ·  {g.movebase.Type}"
-                    : $"Aprende no nível {g.level}", 30f, FigmaUI.Peso.Normal, TextAlignmentOptions.BottomLeft, false);
+                    : $"Learns at Lv. {g.level}", 30f, FigmaUI.Peso.Normal, TextAlignmentOptions.BottomLeft, false);
             FigmaUI.Esticar(info.rectTransform);
             if (!aprendido) info.color = new Color(1, 1, 1, 0.6f);
             y += 125f;

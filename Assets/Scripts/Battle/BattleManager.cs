@@ -246,12 +246,12 @@ public class BattleManager : MonoBehaviour
         if (r.Itens.Count == 0)
         {
             Remendo(raiz, new Vector2(0.09f, 0.335f), new Vector2(0.64f, 0.48f));
-            Rotulo(raiz, new Vector2(0.12f, 0.36f), new Vector2(0.64f, 0.46f), "Nenhum item", TextAlignmentOptions.Left, 0.85f);
+            Rotulo(raiz, new Vector2(0.12f, 0.36f), new Vector2(0.64f, 0.46f), "No items", TextAlignmentOptions.Left, 0.85f);
         }
 
         // Dados de Scan coletados (e subida de nível do parceiro).
         var linha = r.LinhaScan;
-        if (r.NivelParceiroNovo > 0) linha += $"\n{r.NomeParceiro} subiu para o nível {r.NivelParceiroNovo}!";
+        if (r.NivelParceiroNovo > 0) linha += $"\n{r.NomeParceiro} reached level {r.NivelParceiroNovo}!";
         Rotulo(raiz, new Vector2(0.08f, 0.21f), new Vector2(0.92f, 0.33f), linha, TextAlignmentOptions.Center, 1f);
     }
 
@@ -299,6 +299,6 @@ public class BattleManager : MonoBehaviour
     public void ReturnToMap()
     {
         Encontro.Limpar();
-        SceneManager.LoadScene(Cenas.Mapa);
+        TelaCarregamento.Ir(Cenas.Mapa);
     }
 }

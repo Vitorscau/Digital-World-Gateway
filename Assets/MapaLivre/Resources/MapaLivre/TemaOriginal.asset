@@ -33,7 +33,7 @@ MonoBehaviour:
   BuildingHeightScale: 0
   BuildingMinHeight: 0.3
   BuildingMaxHeight: 0.3
-  TextureRepeatMeters: 60
+  TextureRepeatMeters: 90
   SkyColor: {r: 0.23921569, g: 0.40784314, b: 0.47058824, a: 1}
   UseFog: 1
   FogStart: 380

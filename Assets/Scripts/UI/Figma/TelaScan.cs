@@ -120,7 +120,7 @@ public class TelaScan : TelaFigma
             _qr.color = Color.white;
             _nomeDigiCode.gameObject.SetActive(true);
             _nome.text = "";
-            _dica.text = "Batalhe com Digimons no mapa para coletar os dados deles.";
+            _dica.text = "Battle Digimon on the map to collect their data.";
             Progresso(0);
             _botaoScan.interactable = false;
             return;
@@ -137,8 +137,8 @@ public class TelaScan : TelaFigma
         _nomeDigiCode.gameObject.SetActive(!completo);
         _nome.text = completo ? (ficha != null ? ficha.Name.Trim() : s.especie) : "";
         _dica.text = completo
-            ? "Dados completos! Toque em Scan Data para baixar."
-            : _scans.Count > 1 ? $"{_indice + 1} de {_scans.Count}  ·  deslize para ver outros" : "";
+            ? "Data complete! Tap Scan Data to download."
+            : _scans.Count > 1 ? $"{_indice + 1} of {_scans.Count}  ·  swipe to see others" : "";
         Progresso(p);
         _botaoScan.interactable = completo;
     }
@@ -160,13 +160,13 @@ public class TelaScan : TelaFigma
         var novo = p.ConcluirScan(s.especie);
         if (novo == null)
         {
-            AvisoNaTela.Mostrar($"Dados insuficientes ({s.porcentagem}%). Continue batalhando!");
+            AvisoNaTela.Mostrar($"Not enough data ({s.porcentagem}%). Keep battling!");
             return;
         }
         p.Salvar();
-        Missoes.RegistrarCaptura();
+        Missoes.RegistrarCaptura(novo.especie);
         var nome = novo.Ficha != null ? novo.Ficha.Name.Trim() : novo.especie;
-        AvisoNaTela.Mostrar($"Download concluído! {nome} entrou para o seu Storage.");
+        AvisoNaTela.Mostrar($"Download complete! {nome} joined your Storage.");
     }
 
     private void Update()

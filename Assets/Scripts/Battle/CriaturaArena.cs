@@ -15,10 +15,14 @@ using Random = UnityEngine.Random;
 /// - A personalidade dá o estilo: Fighter parte para cima, Defender se defende mais, Brainy prefere magia de longe,
 ///   Nimble desvia e circula, Durable aguenta golpes sem cambalear, Lively age mais vezes, Builder usa suporte,
 ///   Searcher acerta mais críticos.
+/// - Táticas (quanto mais Brains, mais usa): espera o inimigo baixar a guarda, aproveita quando ele cambaleia,
+///   finaliza com a técnica mais barata que resolve, guarda MP para o golpe final, recua quando está mal,
+///   esquiva disparos para o lado e dá um passo para trás contra golpes de perto. Os disparos vão em linha reta
+///   (mirando onde o alvo vai estar), então dá para escapar deles andando.
 ///
 /// Com Configurar(...), usa a ficha do Digimon. Sem ficha, luta com os valores do Inspector.
 /// </summary>
-public class CriaturaArena : MonoBehaviour
+public partial class CriaturaArena : MonoBehaviour
 {
     [Header("Configurações Básicas")]
     public float velocidadeMovimento = 3f;
@@ -72,7 +76,7 @@ public class CriaturaArena : MonoBehaviour
     /// <summary>Disparado quando usa uma técnica com nome (quem usou, técnica).</summary>
     public event Action<CriaturaArena, Tecnica> UsouTecnica;
 
-    private enum Estado { Livre, Agindo, Defendendo, Atordoado, Caido }
+    private enum Estado { Livre, Agindo, Defendendo, Esquivando, Atordoado, Caido }
 
     private Estado _estado = Estado.Livre;
     private bool configurado;
@@ -96,6 +100,13 @@ public class CriaturaArena : MonoBehaviour
     private bool estaMovendo;
     private float _altura = 1f;
     private readonly List<GameObject> _disparos = new List<GameObject>();
+    private Tecnica _ultima;          // última técnica usada (evita repetir sempre a mesma)
+    private float _esperandoGuarda;   // há quanto tempo segura o golpe esperando a guarda do inimigo cair
+    private float _fugirAte;          // inimigo assustado com um golpe forte: foge até esse tempo
+    private float _inicioFuga;
+    private bool Fugindo => Time.time < _fugirAte;
+    private Vector3 _posAnterior;
+    private Vector3 _velocidade;      // para quem atira mirar onde ele vai estar
 
     // ------------------------------------------------------------ Preparação
 
@@ -232,9 +243,20 @@ public class CriaturaArena : MonoBehaviour
             if (rb != null && !rb.isKinematic) rb.linearVelocity = Vector3.zero;
             return;
         }
-        if (!_arenaDefinida) DefinirArena();
+        if (!_arenaDefinida) { DefinirArena(); _posAnterior = transform.position; }
+        _velocidade = (transform.position - _posAnterior) / Time.fixedDeltaTime;
+        _posAnterior = transform.position;
+        if (_estado == Estado.Livre && Fugindo)
+        {
+            Fugir();
+            return;
+        }
         Olhar(inimigo.transform.position);
         if (_estado != Estado.Livre) return;
+
+        // Inimigo cambaleando: um Digimon esperto não espera a barra encher toda para aproveitar.
+        if (inimigo._estado == Estado.Atordoado && _barraAcao >= 0.8f - 0.2f * Esperteza && Esperteza > 0.45f)
+            _barraAcao = 1f;
 
         if (_plano == null || (_plano.CustoMP > _mp)) _plano = EscolherTecnica();
         var distancia = DistanciaAte(inimigo);
@@ -243,6 +265,15 @@ public class CriaturaArena : MonoBehaviour
         // Barra cheia e no alcance: age.
         if (_barraAcao >= 1f)
         {
+            // Inimigo em guarda: o esperto segura a técnica grande e circula até a guarda cair (no máximo um pouco).
+            if (inimigo._estado == Estado.Defendendo && !_plano.Basica && _plano.Tipo != TipoTecnica.Suporte &&
+                _esperandoGuarda < 0.4f + 1.2f * Esperteza && Esperteza > 0.35f)
+            {
+                _esperandoGuarda += Time.fixedDeltaTime;
+                Mover(distancia, Mathf.Max(alvo, Perto * 1.6f));
+                return;
+            }
+            _esperandoGuarda = 0f;
             var noAlcance = _plano.ADistancia || _plano.Tipo == TipoTecnica.Suporte
                 ? distancia <= Perto * 6f
                 : distancia <= Perto * 1.15f;
@@ -261,6 +292,63 @@ public class CriaturaArena : MonoBehaviour
         }
 
         Mover(distancia, alvo);
+    }
+
+    /// <summary>
+    /// Foge do inimigo depois de levar um golpe forte: corre para longe em zigue-zague e, na borda da arena,
+    /// corre ao longo dela. Se a barra encher e tiver uma técnica de longe, ataca de costas para a parede.
+    /// </summary>
+    private void Fugir()
+    {
+        var distancia = DistanciaAte(inimigo);
+        // Só contra-ataca depois de correr um pouco e abrir distância (senão a fuga nem aparece).
+        if (_barraAcao >= 1f && Time.time - _inicioFuga > 0.9f && distancia >= Perto * 2.5f)
+        {
+            if (_plano == null || _plano.CustoMP > _mp || !_plano.ADistancia) _plano = EscolherTecnica(preferirDistancia: true);
+            if (_plano.ADistancia && distancia <= Perto * 6f)
+            {
+                _fugirAte = 0f;
+                Olhar(inimigo.transform.position);
+                StartCoroutine(Agir(_plano));
+                return;
+            }
+        }
+        if (Time.time > _trocaLado)
+        {
+            _ladoCirculo = Random.value < 0.5f ? -1 : 1;
+            _trocaLado = Time.time + Random.Range(0.5f, 1.1f); // zigue-zague mais curto na fuga
+        }
+        var deLa = transform.position - inimigo.transform.position;
+        deLa.y = 0;
+        deLa = deLa.sqrMagnitude > 1e-8f ? deLa.normalized : -transform.forward;
+        var lateral = Vector3.Cross(Vector3.up, deLa) * _ladoCirculo;
+        var movimento = deLa + lateral * 0.5f;
+        var doCentro = transform.position - _centroArena;
+        doCentro.y = 0;
+        if (doCentro.magnitude > _raioArena * 0.85f) movimento = lateral + deLa * 0.15f; // encurralado: corre pela borda
+        var passo = movimento.normalized * Velocidade() * 1.3f * Time.fixedDeltaTime;
+        Olhar(transform.position + movimento);
+        MoverPara(transform.position + passo);
+        estaMovendo = true;
+    }
+
+    /// <summary>Inimigo levou um golpe forte: talvez fuja por um tempo (depende da personalidade e da vida).</summary>
+    private void TalvezFugir(float peso)
+    {
+        if (doJogador || !Vivo) return;
+        var chance = 0.65f + 0.3f * peso;
+        switch (Personalidade)
+        {
+            case DigimonPersonalities.Fighter: chance *= 0.6f; break; // brigão foge menos, mas ainda foge
+            case DigimonPersonalities.Durable: chance *= 0.7f; break;
+            case DigimonPersonalities.Nimble:
+            case DigimonPersonalities.Brainy: chance *= 1.25f; break;
+        }
+        if (vidaAtual < vidaMaxima * 0.35f) chance += 0.25f;
+        if (Random.value > chance) return;
+        if (!Fugindo) _inicioFuga = Time.time;
+        _fugirAte =Mathf.Max(_fugirAte, Time.time + Random.Range(1.2f, 2.2f) * Mathf.Lerp(1f, 1.5f, peso));
+        _plano = null;
     }
 
     private void DefinirArena()
@@ -292,6 +380,8 @@ public class CriaturaArena : MonoBehaviour
         if (t == null || !t.ADistancia && t.Tipo != TipoTecnica.Suporte) return Perto * 0.85f;
         var d = Perto * 2.8f;
         if (Personalidade == DigimonPersonalities.Brainy) d *= 1.2f;
+        // Com pouca vida, quem não é Fighter mantém mais distância.
+        if (vidaAtual < vidaMaxima * 0.3f && Personalidade != DigimonPersonalities.Fighter) d *= 1.25f;
         return d;
     }
 
@@ -347,28 +437,63 @@ public class CriaturaArena : MonoBehaviour
         var basico = CalculoDano.Estimar(Dados, inimigo.Dados, _repertorio[0], _bonusAtaque);
         var mpFracao = _mp / _mpMax;
         var minhaVida = vidaAtual / (float)Mathf.Max(1, vidaMaxima);
+        var distancia = DistanciaAte(inimigo);
+        var inimigoEmGuarda = inimigo._estado == Estado.Defendendo;
+
+        // Finalizar: entre as técnicas que já derrubam o inimigo, a mais barata (poupa MP).
+        Tecnica finalizadora = null;
+        foreach (var t in _repertorio)
+        {
+            if (t.CustoMP > _mp || t.Tipo == TipoTecnica.Suporte) continue;
+            var garantido = CalculoDano.Estimar(Dados, inimigo.Dados, t, _bonusAtaque) * 0.9f; // pior caso da sorte
+            if (garantido < inimigo.vidaAtual) continue;
+            if (finalizadora == null || t.CustoMP < finalizadora.CustoMP ||
+                (t.CustoMP == finalizadora.CustoMP && !t.ADistancia && distancia <= Perto * 1.5f))
+                finalizadora = t;
+        }
+        if (finalizadora != null && Random.value < 0.5f + 0.5f * Esperteza) return finalizadora;
+
+        // Técnica forte que vale guardar MP para usar depois (o golpe final).
+        var melhorCaro = 0;
+        foreach (var t in _repertorio)
+            if (t.CustoMP > melhorCaro && t.Tipo != TipoTecnica.Suporte &&
+                CalculoDano.Estimar(Dados, inimigo.Dados, t, _bonusAtaque) >= inimigo.vidaAtual * 0.5f)
+                melhorCaro = t.CustoMP;
+
         foreach (var t in _repertorio)
         {
             if (t.CustoMP > _mp) continue;
             float nota;
             if (t.Tipo == TipoTecnica.Suporte)
             {
-                // Attack Charge e parecidos: vale no começo da luta, se ainda não está ativo.
+                // Attack Charge e parecidos: vale quando a luta ainda vai demorar e ainda não está ativo.
                 var ativo = Time.time < _fimBonusAtaque;
-                nota = ativo || inimigo.vidaAtual < inimigo.vidaMaxima * 0.4f ? 0f : basico * 1.5f;
+                var golpesParaVencer = inimigo.vidaAtual / Mathf.Max(1f, basico);
+                nota = ativo || golpesParaVencer < 4f || minhaVida < 0.35f ? 0f : basico * 1.5f;
                 if (Personalidade == DigimonPersonalities.Builder) nota *= 1.6f;
             }
             else
             {
+                // Dano esperado: o que acerta de fato (o inimigo pode desviar) e o que passa da guarda.
                 nota = CalculoDano.Estimar(Dados, inimigo.Dados, t, _bonusAtaque);
-                // Acaba com o inimigo: prioridade máxima.
-                if (nota >= inimigo.vidaAtual) nota *= 3f;
+                nota *= 1f - CalculoDano.ChanceDesvio(Dados, inimigo.Dados, t) * Esperteza;
+                if (inimigoEmGuarda) nota *= t.Basica ? 0.7f : 0.4f;
+                // Golpe de perto com o inimigo longe: demora para chegar (e ele pode fugir).
+                if (!t.ADistancia)
+                    nota *= Mathf.Lerp(1f, 0.6f, Mathf.Clamp01((distancia - Perto * 1.2f) / (Perto * 5f)) * Esperteza);
                 // Poupa MP enquanto ele está baixo (a não ser que esteja perdendo).
                 if (t.CustoMP > 0 && mpFracao < 0.4f && minhaVida > 0.35f) nota *= 0.6f;
+                // Não gasta o MP que vai faltar para o golpe final.
+                if (t.CustoMP > 0 && melhorCaro > 0 && t.CustoMP < melhorCaro && _mp - t.CustoMP < melhorCaro)
+                    nota *= 1f - 0.35f * Esperteza;
+                // Com pouca vida, quem não é Fighter prefere atacar de longe.
+                if (minhaVida < 0.3f && t.ADistancia && Personalidade != DigimonPersonalities.Fighter) nota *= 1.25f;
                 if (Personalidade == DigimonPersonalities.Fighter && !t.ADistancia) nota *= 1.25f;
                 if (Personalidade == DigimonPersonalities.Brainy && t.ADistancia) nota *= 1.25f;
                 if (preferirDistancia && t.ADistancia) nota *= 1.5f;
             }
+            // Variedade: repetir sempre a mesma técnica fica previsível.
+            if (t == _ultima && !t.Basica) nota *= 0.85f;
             if (nota > 0f) opcoes.Add((t, nota));
         }
         if (opcoes.Count == 0) return _repertorio[0];
@@ -396,6 +521,7 @@ public class CriaturaArena : MonoBehaviour
         _barraAcao = 0f;
         _tempoSemAlcance = 0f;
         _plano = null;
+        _ultima = t;
         _mp -= t.CustoMP;
 
         if (!t.Basica)
@@ -406,7 +532,29 @@ public class CriaturaArena : MonoBehaviour
         Animar(t.Tipo == TipoTecnica.Fisica ? nomeAnimacaoAtaque : nomeAnimacaoEspecial);
         if (t.Tipo != TipoTecnica.Suporte && inimigo != null) inimigo.VerGolpeVindo(this, t);
 
-        yield return new WaitForSeconds(t.ADistancia ? 0.45f : 0.3f);
+        var cor = t.Cor ?? CorDoElemento(t.Basica && Dados != null ? Dados.Base.Atribute : t.Atributo);
+
+        // Ataque especial com estilo próprio (Terra Force, Blue Blaster, Super Shocker...): CriaturaArena.Estilos.cs.
+        if (!t.Basica && t.Estilo != EstiloTecnica.Padrao && t.Estilo != EstiloTecnica.Aura && t.Tipo != TipoTecnica.Suporte)
+        {
+            yield return ExecutarEstilo(t, cor);
+            if (Time.time > _fimBonusAtaque) _bonusAtaque = 1f;
+            if (TerminaDePerto(t.Estilo) && Vivo && _estado == Estado.Agindo) yield return Recuo(0.2f);
+            yield return new WaitForSeconds(0.2f);
+            if (_estado == Estado.Agindo) _estado = Estado.Livre;
+            yield break;
+        }
+
+        GameObject carga = null;
+        if (t.ADistancia)
+        {
+            // Energia juntando na frente do Digimon antes do disparo (maior quanto mais forte a técnica).
+            carga = EfeitosBatalha.Carga(transform, PontoDisparoLocal(), _altura * (0.22f + 0.18f * Forca(t)), cor, 0.45f);
+            yield return new WaitForSeconds(0.45f);
+        }
+        else if (t.Tipo == TipoTecnica.Fisica) yield return Investida(0.3f, t.Basica ? 0.5f : 0.75f);
+        else yield return new WaitForSeconds(0.3f);
+        if (carga != null) Destroy(carga);
         if (_estado != Estado.Agindo || !Vivo) yield break; // levou um golpe e cambaleou
 
         switch (t.Tipo)
@@ -415,6 +563,7 @@ public class CriaturaArena : MonoBehaviour
                 _bonusAtaque = 1.3f;
                 _fimBonusAtaque = Time.time + 10f;
                 _fimFirmeza = Time.time + 10f;
+                EfeitosBatalha.Aura(transform, _altura, cor);
                 TextoDeBatalha.Mostrar(Topo(), "Offense ↑", TextoDeBatalha.CorDefesa, 44f);
                 break;
             case TipoTecnica.Magica:
@@ -427,8 +576,67 @@ public class CriaturaArena : MonoBehaviour
         }
         if (Time.time > _fimBonusAtaque) _bonusAtaque = 1f;
 
-        yield return new WaitForSeconds(0.35f);
+        // Depois de um golpe de perto, volta um pouco (como um pulo para trás).
+        if (t.Tipo == TipoTecnica.Fisica && Vivo) yield return Recuo(0.2f);
+        yield return new WaitForSeconds(t.Tipo == TipoTecnica.Fisica ? 0.15f : 0.35f);
         if (_estado == Estado.Agindo) _estado = Estado.Livre;
+    }
+
+    /// <summary>0 = técnica fraca, 1 = técnica muito forte (pelo Poder).</summary>
+    private static float Forca(Tecnica t) => t == null ? 0f : Mathf.Clamp01((t.Poder - 30f) / 100f);
+
+    /// <summary>Ponto de onde sai o disparo (na frente do peito), no espaço do Digimon.</summary>
+    private Vector3 PontoDisparoLocal() => new Vector3(0f, _altura * 0.55f, _altura * 0.35f);
+
+    /// <summary>Avança rápido até encostar no inimigo enquanto prepara o golpe (com poeira nos pés).</summary>
+    private IEnumerator Investida(float duracao, float forcaDoAvanco)
+    {
+        if (!InimigoVivo) { yield return new WaitForSeconds(duracao); yield break; }
+        var falta = DistanciaAte(inimigo) - Perto * 0.7f;
+        var passo = falta > 0f ? falta * forcaDoAvanco : 0f;
+        if (passo > Perto * 0.1f) EfeitosBatalha.Poeira(transform.position, _altura * 0.6f);
+        var dir = inimigo.transform.position - transform.position;
+        dir.y = 0;
+        dir = dir.sqrMagnitude > 1e-8f ? dir.normalized : transform.forward;
+        // Recua um pouquinho (pegando impulso) e avança.
+        for (float k = 0; k < duracao && Vivo && _estado == Estado.Agindo; k += Time.deltaTime)
+        {
+            var p = k / duracao;
+            var velocidade = p < 0.3f ? -0.4f : 1.4f; // impulso para trás, depois o bote
+            MoverPara(transform.position + dir * passo * velocidade * Time.deltaTime / duracao);
+            yield return null;
+        }
+    }
+
+    /// <summary>Pulo para trás depois do golpe de perto.</summary>
+    private IEnumerator Recuo(float duracao)
+    {
+        if (!InimigoVivo) yield break;
+        var dir = transform.position - inimigo.transform.position;
+        dir.y = 0;
+        dir = dir.sqrMagnitude > 1e-8f ? dir.normalized : -transform.forward;
+        for (float k = 0; k < duracao && Vivo && _estado == Estado.Agindo; k += Time.deltaTime)
+        {
+            MoverPara(transform.position + dir * Perto * 0.5f * Time.deltaTime / duracao);
+            yield return null;
+        }
+    }
+
+    /// <summary>Empurrão ao levar um golpe (mais forte no crítico e nos golpes que tiram muito).</summary>
+    private IEnumerator Empurrao(CriaturaArena atacante, float forca)
+    {
+        var dir = atacante != null ? transform.position - atacante.transform.position : -transform.forward;
+        dir.y = 0;
+        dir = dir.sqrMagnitude > 1e-8f ? dir.normalized : -transform.forward;
+        var duracao = Mathf.Lerp(0.16f, 0.32f, Mathf.Clamp01(forca)); // empurrão forte voa por mais tempo
+        if (forca > 0.6f) EfeitosBatalha.Poeira(transform.position, _altura * 0.5f);
+        for (float k = 0; k < duracao && Vivo; k += Time.deltaTime)
+        {
+            var p = 1f - k / duracao; // começa rápido e freia
+            MoverPara(transform.position + dir * Perto * forca * 2f * p * Time.deltaTime / duracao);
+            yield return null;
+        }
+        if (forca > 0.6f && Vivo) EfeitosBatalha.Poeira(transform.position, _altura * 0.6f); // arrasta no chão ao parar
     }
 
     /// <summary>Técnica de longe: uma bola de energia na cor do elemento voa até o alvo.</summary>
@@ -438,7 +646,7 @@ public class CriaturaArena : MonoBehaviour
         Destroy(bola.GetComponent<Collider>());
         bola.name = "Disparo_" + t.Nome;
         _disparos.Add(bola);
-        var tamanho = _altura * 0.22f;
+        var tamanho = _altura * (0.16f + 0.14f * Forca(t)); // técnica forte = disparo maior
         bola.transform.localScale = Vector3.one * tamanho;
         var r = bola.GetComponent<Renderer>();
         var shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color");
@@ -456,45 +664,123 @@ public class CriaturaArena : MonoBehaviour
         rastro.endWidth = 0f;
         rastro.material = r.material;
 
-        var inicio = Centro();
+        var inicio = transform.TransformPoint(PontoDisparoLocal() / Escala);
         bola.transform.position = inicio;
+        // Brilho em volta do disparo (vai junto com ele).
+        var halo = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        Destroy(halo.GetComponent<Collider>());
+        halo.name = "Halo";
+        halo.GetComponent<Renderer>().material = Formas.MaterialSemLuz(CorDoElemento(t.Atributo), Formas.Brilho().texture, true);
+        halo.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        halo.AddComponent<OlharCamera>();
+        halo.transform.SetParent(bola.transform, false);
+        halo.transform.localScale = Vector3.one * 2.6f;
         var velocidade = Perto * 7f;
-        while (alvo != null && alvo.Vivo)
+        // Vai em linha reta. Quem é esperto mira onde o alvo vai estar quando o disparo chegar.
+        var tempoVoo = Vector3.Distance(inicio, alvo.Centro()) / Mathf.Max(0.0001f, velocidade);
+        var mira = alvo.Centro() + new Vector3(alvo._velocidade.x, 0f, alvo._velocidade.z) * tempoVoo * Esperteza;
+        var direcao = (mira - inicio).normalized;
+        var alcance = Vector3.Distance(inicio, mira) + _altura;
+        var raioAcerto = tamanho * 0.5f + alvo._altura * 0.35f;
+        var acertou = false;
+        for (var andado = 0f; andado < alcance && alvo != null && alvo.Vivo; andado += velocidade * Time.deltaTime)
         {
-            var destino = alvo.Centro();
-            bola.transform.position = Vector3.MoveTowards(bola.transform.position, destino, velocidade * Time.deltaTime);
-            if ((bola.transform.position - destino).sqrMagnitude < (tamanho * 0.5f) * (tamanho * 0.5f)) break;
+            bola.transform.position += direcao * velocidade * Time.deltaTime;
+            var perto = alvo.Centro() - bola.transform.position;
+            if (perto.sqrMagnitude < raioAcerto * raioAcerto) { acertou = true; break; }
             yield return null;
         }
-        if (alvo != null && alvo.Vivo && Vivo) alvo.ReceberGolpe(this, t);
+        if (alvo != null && alvo.Vivo && Vivo)
+        {
+            if (acertou) alvo.ReceberGolpe(this, t);
+            else TextoDeBatalha.Mostrar(alvo.Topo(), "Miss", TextoDeBatalha.CorDefesa, 48f);
+        }
         _disparos.Remove(bola);
         Destroy(bola);
     }
 
     // ------------------------------------------------------------ Defesa
 
-    /// <summary>O inimigo começou um golpe contra mim: um Digimon esperto pode se defender a tempo.</summary>
+    /// <summary>
+    /// O inimigo começou um golpe contra mim. Um Digimon esperto reage pelo perigo: disparo → esquiva para o lado
+    /// (o disparo vai reto e passa); golpe de perto → passo para trás (sai do alcance) ou guarda;
+    /// golpe fraco com a vida cheia → quase não se preocupa.
+    /// </summary>
     public void VerGolpeVindo(CriaturaArena atacante, Tecnica t)
     {
         if (!Vivo || !podeLutar || _estado != Estado.Livre) return;
-        var chance = 0.05f + 0.3f * Esperteza;
+
+        // Quanto esse golpe me machuca (0 = nada, 1 = me derruba).
+        var perigo = 0.5f;
+        if (atacante != null && atacante.Dados != null && Dados != null)
+            perigo = Mathf.Clamp01(CalculoDano.Estimar(atacante.Dados, Dados, t, atacante._bonusAtaque) / Mathf.Max(1, vidaAtual));
+        var atencao = Mathf.Lerp(0.6f, 1.6f, Mathf.Clamp01(perigo * 3f)); // golpe perigoso chama mais atenção
+        if (Dados != null) atencao += Dados.Amizade / 400f; // confia no Tamer: fica mais atento
+
+        // Esquivar: depende de Speed, Brains e personalidade.
+        var rapidez = Dados != null && atacante != null && atacante.Dados != null
+            ? CalculoDano.Relativo(Dados.Speed, atacante.Dados.Speed) : 0.5f;
+        var chanceEsquiva = (0.04f + 0.6f * Esperteza * rapidez) * atencao;
+        if (Personalidade == DigimonPersonalities.Nimble) chanceEsquiva += 0.15f;
+        if (!t.ADistancia) chanceEsquiva *= 0.6f; // golpe de perto é mais difícil de evitar
+        if (Random.value < chanceEsquiva)
+        {
+            StartCoroutine(Esquivar(atacante, t.ADistancia));
+            return;
+        }
+
+        // Defender.
+        var chance = (0.05f + 0.3f * Esperteza) * atencao;
         if (Personalidade == DigimonPersonalities.Defender) chance += 0.2f;
         if (vidaAtual < vidaMaxima * 0.3f) chance += 0.1f;
         if (!t.Basica) chance += 0.05f; // técnica grande é mais fácil de ver
-        if (Dados != null) chance += Dados.Amizade / 400f; // confia no Tamer: fica mais atento
         if (Random.value > chance) return;
         _estado = Estado.Defendendo;
         _fimDefesa = Time.time + (t.ADistancia ? 1.4f : 0.9f);
         Animar("Guard");
+        EfeitosBatalha.Escudo(transform, Vector3.up * _altura * 0.5f, _altura * 1.2f, _fimDefesa - Time.time);
+    }
+
+    /// <summary>Disparo vindo: corre para o lado. Golpe de perto: dá um passo para trás, saindo do alcance.</summary>
+    private IEnumerator Esquivar(CriaturaArena atacante, bool deDisparo)
+    {
+        _estado = Estado.Esquivando;
+        var deLa = atacante != null ? transform.position - atacante.transform.position : -transform.forward;
+        deLa.y = 0;
+        deLa = deLa.sqrMagnitude > 1e-8f ? deLa.normalized : -transform.forward;
+        var dir = deDisparo ? Vector3.Cross(Vector3.up, deLa) * (Random.value < 0.5f ? -1 : 1) : deLa;
+        var distancia = deDisparo ? Perto * 2.2f : Perto * 1.4f;
+        const float duracao = 0.25f;
+        EfeitosBatalha.Poeira(transform.position, _altura * 0.6f);
+        for (float k = 0; k < duracao && Vivo; k += Time.deltaTime)
+        {
+            MoverPara(transform.position + dir * distancia * Time.deltaTime / duracao);
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.1f);
+        if (_estado == Estado.Esquivando && Vivo) _estado = Estado.Livre;
+    }
+
+    /// <summary>Move até o ponto sem sair da arena.</summary>
+    private void MoverPara(Vector3 destino)
+    {
+        if (_arenaDefinida)
+        {
+            var doCentro = destino - _centroArena;
+            doCentro.y = 0;
+            if (doCentro.magnitude > _raioArena)
+                destino = _centroArena + doCentro.normalized * _raioArena + Vector3.up * (destino.y - _centroArena.y);
+        }
+        if (rb != null && rb.isKinematic) rb.MovePosition(destino); else transform.position = destino;
     }
 
     /// <summary>Um golpe chegou: desvio, defesa, crítico e dano.</summary>
-    public void ReceberGolpe(CriaturaArena atacante, Tecnica t)
+    public void ReceberGolpe(CriaturaArena atacante, Tecnica t, float fracao = 1f)
     {
         if (!Vivo) return;
         var a = atacante != null ? atacante.Dados : null;
 
-        if (a != null && Dados != null && _estado != Estado.Agindo && _estado != Estado.Atordoado &&
+        if (a != null && Dados != null && _estado != Estado.Agindo && _estado != Estado.Atordoado && _estado != Estado.Esquivando &&
             Random.value < CalculoDano.ChanceDesvio(a, Dados, t))
         {
             TextoDeBatalha.Mostrar(Topo(), "Miss", TextoDeBatalha.CorDefesa, 48f);
@@ -510,17 +796,41 @@ public class CriaturaArena : MonoBehaviour
             dano = CalculoDano.Calcular(a, Dados, t, critico, atacante._bonusAtaque);
         }
         else dano = t != null && !t.Basica ? 20 : 10; // sem ficha: valores antigos
+        if (fracao < 0.999f) dano = Mathf.Max(1, Mathf.RoundToInt(dano * fracao));
 
         var defendeu = _estado == Estado.Defendendo;
+        var corGolpe = t != null && t.Cor.HasValue ? t.Cor.Value
+            : CorDoElemento(t == null || t.Basica ? (a != null ? a.Base.Atribute : DigimonAttribute.Neutral) : t.Atributo);
+        var forte = critico || (t != null && !t.Basica && Forca(t) > 0.5f);
         if (defendeu)
         {
             dano = Mathf.Max(1, Mathf.RoundToInt(dano * 0.4f));
             TextoDeBatalha.Mostrar(Topo() + Vector3.up * _altura * 0.15f, "Guard", TextoDeBatalha.CorDefesa, 40f);
+            EfeitosBatalha.Impacto(Centro(), _altura * 0.45f, new Color(0.6f, 0.85f, 1f), false);
         }
-        else if (critico) TextoDeBatalha.Mostrar(Topo() + Vector3.up * _altura * 0.15f, "Critical!", new Color(1f, 0.55f, 0.1f), 44f);
+        else
+        {
+            if (critico) TextoDeBatalha.Mostrar(Topo() + Vector3.up * _altura * 0.15f, "Critical!", new Color(1f, 0.55f, 0.1f), 44f);
+            EfeitosBatalha.Impacto(Centro(), _altura * (0.5f + 0.3f * Forca(t)) * Mathf.Lerp(0.6f, 1f, fracao), corGolpe, forte);
+            // Faíscas saindo do ponto do impacto.
+            EfeitosBatalha.Emitir("Faiscas", Centro(), Quaternion.identity, new EfeitosBatalha.Particulas
+            {
+                Cor = corGolpe, Tamanho = _altura * 0.1f, Vida = 0.35f, Velocidade = _altura * 2.5f,
+                Rajada = Mathf.RoundToInt((forte ? 30 : 14) * Mathf.Lerp(0.5f, 1f, fracao)),
+                Forma = ParticleSystemShapeType.Sphere, Raio = _altura * 0.1f, Duracao = 0.1f, Gravidade = 0.5f
+            });
+        }
 
         ReceberDano(dano);
-        if (!Vivo || defendeu) return;
+        if (!Vivo) return;
+        // Empurrão: pequeno na guarda, maior no crítico e nos golpes que tiram muito.
+        var peso = Mathf.Clamp01(dano / (float)Mathf.Max(1, vidaMaxima) * 4f);
+        // (golpes de perto e técnicas fortes jogam mais longe; disparos fracos quase não empurram)
+        var impulso = (defendeu ? 0.2f : 0.5f + 0.9f * peso + (critico ? 0.4f : 0f) + (forte ? 0.3f : 0f)) * Mathf.Lerp(0.4f, 1f, fracao);
+        if (t != null && t.Tipo == TipoTecnica.Fisica) impulso *= 1.2f;
+        StartCoroutine(Empurrao(atacante, impulso));
+        if (defendeu) return;
+        if (forte || peso > 0.5f) TalvezFugir(peso);
 
         // Golpe forte faz cambalear (perde parte da barra de ação).
         var limite = vidaMaxima * (Personalidade == DigimonPersonalities.Durable ? 0.18f : 0.1f);
@@ -564,7 +874,7 @@ public class CriaturaArena : MonoBehaviour
         {
             _aguentou = true;
             dano = vidaAtual - 1;
-            TextoDeBatalha.Mostrar(Topo() + Vector3.up * _altura * 0.3f, "Aguentou firme!", new Color(1f, 0.6f, 0.8f), 44f);
+            TextoDeBatalha.Mostrar(Topo() + Vector3.up * _altura * 0.3f, "Held on!", new Color(1f, 0.6f, 0.8f), 44f);
         }
         vidaAtual = Mathf.Max(0, vidaAtual - dano);
         if (hpBar != null) hpBar.SetHP(vidaAtual);

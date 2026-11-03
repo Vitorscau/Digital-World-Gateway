@@ -19,7 +19,7 @@ public abstract class TelaFigma : MonoBehaviour
         var go = new GameObject(typeof(T).Name);
         var tela = go.AddComponent<T>();
         _aberta = tela;
-        tela.Raiz = (RectTransform)FigmaUI.Canvas(go.transform, "Canvas", 200).transform;
+        tela.Raiz = FigmaUI.Tela(go.transform, "Canvas", 200);
         tela.Construir();
         PerfilJogador.Mudou += tela.AoMudarPerfil;
         return tela;
@@ -31,7 +31,8 @@ public abstract class TelaFigma : MonoBehaviour
     /// <summary>Chamado quando o perfil muda (ex.: usou um item). Atualize os dados mostrados.</summary>
     protected virtual void AoMudarPerfil() { }
 
-    public void Fechar() => Destroy(gameObject);
+    /// <summary>Fecha a tela (as telas podem animar a saída antes de chamar a base).</summary>
+    public virtual void Fechar() => Destroy(gameObject);
 
     protected virtual void OnDestroy()
     {

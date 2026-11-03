@@ -24,15 +24,15 @@ public static class ResultadoBatalha
 
         public string LinhaScan =>
             ScanCompleto
-                ? $"Dados de {NomeInimigo} completos! Abra o Scan para baixar."
-                : $"Dados de {NomeInimigo}: {ScanAntes}% → {ScanDepois}%";
+                ? $"{NomeInimigo} data complete! Open the Scan to download it."
+                : $"{NomeInimigo} data: {ScanAntes}% → {ScanDepois}%";
 
         /// <summary>Texto completo (usado pela Battle_Scene, que não tem o painel desenhado).</summary>
         public string Texto =>
-            (Venceu ? "<size=90><b>VITÓRIA!</b></size>\n\n" : $"<size=90><b>DERROTA</b></size>\n\n{NomeInimigo} fugiu.\n\n") +
+            (Venceu ? "<size=90><b>VICTORY!</b></size>\n\n" : $"<size=90><b>DEFEAT</b></size>\n\n{NomeInimigo} fled.\n\n") +
             LinhaScan + "\n\n" +
-            $"{NomeParceiro}: +{XpDigimon} EXP" + (NivelParceiroNovo > 0 ? $"  <color=#FFE066>nível {NivelParceiroNovo}!</color>" : "") + "\n" +
-            $"Tamer: +{XpJogador} EXP" + (NivelJogadorNovo > 0 ? $"  <color=#FFE066>nível {NivelJogadorNovo}!</color>" : "") +
+            $"{NomeParceiro}: +{XpDigimon} EXP" + (NivelParceiroNovo > 0 ? $"  <color=#FFE066>level {NivelParceiroNovo}!</color>" : "") + "\n" +
+            $"Tamer: +{XpJogador} EXP" + (NivelJogadorNovo > 0 ? $"  <color=#FFE066>level {NivelJogadorNovo}!</color>" : "") +
             (Bits > 0 ? $"\n+{Bits} BIT" : "") +
             (Itens.Count > 0 ? "\n" + string.Join("  ", Itens.ConvertAll(i => "+1 " + NomeDoItem(i))) : "");
 
@@ -48,7 +48,7 @@ public static class ResultadoBatalha
         {
             Venceu = venceu,
             NivelInimigo = nivelInimigo,
-            NomeParceiro = encontro.FichaParceiro != null ? encontro.FichaParceiro.Name.Trim() : "Parceiro",
+            NomeParceiro = encontro.FichaParceiro != null ? encontro.FichaParceiro.Name.Trim() : "Partner",
             NomeInimigo = encontro.FichaInimigo != null ? encontro.FichaInimigo.Name.Trim() : encontro.EspecieInimigo,
             ScanAntes = perfil.Scan(encontro.EspecieInimigo)
         };

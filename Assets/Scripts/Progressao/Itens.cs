@@ -29,8 +29,9 @@ public static class Itens
                 var parceiro = p.Parceiro;
                 if (parceiro == null) return null;
                 var subiu = PerfilJogador.GanharXp(parceiro, 15);
+                Missoes.RegistrarAlimentar();
                 var nome = parceiro.Ficha != null ? parceiro.Ficha.Name.Trim() : parceiro.especie;
-                return subiu > 0 ? $"{nome} comeu e subiu para o nível {parceiro.nivel}!" : $"{nome} comeu! +15 EXP";
+                return subiu > 0 ? $"{nome} ate and reached level {parceiro.nivel}!" : $"{nome} ate! +15 EXP";
             }
         },
         new DefinicaoItem
@@ -40,7 +41,7 @@ public static class Itens
             {
                 if (p.bandagemAtiva) return null;
                 p.bandagemAtiva = true;
-                return "Parceiro curado: começa a próxima batalha com +30% de vida.";
+                return "Partner healed: starts the next battle with +30% HP.";
             }
         },
     };

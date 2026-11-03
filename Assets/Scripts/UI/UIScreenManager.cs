@@ -13,10 +13,27 @@ public class UIScreenManager : MonoBehaviour
 
     private Vector2 posicaoFinal;
 
+    /// <summary>O aviso "Stay Aware" aparece só uma vez por abertura do jogo (não ao voltar da batalha, Care...).</summary>
+    private static bool _jaMostrada;
+
     void Start()
     {
-        // Salva a posição final do popup
-        posicaoFinal = popupInicial.anchoredPosition;
+        if (_jaMostrada)
+        {
+            telaInicialBackground.SetActive(false);
+            popupInicial.gameObject.SetActive(false);
+            HUD.SetActive(true);
+            return;
+        }
+        _jaMostrada = true;
+
+        // O fundo cobre a tela toda em qualquer proporção (o grupo "Stay" encolhe para caber na área segura).
+        var cobrir = telaInicialBackground.GetComponent<CobrirTela>();
+        if (cobrir == null) cobrir = telaInicialBackground.AddComponent<CobrirTela>();
+        cobrir.ManterProporcao = true;
+
+        // Centralizado na tela (o grupo "Stay" já fica centralizado na área segura).
+        posicaoFinal = Vector2.zero;
 
         // Ativa o background e move popup para fora da tela
         telaInicialBackground.SetActive(true);
@@ -33,6 +50,7 @@ public class UIScreenManager : MonoBehaviour
         StartCoroutine(AnimarSaida(popupInicial, () =>
         {
             telaInicialBackground.SetActive(false);
+            popupInicial.gameObject.SetActive(false); // some depois de sair
             HUD.SetActive(true);
         }));
     }

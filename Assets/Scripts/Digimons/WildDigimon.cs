@@ -55,7 +55,7 @@ public class WildDigimon : MonoBehaviour
         if (!PodeEncontrar)
         {
             var raio = _spawner != null ? _spawner.RaioEncontroMetros : 40f;
-            AvisoNaTela.Mostrar($"{NomeExibicao} está longe demais. Chegue a {raio:0} m para batalhar.");
+            AvisoNaTela.Mostrar($"{NomeExibicao} is too far away. Get within {raio:0} m to battle.");
             return;
         }
 

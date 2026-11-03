@@ -1,0 +1,458 @@
+# Ataques característicos de cada Digimon (nomes oficiais em inglês).
+# Formato: Especie|Nome do ataque|Tipo|Elemento|Poder|Custo MP|Estilo visual|Cor (#RRGGBB, vazio = cor do elemento)
+# Estilo: Projetil | Rajada | EsferaGigante | Raio | Sopro | Relampago | Bolhas | Chuva | Tornado | Pilar | Onda | Golpe | Corte | Investida | Tremor | Aura
+# Tipo: Physical (de perto) | Magic (disparo de longe) | Support (fortalece o próprio Digimon)
+# Elemento: Fire, Water, Plant, Electric, Earth, Wind, Light, Dark, Neutral
+# Fresh
+Botamon|Bubble Blow|Magic|Neutral|30|2|Bolhas|
+Chibomon|Bubble Blow|Magic|Neutral|30|2|Bolhas|
+Conomon|Bubble Blow|Magic|Neutral|30|2|Bolhas|
+# Dodomon: nenhum ataque oficial confirmado; usa o ataque padrão de bolhas dos Fresh
+Dodomon|Bubble Blow|Magic|Neutral|30|2|Bolhas|
+Jyarimon|Bubble Blow|Magic|Neutral|30|2|Bolhas|
+Kuramon|Glare Eye|Magic|Dark|32|2|Raio|
+Pabumon|Bubble Blow|Magic|Neutral|30|2|Bolhas|
+Pichimon|Bubble Blow|Magic|Water|30|2|Bolhas|
+Poyomon|Bubble Blow|Magic|Neutral|30|2|Bolhas|
+Punimon|Bubble Blow|Magic|Neutral|30|2|Bolhas|
+# In-Training
+Bukamon|Bubble Blow|Magic|Water|40|2|Bolhas|
+DemiVeemon|Hop Attack|Physical|Neutral|40|0|Golpe|
+DemiVeemon|Bubble Blow|Magic|Neutral|38|2|Bolhas|
+Dorimon|Metal Drop|Magic|Neutral|42|2|Chuva|#A8B0B8
+Dorimon|Frothy Spit|Magic|Neutral|38|2|Bolhas|
+Gigimon|Hot Bubble|Magic|Fire|42|2|Bolhas|
+Gummymon|Double Bubble|Magic|Neutral|40|2|Bolhas|
+Gummymon|Frothy Spit|Magic|Neutral|38|2|Bolhas|
+Kokomon|Double Bubble|Magic|Neutral|40|2|Bolhas|
+Kokomon|Frothy Spit|Magic|Neutral|38|2|Bolhas|
+Koromon|Bubble Blow|Magic|Neutral|40|2|Bolhas|
+Motimon|Bubble Blow|Magic|Neutral|40|2|Bolhas|
+Nyaromon|Bubble Blow|Magic|Neutral|40|2|Bolhas|
+Pagumon|Bubble Blow|Magic|Dark|40|2|Bolhas|
+Tanemon|Bubble Blow|Magic|Plant|40|2|Bolhas|
+Tokomon|Bubble Blow|Magic|Neutral|40|2|Bolhas|
+Tsumemon|Nail Scratch|Physical|Dark|40|0|Corte|
+Tsumemon|Bubble Blow|Magic|Neutral|38|2|Bolhas|
+Tsunomon|Bubble Blow|Magic|Neutral|40|2|Bolhas|
+Wanyamon|Smile Fang|Physical|Neutral|40|0|Golpe|
+Wanyamon|Frothy Spit|Magic|Neutral|38|2|Bolhas|
+Yokomon|Bubble Blow|Magic|Plant|40|2|Bolhas|
+# Rookie
+Agumon|Pepper Breath|Magic|Fire|65|4|Projetil|
+Agumon|Claw Attack|Physical|Neutral|50|2|Corte|
+Agumon_black|Pepper Breath|Magic|Fire|65|4|Projetil|
+Agumon_black|Claw Attack|Physical|Dark|50|2|Corte|
+Armadillomon|Rolling Stone|Physical|Earth|62|3|Investida|
+Armadillomon|Diamond Shell|Support|Earth|50|4|Aura|
+Betamon|Electric Shock|Magic|Electric|62|4|Relampago|
+Biyomon|Spiral Twister|Magic|Fire|65|4|Tornado|#4CD964
+DemiDevimon|Demi Dart|Magic|Dark|62|4|Rajada|
+Dorumon|Metal Cannon|Magic|Neutral|65|4|Projetil|#A8B0B8
+Dorumon|Dash Double Claw|Physical|Neutral|55|2|Corte|
+Dracomon|Baby Breath|Magic|Fire|65|4|Sopro|
+Dracomon|Tail Smash|Physical|Neutral|55|2|Golpe|
+Falcomon|Scratch Smash|Physical|Wind|60|3|Corte|
+Falcomon|Falco Rush|Physical|Neutral|55|0|Golpe|
+Gabumon|Blue Blaster|Magic|Fire|65|4|Sopro|#3A8DFF
+Gabumon|Little Horn|Physical|Neutral|50|0|Golpe|
+Gaomon|Double Backhand|Physical|Neutral|62|3|Golpe|
+Gaomon|Rolling Upper|Physical|Neutral|52|0|Golpe|
+Gazimon|Electric Stun Blast|Magic|Electric|62|4|Sopro|
+Goblimon|Goblin Strike|Magic|Fire|62|4|Projetil|
+Gomamon|Marching Fishes|Magic|Water|62|4|Rajada|
+Guilmon|Pyro Sphere|Magic|Fire|65|4|Projetil|
+Guilmon|Rock Breaker|Physical|Neutral|55|2|Corte|
+Gumdramon|Ran-gum Break|Physical|Neutral|62|3|Golpe|
+Gumdramon|Jacked Hammer|Physical|Earth|58|3|Tremor|
+Hagurumon|Darkness Gear|Magic|Dark|62|4|Projetil|
+Hawkmon|Feather Strike|Magic|Wind|62|4|Projetil|#F0E6D2
+Hawkmon|Beak Pummel|Physical|Neutral|50|0|Golpe|
+Jazamon|Knock Knock Peck|Physical|Neutral|60|3|Golpe|
+Kudamon|Bullet Whirlwind|Magic|Wind|62|4|Tornado|
+Kudamon|Blinding Ray|Magic|Light|58|4|Raio|
+Lalamon|Seed Blast|Magic|Plant|62|4|Rajada|
+Lalamon|Lala Spiral|Physical|Plant|55|3|Investida|
+Lopmon|Blazing Ice|Magic|Water|62|4|Rajada|#BFEFFF
+Lucemon|Grand Cross|Magic|Light|70|5|Rajada|
+Lucemon|Divine Feet|Physical|Neutral|58|3|Golpe|
+Palmon|Poison Ivy|Physical|Plant|62|3|Golpe|
+Patamon|Boom Bubble|Magic|Wind|62|4|Projetil|
+Renamon|Diamond Storm|Magic|Neutral|65|4|Rajada|#DFF4FF
+Ryudamon|Katana Attack|Magic|Neutral|62|4|Projetil|
+Ryudamon|Kabutogaeshi|Physical|Earth|55|2|Golpe|
+Salamon|Puppy Howl|Magic|Light|60|4|Onda|
+Shoutmon|Soul Crusher|Magic|Fire|65|4|Projetil|
+Shoutmon|Rowdy Rocker|Physical|Neutral|55|2|Golpe|
+Solarmon|Solar Flare|Magic|Fire|62|4|Onda|
+Solarmon|Soul Shocker|Magic|Fire|66|5|Projetil|
+Syakomon|Black Pearl Blast|Magic|Water|62|4|Projetil|#2A2A3A
+Syakomon|Water Pressure|Magic|Water|58|3|Sopro|
+Tentomon|Super Shocker|Magic|Electric|65|4|Relampago|
+ToyAgumon|Toy Flame|Magic|Fire|62|4|Projetil|
+Tsukaimon|Bad Message|Magic|Dark|62|4|Projetil|
+Veemon|Vee Headbutt|Physical|Neutral|62|3|Golpe|
+Veemon|Boom Boom Punch|Physical|Neutral|52|0|Golpe|
+Vorvomon|Petit Flame|Magic|Fire|62|4|Projetil|
+Wormmon|Sticky Net|Magic|Plant|58|3|Sopro|#EDEDED
+Zubamon|Twentieth Dive|Physical|Neutral|62|3|Investida|
+Zubamon|20 Scratch|Physical|Neutral|52|0|Corte|
+# Champion
+Angemon|Hand of Fate|Magic|Light|90|7|Raio|#FFD54A
+Angemon|Angel Rod|Physical|Light|75|4|Golpe|
+Aquilamon|Blast Rings|Magic|Wind|88|6|Onda|
+Aquilamon|Grand Horn|Physical|Neutral|75|4|Investida|
+Bakemon|Dark Claw|Physical|Dark|82|5|Corte|
+Birdramon|Meteor Wing|Magic|Fire|88|6|Rajada|
+BlackGarurumon|Howling Blaster|Magic|Dark|88|6|Sopro|
+BlackGatomon|Lightning Paw|Physical|Dark|82|5|Corte|
+BlackGatomon|Cat's Eye|Support|Dark|70|5|Aura|
+BlackGreymon|Nova Blast|Magic|Fire|90|6|EsferaGigante|
+BlackGreymon|Great Horns Attack|Physical|Dark|75|4|Investida|
+BlueMeramon|Cold Flame|Magic|Fire|88|6|Projetil|#4FA8FF
+Clockmon|Chrono Breaker|Magic|Neutral|85|6|Onda|
+Coredramon_Blue|Blue Flare Breath|Magic|Fire|88|6|Sopro|#3A8DFF
+Coredramon_Blue|Strike Bomber|Physical|Neutral|75|4|Investida|
+Coredramon_Green|Green Flare Breath|Magic|Fire|88|6|Sopro|#4CD964
+Coredramon_Green|Strike Bomber|Physical|Neutral|75|4|Investida|
+Cyclonemon|Hyper Heat|Magic|Fire|88|6|Sopro|
+Devimon|Touch of Evil|Physical|Dark|88|6|Golpe|
+Dorugamon|Power Metal|Magic|Neutral|88|6|Projetil|#A8B0B8
+Dorugamon|Dash Double Claw|Physical|Neutral|75|4|Corte|
+ExVeemon|Vee Laser|Magic|Neutral|90|6|Raio|#FFE34D
+Frigimon|Subzero Ice Punch|Physical|Water|85|5|Golpe|
+Gaogamon|Spiral Blow|Magic|Wind|88|6|Tornado|
+Gaogamon|Dash Double Claw|Physical|Neutral|78|4|Corte|
+Gargomon|Gargo Laser|Magic|Neutral|86|6|Rajada|
+Gargomon|Bunny Pummel|Physical|Neutral|72|0|Golpe|
+Garurumon|Howling Blaster|Magic|Fire|88|6|Sopro|#3A8DFF
+Gatomon|Lightning Paw|Physical|Light|82|5|Corte|
+Gatomon|Cat's Eye|Support|Light|70|5|Aura|
+Gekomon|Symphony Crusher|Magic|Neutral|82|5|Onda|
+GeoGreymon|Mega Flame|Magic|Fire|90|6|Projetil|
+GeoGreymon|Mega Burst|Magic|Fire|85|6|Sopro|
+Geremon|Hyper Smell|Magic|Plant|80|5|Sopro|#9BAA3A
+Geremon|Party Time|Magic|Neutral|75|5|Rajada|
+Ginryumon|Metal Armor Blade|Magic|Neutral|88|6|Rajada|#C8D0D8
+GoldNumemon|Golden Rush|Magic|Neutral|80|5|Rajada|#FFC830
+GoldNumemon|Gold Breath|Magic|Plant|75|5|Sopro|#FFC830
+Greymon|Nova Blast|Magic|Fire|90|6|EsferaGigante|
+Greymon|Great Horns Attack|Physical|Neutral|75|4|Investida|
+Growlmon|Pyro Blaster|Magic|Fire|90|6|Raio|
+Growlmon|Dragon Slash|Physical|Neutral|80|5|Corte|
+Guardromon|Guardian Barrage|Magic|Neutral|85|6|Rajada|
+IceDevimon|Frozen Claw|Physical|Water|85|5|Corte|
+IceLeomon|Fist of Ice|Physical|Water|88|6|Golpe|
+IceLeomon|Blizzard Breath|Magic|Water|82|6|Sopro|#BFEFFF
+Ikkakumon|Harpoon Torpedo|Magic|Water|88|6|Projetil|
+Jazardmon|Laser Eye|Magic|Neutral|85|6|Raio|
+Jazardmon|Sonic Vulcan|Magic|Neutral|80|5|Rajada|
+Kabuterimon|Electro Shocker|Magic|Electric|90|6|Relampago|
+Kuwagamon|Scissor Claw|Physical|Neutral|85|5|Corte|
+Kyubimon|Fox Tail Inferno|Magic|Fire|88|6|Rajada|#4FA8FF
+Kyubimon|Dragon Wheel|Magic|Fire|82|6|Tornado|#4FA8FF
+Lavorvomon|Great Flame|Magic|Fire|88|6|Sopro|
+Lavorvomon|Earth Stomp|Physical|Earth|78|4|Tremor|
+Leomon|Fist of the Beast King|Magic|Neutral|90|6|Projetil|#FFA030
+Leomon|Beast Sword|Physical|Neutral|78|4|Corte|
+Meicoomon|X Scratch|Physical|Neutral|85|5|Corte|
+Meicoomon|Trichobezoar|Magic|Dark|80|5|Projetil|
+Meramon|Fireball|Magic|Fire|85|6|Projetil|
+Meramon|Magma Blast|Magic|Fire|80|5|Rajada|#FF4A1A
+Nanimon|Power Punch|Physical|Neutral|80|5|Golpe|
+Nanimon|Dark Spell|Magic|Dark|78|5|Projetil|
+Numemon|Nume-Sludge|Magic|Plant|72|5|Projetil|#8B6B3A
+Ogremon|Pummel Whack|Physical|Dark|85|5|Golpe|
+Peckmon|Kunai Wing|Magic|Wind|86|6|Rajada|
+Peckmon|Spiral Claw|Physical|Neutral|78|4|Corte|
+PlatinumSukamon|Metal Bomber|Magic|Neutral|82|5|Projetil|#D8DCE0
+PlatinumSukamon|Panic Wave|Magic|Plant|75|5|Onda|
+Reppamon|Razor Wind|Magic|Wind|88|6|Rajada|
+Reppamon|Lion Claw|Physical|Neutral|78|4|Corte|
+Seadramon|Ice Blast|Magic|Water|88|6|Sopro|#BFEFFF
+ShellNumemon|Mighty Magic|Magic|Neutral|80|5|Projetil|
+ShellNumemon|Shell's Attack|Physical|Neutral|72|0|Golpe|
+Sorcermon|Crystal Cloud|Magic|Water|88|6|Sopro|#CFEFFF
+Starmon|Meteor Squall|Magic|Neutral|85|6|Chuva|#FFE34D
+Stingmon|Spiking Strike|Physical|Plant|88|6|Golpe|
+Sukamon|Poop Toss|Magic|Neutral|75|5|Projetil|#8B6B3A
+Sukamon|Poop Blast|Magic|Neutral|72|5|Rajada|#8B6B3A
+Sunflowmon|Sunshine Beam|Magic|Light|86|6|Raio|
+Togemon|Needle Spray|Magic|Plant|88|6|Rajada|
+Togemon|Lightspeed Jabbing|Physical|Neutral|78|4|Golpe|
+Tyrannomon|Blaze Blast|Magic|Fire|88|6|Sopro|
+Veedramon|V-Breath Arrow|Magic|Fire|90|6|Raio|
+Vegiemon|Sweet Breath|Magic|Plant|80|5|Sopro|#F5A3C7
+Vegiemon|Vine Whip|Physical|Plant|75|4|Golpe|
+Waspmon|Turbo Stinger|Magic|Electric|86|6|Raio|
+Wizardmon|Thunder Ball|Magic|Electric|88|6|Projetil|
+Wizardmon|Magical Game|Magic|Dark|80|5|Onda|
+Woodmon|Branch Drill|Physical|Plant|84|5|Golpe|
+ZubaEagermon|Road To Decade|Physical|Neutral|88|6|Investida|
+ZubaEagermon|Vingtieme|Physical|Wind|80|5|Corte|
+# Ultimate
+AeroVeedramon|Dragon Impulse|Magic|Fire|105|8|Projetil|#6FC8FF
+AeroVeedramon|Magnum Crusher|Physical|Neutral|95|7|Golpe|
+Andromon|Lightning Blade|Physical|Electric|102|8|Corte|
+Andromon|Gatling Attack|Magic|Neutral|95|7|Rajada|
+Angewomon|Celestial Arrow|Magic|Light|105|8|Projetil|#FFB6E1
+Angewomon|Heaven's Charm|Magic|Light|95|7|Onda|
+BlackKingNumemon|Dark Pupil|Magic|Dark|100|8|Raio|
+BlackKingNumemon|Poison Mucus|Magic|Plant|90|7|Sopro|#8FA040
+BlackMetalGreymon|Giga Destroyer|Magic|Dark|105|8|Rajada|
+Cherrymon|Pit Pelter|Magic|Plant|100|8|Rajada|#B22234
+DoruGreymon|Metal Meteor|Magic|Neutral|105|8|EsferaGigante|#A8B0B8
+Duramon|Glass Rush|Physical|Neutral|102|8|Investida|
+Duramon|Blindead|Magic|Light|95|7|Onda|
+Etemon|Dark Network|Magic|Dark|100|8|Onda|
+Etemon|Love Serenade|Magic|Neutral|90|7|Onda|
+Garudamon|Wing Blade|Magic|Fire|105|8|Projetil|
+Gigadramon|Genocide Gear|Magic|Dark|102|8|Rajada|
+GrapLeomon|The King of Fists|Physical|Neutral|105|8|Golpe|
+GrapLeomon|Cyclonic Kick|Physical|Wind|95|7|Golpe|
+Groundramon|Giga Crack|Physical|Earth|105|8|Tremor|
+Groundramon|Scrap Claw|Physical|Neutral|95|7|Corte|
+Hisyaryumon|Legendary Dragon Blade|Physical|Neutral|105|8|Corte|
+Jazarichmon|Messer Spiral|Physical|Neutral|102|8|Corte|
+Jazarichmon|N.S.B.M|Magic|Neutral|95|7|Rajada|
+Kimeramon|Heat Viper|Magic|Fire|105|8|Raio|
+LadyDevimon|Darkness Wave|Magic|Dark|102|8|Rajada|
+LadyDevimon|Evil Wing|Magic|Dark|92|7|Onda|
+Lavogaritamon|Melding Blaze|Magic|Fire|105|8|Sopro|
+Lavogaritamon|Wild Blast|Magic|Earth|95|7|Pilar|
+Lilamon|Lila Shower|Magic|Plant|100|8|Rajada|
+Lucemon_Chaos_Mode|Paradise Lost|Physical|Dark|108|9|Golpe|
+Lucemon_Chaos_Mode|Dead or Alive|Magic|Light|100|8|EsferaGigante|
+MachGaogamon|Winning Knuckle|Physical|Neutral|105|8|Golpe|
+MagnaAngemon|Gate of Destiny|Magic|Light|108|9|Tornado|
+MagnaAngemon|Excalibur|Physical|Light|98|7|Corte|
+Mamemon|Smiley Bomb|Magic|Neutral|100|8|Projetil|
+MegaKabuterimon|Horn Buster|Magic|Electric|105|8|Relampago|
+MegaSeadramon|Thunder Javelin|Magic|Electric|105|8|Relampago|
+Megadramon|Genocide Attack|Magic|Dark|102|8|Rajada|
+Meicrackmon_Vicious_Mode|Berserk Thinking|Physical|Dark|105|8|Golpe|
+Meicrackmon_Vicious_Mode|Cursed Claw|Physical|Dark|95|7|Corte|
+MetalGreymon|Giga Blaster|Magic|Fire|105|8|Rajada|
+MetalGreymon|Mega Claw|Physical|Neutral|95|7|Corte|
+MetalMamemon|Energy Bomb|Magic|Neutral|100|8|Projetil|
+MetalTyrannomon|Nuclear Laser|Magic|Fire|105|8|Raio|
+Monzaemon|Hearts Attack|Magic|Light|100|8|Rajada|#FF6FA8
+Okuwamon|Double Scissor Claw|Physical|Neutral|102|8|Corte|
+Paildramon|Desperado Blaster|Magic|Neutral|105|8|Rajada|
+Paildramon|Sting Strike|Physical|Plant|95|7|Golpe|
+Pandamon|Bamboo Punch|Physical|Plant|100|8|Golpe|
+Pandamon|Animal Nail|Physical|Neutral|90|7|Corte|
+Piximon|Pit Bomb|Magic|Light|100|8|Projetil|
+Rapidmon|Rapid Fire|Magic|Neutral|105|8|Rajada|
+Rapidmon|Tri-Beam|Magic|Light|98|8|Raio|#66FF66
+RizeGreymon|Trident Revolver|Magic|Fire|105|8|Rajada|
+ShadowWereGarurumon|Shadow Claw|Physical|Dark|102|8|Corte|
+ShadowWereGarurumon|Full Moon Kick|Physical|Dark|95|7|Golpe|
+ShogunGekomon|Musical Fist|Magic|Neutral|100|8|Onda|
+SkullGreymon|Dark Shot|Magic|Dark|108|9|Projetil|
+SkullMeramon|Metal Fireball|Magic|Fire|102|8|Projetil|#4FA8FF
+SuperStarmon|Halley Squall|Magic|Neutral|102|8|Chuva|#FFE34D
+SuperStarmon|Galactic Eyes|Magic|Light|95|7|Raio|
+Taomon|Talisman of Light|Magic|Light|105|8|Rajada|
+Vademon|Abduction Beam|Magic|Neutral|100|8|Raio|#C080FF
+WarGrowlmon|Atomic Blaster|Magic|Fire|108|9|Raio|
+WarGrowlmon|Radiation Blade|Physical|Neutral|98|7|Corte|
+WereGarurumon|Wolf Claw|Physical|Neutral|102|8|Corte|
+WereGarurumon|Garuru Kick|Physical|Neutral|90|0|Golpe|
+Whamon|Tidal Wave|Magic|Water|100|8|Onda|
+Wingdramon|Blaze Sonic Breath|Magic|Fire|105|8|Raio|
+Wingdramon|Wing Blast|Magic|Wind|95|7|Onda|
+Zudomon|Vulcan's Hammer|Physical|Electric|105|8|Tremor|
+# Mega
+Alphamon|Digitalize of Soul|Magic|Light|128|11|Raio|
+Alphamon|Blade of the Dragon King|Physical|Light|120|10|Corte|
+AncientGarurumon|Sharp Claymore|Physical|Neutral|122|10|Corte|
+AncientGarurumon|Absolute Zero|Magic|Water|118|10|Sopro|#9FE8FF
+AncientGreymon|Gaia Tornado|Magic|Fire|125|11|Tornado|
+AncientGreymon|Omega Burst|Magic|Fire|118|10|Pilar|
+Apocalymon|Darkness Zone|Magic|Dark|128|12|EsferaGigante|
+Apocalymon|Total Annihilation|Magic|Dark|120|11|Onda|
+Armageddemon|Ultimate Flame|Magic|Fire|125|11|Sopro|
+Arresterdramon|Spin Caliber|Physical|Neutral|122|10|Investida|
+Arresterdramon|Mach Flicker|Physical|Neutral|110|9|Golpe|
+BanchoLeomon|Burning Bantyo Punch|Physical|Fire|125|10|Golpe|
+BanchoLeomon|Lion Slash|Physical|Neutral|115|9|Corte|
+Barbamon|Pandemonium Lost|Magic|Dark|125|11|Pilar|
+Beelzemon|Double Impact|Magic|Dark|122|10|Rajada|#C8102E
+Beelzemon|Darkness Claw|Physical|Dark|112|9|Corte|
+Beelzemon_Blast_Mode|Corona Destroyer|Magic|Dark|128|11|Raio|#C8102E
+Beelzemon_Blast_Mode|Darkness Claw|Physical|Dark|115|9|Corte|
+Beelzemon_X|Gluttony Flare|Magic|Dark|125|11|Raio|#C8102E
+Beelzemon_X|Double Impact|Magic|Dark|118|10|Rajada|#C8102E
+Belphemon_Rage_Mode|Lampranthus|Magic|Dark|128|11|Rajada|
+Belphemon_Rage_Mode|Gift of Darkness|Magic|Dark|118|10|Onda|
+Belphemon_Sleep_Mode|Eternal Nightmare|Magic|Dark|115|10|Onda|
+Belphemon_Sleep_Mode|Lampranthus|Magic|Dark|110|10|Rajada|
+BlackMetalGarurumon|Cocytus Breath|Magic|Water|122|10|Sopro|#9FE8FF
+BlackMetalGarurumon|Garuru Tomahawk|Magic|Dark|115|10|Projetil|
+BlackWarGreymon|Terra Destroyer|Magic|Dark|125|11|EsferaGigante|
+BlackWarGreymon|Black Tornado|Physical|Wind|118|10|Investida|
+# BlackWarGreymon_X: sem ataques próprios confirmados; usa os do BlackWarGreymon
+BlackWarGreymon_X|Terra Destroyer|Magic|Dark|125|11|EsferaGigante|
+BlackWarGreymon_X|Black Tornado|Physical|Wind|118|10|Investida|
+BlitzGreymon|Plasma Stake|Physical|Electric|125|10|Golpe|
+BlitzGreymon|Thunder Vernier|Magic|Electric|118|10|Relampago|
+Boltmon|Tomahawk Stinger|Physical|Neutral|120|10|Corte|
+Breakdramon|Destructive Rush|Physical|Earth|122|10|Investida|
+Breakdramon|Infinity Boring|Physical|Neutral|115|9|Investida|
+ChaosGallantmon|Demon's Disaster|Physical|Dark|125|10|Golpe|
+ChaosGallantmon|Judecca Prison|Magic|Dark|120|11|Raio|
+Chaosdromon|Hyper Infinity Cannon|Magic|Dark|125|11|Raio|
+Chaosdromon|Destroyed Hook|Magic|Dark|115|10|Projetil|
+# Craniamon_X: usa os ataques do Craniamon (forma base)
+Craniamon_X|Brave Snatcher|Physical|Light|125|10|Golpe|
+Craniamon_X|End Waltz|Magic|Light|118|10|Onda|
+CresGarurumon|Beast Cyclone|Physical|Wind|122|10|Investida|
+CresGarurumon|Ice Moon Fang|Physical|Water|115|9|Golpe|
+Crusadermon|Spiral Masquerade|Physical|Light|122|10|Investida|
+Daemon|Evil Inferno|Magic|Dark|125|11|Pilar|
+Durandamon|Zwei Glanze|Physical|Neutral|122|10|Corte|
+Durandamon|Thron Messer|Physical|Neutral|115|9|Corte|
+Dynasmon_X|Dragon's Roar|Magic|Light|125|11|Raio|
+Dynasmon_X|Breath of Wyvern|Magic|Fire|118|10|Sopro|
+Ebemon|Brain Rupture|Magic|Neutral|118|10|Onda|
+Gallantmon|Lightning Joust|Physical|Light|125|10|Golpe|
+Gallantmon|Shield of the Just|Magic|Light|120|11|Raio|
+Gallantmon_Crimson_Mode|Invincible Sword|Physical|Light|128|11|Corte|
+Gallantmon_Crimson_Mode|Quo Vadis|Magic|Light|122|11|Onda|
+Gallantmon_X|Zeig Saber|Physical|Light|125|10|Corte|
+Gallantmon_X|Final Elysion|Magic|Light|122|11|Raio|
+Gankoomon|Iron-Fisted Onslaught|Physical|Light|122|10|Golpe|
+Gankoomon|Table Flip|Physical|Earth|110|9|Tremor|
+GranKuwagamon|Dimension Scissor|Physical|Dark|122|10|Corte|
+GranLocomon|Wrecking Ball|Physical|Neutral|120|10|Investida|
+GranLocomon|Limited Express Attack|Physical|Neutral|110|9|Investida|
+HerculesKabuterimon|Giga Blaster|Magic|Electric|122|10|Projetil|
+HerculesKabuterimon|Mega Electro Shocker|Magic|Electric|115|10|Relampago|
+HiAndromon|Atomic Ray|Magic|Neutral|120|10|Raio|
+HiAndromon|Spiral Saber|Physical|Neutral|112|9|Corte|
+Imperialdramon_Fighter_Mode|Positron Laser|Magic|Light|128|11|Raio|#FFD54A
+Imperialdramon_Paladin_Mode|Omega Blade|Physical|Light|128|11|Corte|
+Jesmon|Judgment of the Blade|Physical|Light|125|10|Corte|
+Jesmon|Weltgeist|Magic|Light|118|10|Raio|
+Jesmon_X|Ultimate Seibaken|Physical|Light|128|11|Corte|
+Jesmon_X|Iron-Fist Judgment|Physical|Light|118|10|Golpe|
+Jijimon|Death Hang|Magic|Light|110|10|Onda|
+Jijimon|Gentle Punch|Physical|Neutral|100|0|Golpe|
+Kentaurosmon_X|Surtr Brander|Magic|Fire|125|11|Projetil|
+Kentaurosmon_X|Niflheimr Arrest|Magic|Water|118|10|Sopro|#9FE8FF
+KingEtemon|Dark Spirits|Magic|Dark|120|10|EsferaGigante|
+Kuzuhamon|Illuminator|Magic|Dark|120|10|Raio|
+Kuzuhamon|Taizoukai Mandala|Magic|Light|115|10|Pilar|
+Leopardmon_Leopard_Mode|Wolkenkratzer|Physical|Light|125|10|Investida|
+Leopardmon_Leopard_Mode|Eroberung|Physical|Neutral|118|10|Corte|
+Leopardmon_X|Eine Billion|Physical|Light|125|10|Corte|
+Leopardmon_X|Braun Nebel|Magic|Dark|118|10|Sopro|#6B4A2A
+Leviamon|Rostrum|Physical|Dark|122|10|Golpe|
+Leviamon|Caudal Fin|Physical|Water|112|9|Golpe|
+Lilithmon|Phantom Pain|Magic|Dark|122|10|Onda|
+Lilithmon|Nazar Nail|Physical|Dark|115|9|Corte|
+Machinedramon|Giga Cannon|Magic|Neutral|125|11|Raio|
+Magnadramon|Fire Tornado|Magic|Fire|122|10|Tornado|
+Magnadramon|Holy Flame|Magic|Light|118|10|Sopro|
+MarineAngemon|Ocean Love|Support|Light|105|10|Aura|#FF8FC8
+Mastemon|Holy Desire|Magic|Light|125|11|Raio|
+Mastemon|Dark Despair|Magic|Dark|120|10|Onda|
+MetalEtemon|Dark Recital|Magic|Dark|120|10|Onda|
+MetalEtemon|Metal Punch|Physical|Neutral|112|9|Golpe|
+MetalGarurumon|Metal Wolf Claw|Magic|Water|122|10|Raio|#9FE8FF
+MetalGarurumon|Garuru Tomahawk|Magic|Neutral|115|10|Projetil|
+MetalGarurumon_X|Cocytus Breath|Magic|Water|125|11|Sopro|#9FE8FF
+MetalGarurumon_X|Garuru Tomahawk|Magic|Neutral|115|10|Projetil|
+MetalSeadramon|River of Power|Magic|Water|122|10|Raio|
+Metallicdramon|Laser Cannon|Magic|Neutral|125|11|Raio|
+Metallicdramon|Laser Saber|Physical|Neutral|115|9|Corte|
+Millenniummon|Dimension Destroyer|Magic|Dark|128|12|EsferaGigante|
+Millenniummon|Time Unlimited|Magic|Dark|120|11|Onda|
+Minervamon|Strike Roll|Physical|Neutral|120|10|Investida|
+Minervamon|Madness Merry-go-round|Physical|Wind|112|9|Investida|
+MirageGaogamon|Full Moon Blaster|Magic|Light|122|10|Raio|
+MirageGaogamon|Double Crescent Mirage|Physical|Neutral|112|9|Corte|
+MirageGaogamon_Burst_Mode|Full Moon Meteor Impact|Magic|Light|128|11|EsferaGigante|
+MirageGaogamon_Burst_Mode|Final Mirage Burst|Magic|Light|120|10|Raio|
+Omnimon|Supreme Cannon|Magic|Light|128|11|Raio|#CFEFFF
+Omnimon|Transcendent Sword|Physical|Light|125|10|Corte|
+Omnimon_Alter_B|Grey Cannon - Railgun|Magic|Light|128|11|Raio|#CFEFFF
+Omnimon_Alter_B|Supreme Sword|Physical|Light|120|10|Corte|
+Omnimon_Alter_S|Supreme Sword|Physical|Light|128|11|Corte|
+Omnimon_Alter_S|Transcendent Cannon|Magic|Light|120|10|Raio|#CFEFFF
+Omnimon_Merciful_Mode|Graceful Cannon|Magic|Light|128|11|Raio|#CFEFFF
+Omnimon_Merciful_Mode|Fearsome Blade|Physical|Light|122|10|Corte|
+Omnimon_X|All Delete|Magic|Dark|130|12|Onda|
+Omnimon_X|Supreme Cannon|Magic|Light|122|10|Raio|#CFEFFF
+Omnimon_Zwart|Supreme Cannon|Magic|Dark|128|11|Raio|
+Omnimon_Zwart|Transcendent Sword|Physical|Dark|122|10|Corte|
+Omnimon_Zwart_D|Grey Sword - Spiral|Physical|Dark|128|11|Corte|
+Omnimon_Zwart_D|Supreme Cannon|Magic|Dark|122|10|Raio|
+Ophanimon|Eden's Javelin|Magic|Light|125|11|Raio|
+Ophanimon|Sefirot Crystal|Magic|Light|115|10|Rajada|
+Ophanimon_Falldown_Mode|Flame Hellscythe|Physical|Fire|125|10|Corte|
+Ophanimon_Falldown_Mode|Demonic Crystal|Magic|Dark|118|10|Rajada|
+Ouryumon|Eiseiryuoujin|Physical|Neutral|122|10|Corte|
+Ouryumon|Golden Armor|Support|Light|100|9|Aura|#FFD54A
+Phoenixmon|Starlight Explosion|Magic|Fire|125|11|Chuva|
+Phoenixmon|Crimson Flame|Magic|Fire|115|10|Sopro|
+Piedmon|Trump Sword|Physical|Dark|122|10|Corte|
+PlatinumNumemon|Platinum Junk|Magic|Neutral|112|10|Rajada|#D8DCE0
+PlatinumNumemon|Platinum Burp|Magic|Plant|105|9|Sopro|
+Plesiomon|Sorrow Blue|Magic|Water|122|10|Onda|#3A8DFF
+Plesiomon|Fin Attack|Physical|Water|110|9|Golpe|
+PrinceMamemon|Smiley Warhead|Magic|Neutral|120|10|Projetil|
+Puppetmon|Puppet Pummel|Physical|Neutral|118|10|Golpe|
+Raguelmon|Form Taranis|Magic|Dark|125|11|Relampago|
+Raguelmon|Realm of Darkness|Magic|Dark|118|10|Onda|
+Ravemon_Burst_Mode|Musou Tenshou|Physical|Wind|125|10|Corte|
+Ravemon_Burst_Mode|Lightning Thrust|Physical|Electric|118|10|Corte|
+Rosemon|Thorn Whip|Physical|Plant|120|10|Golpe|
+Rosemon|Forbidden Temptation|Magic|Plant|115|10|Rajada|#FF5FA0
+Rosemon_Burst_Mode|Kiss of Breath|Magic|Plant|125|11|Sopro|#FF5FA0
+Rosemon_Burst_Mode|Tifaret|Support|Light|105|10|Aura|
+RustTyranomon|Terror's Cluster|Magic|Fire|122|10|Rajada|
+RustTyranomon|Rust Breath|Magic|Dark|112|10|Sopro|#B7410E
+SaberLeomon|Infinity Arrow|Magic|Neutral|120|10|Rajada|
+SaberLeomon|Howling Crusher|Physical|Neutral|115|9|Golpe|
+Sakuyamon|Amethyst Wind|Magic|Wind|122|10|Tornado|#B388FF
+Sakuyamon|Spirit Strike|Magic|Light|112|10|Rajada|
+Seraphimon|Seven Heavens|Magic|Light|128|11|Rajada|
+Seraphimon|Strike of the Seven Stars|Magic|Light|118|10|Rajada|
+ShineGreymon|Glorious Burst|Magic|Fire|125|11|EsferaGigante|
+ShineGreymon|Shining Blast|Magic|Light|115|10|Raio|
+ShineGreymon_Burst_Mode|Final Shining Burst|Magic|Fire|128|11|EsferaGigante|
+ShineGreymon_Burst_Mode|Corona Blaze Sword|Physical|Fire|120|10|Corte|
+# ShineGreymon_Ruin_Mode: sem ataques próprios confirmados; usa os do ShineGreymon Burst Mode (versão sombria)
+ShineGreymon_Ruin_Mode|Final Shining Burst|Magic|Dark|128|11|EsferaGigante|#8B0000
+ShineGreymon_Ruin_Mode|Corona Blaze Sword|Physical|Dark|120|10|Corte|#8B0000
+Slayerdramon|Tenryu Slash|Physical|Light|125|10|Corte|
+Slayerdramon|Shoryu Slash|Physical|Neutral|115|9|Corte|
+Susanoomon|Celestial Blade|Physical|Light|128|11|Corte|
+Susanoomon|Heaven's Thunder|Magic|Electric|122|11|Relampago|
+TigerVespamon|Mach Stinger V|Physical|Neutral|120|10|Corte|
+TigerVespamon|Gear Stinger|Physical|Neutral|110|9|Golpe|
+Titamon|Soul Core Attack|Magic|Dark|125|11|EsferaGigante|
+Titamon|Phantom Blade|Physical|Dark|115|9|Corte|
+UlforceVeedramon|Ray of Victory|Magic|Light|125|11|Raio|#6FC8FF
+UlforceVeedramon|Victory Sword|Physical|Light|118|10|Corte|
+UlforceVeedramon_X|Shining V Force|Magic|Light|128|11|Raio|
+UlforceVeedramon_X|Dragon Impulse X|Magic|Fire|120|10|Projetil|#6FC8FF
+Vikemon|Arctic Blizzard|Magic|Water|122|10|Sopro|#CFEFFF
+Vikemon|Mjolnir Thunder|Physical|Electric|115|9|Golpe|
+Volcanicdramon|Volcanic Flare|Magic|Fire|122|10|Pilar|
+Volcanicdramon|Glide Blaze|Physical|Fire|112|9|Investida|
+WarGreymon|Terra Force|Magic|Fire|128|11|EsferaGigante|
+WarGreymon|Great Tornado|Physical|Wind|120|10|Investida|
+WarGreymon_X|Terra Force Zero|Magic|Fire|128|11|EsferaGigante|
+WarGreymon_X|Dramon Killer|Physical|Neutral|120|10|Corte|
+Yggdrasil_7D6|Huge Crystal|Magic|Light|125|11|Pilar|#CFEFFF
+Yggdrasil_7D6|Crystal Shards|Magic|Neutral|112|10|Rajada|#CFEFFF
+# Armor
+Magnamon|Extreme Jihad|Magic|Light|92|7|Onda|#FFD54A
+Magnamon|Plasma Shoot|Magic|Light|82|6|Rajada|#FFD54A
+Magnamon_X|Shining Gold Solar Storm|Magic|Light|95|7|Raio|#FFD54A
+Magnamon_X|Extreme Jihad|Magic|Light|88|6|Onda|#FFD54A
+Rapidmon_Armor|Golden Triangle|Magic|Light|92|7|Raio|#FFD54A
+Rapidmon_Armor|Rapid Fire|Magic|Neutral|85|6|Rajada|

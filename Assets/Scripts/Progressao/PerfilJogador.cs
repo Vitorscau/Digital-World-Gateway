@@ -86,11 +86,15 @@ public class PerfilJogador
     public int metrosParaXp;         // metros andados que ainda não viraram EXP
     public string diaMissoes;        // data (yyyy-MM-dd) das missões diárias atuais
     public List<ProgressoMissao> missoes = new List<ProgressoMissao>();
+    public int historiaPasso;        // passo atual da história (contando todos os capítulos)
+    public ProgressoMissao historia; // progresso do passo atual da história
+    public List<ProgressoMissao> missoesEspeciais = new List<ProgressoMissao>(); // id = "evento/missão"
     public List<ItemSalvo> itens = new List<ItemSalvo>();
     public List<ScanSalvo> scans = new List<ScanSalvo>();
     public int nivelMostrado = 1;    // último nível já anunciado na tela "Level Up"
     public bool bandagemAtiva;       // a próxima batalha começa com vida extra
     public bool somLigado = true;
+    public bool batalhaAR;           // batalhas em AR (false = arena 3D comum; muda em Settings)
     public bool comecou;             // já recebeu os itens iniciais
     public bool inicioFeito;         // já escolheu o Digitama (início do jogo)
     public List<PontoUsado> pontosUsados = new List<PontoUsado>();
@@ -145,6 +149,7 @@ public class PerfilJogador
     {
         colecao ??= new List<DigimonSalvo>();
         missoes ??= new List<ProgressoMissao>();
+        missoesEspeciais ??= new List<ProgressoMissao>();
         itens ??= new List<ItemSalvo>();
         scans ??= new List<ScanSalvo>();
         pontosUsados ??= new List<PontoUsado>();

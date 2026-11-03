@@ -11,7 +11,9 @@ using UnityEngine.UI;
 /// deixa os dois lutarem com dano calculado pelos atributos e, no fim, dá XP, bits,
 /// captura o Digimon (na vitória) e avança as missões.
 ///
-/// Na Battle_Scene ele se monta sozinho ao abrir a cena. No AR, a arena chama IniciarEm(...).
+/// Na Battle_Scene (arena 3D, sem AR — o padrão do jogo) ele se monta sozinho ao abrir a cena, com a HUD
+/// (HudBatalha), a câmera atrás do parceiro e um botão "AR" para levar esta batalha para o AR antes de começar.
+/// No AR, a arena chama IniciarEm(...).
 /// </summary>
 public class BatalhaDigimon : MonoBehaviour
 {
@@ -22,6 +24,9 @@ public class BatalhaDigimon : MonoBehaviour
     private HPBar _barraJogador, _barraInimigo;
     private BattleHud _hudJogador, _hudInimigo;
     private bool _terminou;
+    private bool _semAR;          // arena 3D comum (Battle_Scene)
+    private bool _lutaComecou;
+    private GameObject _botaoAR;
 
     private Canvas _canvas;
     private TMP_Text _textoGrande;
@@ -59,7 +64,7 @@ public class BatalhaDigimon : MonoBehaviour
         }
         altura = n > 0 ? altura / n : 1.5f;
 
-        IniciarEm(spawnJogador.transform, spawnInimigo.transform, altura, null);
+        IniciarEm(spawnJogador.transform, spawnInimigo.transform, altura, null)._semAR = true;
     }
 
     /// <summary>Começa a batalha usando estes pontos (usado pela arena do AR e pela Battle_Scene).</summary>
@@ -86,7 +91,8 @@ public class BatalhaDigimon : MonoBehaviour
         }
 
         MontarUI();
-        AcharHuds();
+        if (_semAR) DesligarSistemaAntigo();
+        else AcharHuds();
 
         var parceiro = new Digimon(_encontro.FichaParceiro, Mathf.Max(1, _encontro.Parceiro?.nivel ?? 5)).AplicarParceiro(_encontro.Parceiro);
         var selvagem = new Digimon(_encontro.FichaInimigo, Mathf.Max(1, _encontro.NivelInimigo));
@@ -112,13 +118,23 @@ public class BatalhaDigimon : MonoBehaviour
         _jogador.Derrotado += _ => Terminar(false);
         _inimigo.Derrotado += _ => Terminar(true);
 
-        // Contagem regressiva.
-        foreach (var t in new[] { "3", "2", "1", "LUTE!" })
+        // Sem HUD na cena (arena 3D): monta a do Figma, com HP e MP.
+        if (_hudJogador == null && _hudInimigo == null) HudBatalha.Criar(_canvas.transform, _jogador, _inimigo);
+        if (_semAR)
+        {
+            EnquadrarCamera();
+            MontarBotaoAR();
+        }
+
+        // Contagem regressiva (dá tempo de trocar para o AR).
+        foreach (var t in new[] { "3", "2", "1", "FIGHT!" })
         {
             _textoGrande.text = t;
-            yield return new WaitForSeconds(t == "LUTE!" ? 0.6f : 0.8f);
+            yield return new WaitForSeconds(t == "FIGHT!" ? 0.6f : 0.8f);
         }
         _textoGrande.text = "";
+        _lutaComecou = true;
+        if (_botaoAR != null) _botaoAR.SetActive(false); // depois de começar não troca (não dá para fugir de uma luta perdida)
         _jogador.podeLutar = true;
         _inimigo.podeLutar = true;
 
@@ -136,6 +152,25 @@ public class BatalhaDigimon : MonoBehaviour
         _hudInimigo = Campo<BattleHud>(sistema, "enemyHud");
         _barraJogador = _hudJogador != null ? Campo<HPBar>(_hudJogador, "hpBar") : null;
         _barraInimigo = _hudInimigo != null ? Campo<HPBar>(_hudInimigo, "hpBar") : null;
+    }
+
+    /// <summary>
+    /// Na arena 3D, a Battle_Scene ainda tem o BattleSystem antigo (por turnos), com HUD e botões "Battle"/"Back"
+    /// preenchidos com dados de teste: desliga tudo isso e usa só a HudBatalha.
+    /// </summary>
+    private void DesligarSistemaAntigo()
+    {
+        foreach (var sistema in FindObjectsByType<BattleSystem>(FindObjectsSortMode.None))
+        {
+            sistema.enabled = false;
+            foreach (var c in sistema.GetComponentsInChildren<Canvas>(true))
+                if (c.isRootCanvas) c.gameObject.SetActive(false);
+        }
+        foreach (var hud in FindObjectsByType<BattleHud>(FindObjectsSortMode.None))
+        {
+            var raiz = hud.GetComponentInParent<Canvas>()?.rootCanvas;
+            if (raiz != null && raiz != _canvas) raiz.gameObject.SetActive(false);
+        }
     }
 
     private static T Campo<T>(object alvo, string nome) where T : class =>
@@ -158,10 +193,33 @@ public class BatalhaDigimon : MonoBehaviour
         _painelResultado.GetComponentInChildren<TMP_Text>().text = texto;
     }
 
+    /// <summary>Câmera atrás e um pouco acima do parceiro, olhando para o meio da luta (o inimigo de frente).</summary>
+    private void EnquadrarCamera()
+    {
+        var cam = Camera.main;
+        if (cam == null || _jogador == null || _inimigo == null) return;
+        CameraArena.Seguir(cam, _jogador.transform, _inimigo.transform, _altura);
+    }
+
+    /// <summary>Botão "AR": leva esta mesma batalha para o AR (só antes de a luta começar).</summary>
+    private void MontarBotaoAR()
+    {
+        var b = UIPadrao.Botao(_canvas.transform, "AR", () =>
+        {
+            if (_lutaComecou) return;
+            TelaCarregamento.Ir(Cenas.BatalhaAR);
+        }, false, 44f);
+        var rt = (RectTransform)b.transform;
+        rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0f, 1f);
+        rt.anchoredPosition = new Vector2(40f, -110f);
+        rt.sizeDelta = new Vector2(220f, 110f);
+        _botaoAR = b.gameObject;
+    }
+
     public void VoltarAoMapa()
     {
         Encontro.Limpar();
-        SceneManager.LoadScene(Cenas.Mapa);
+        TelaCarregamento.Ir(Cenas.Mapa);
     }
 
     // ------------------------------------------------------------ Interface (criada por código)
@@ -173,10 +231,7 @@ public class BatalhaDigimon : MonoBehaviour
         _canvas = go.GetComponent<Canvas>();
         _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         _canvas.sortingOrder = 100;
-        var scaler = go.GetComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1080, 1920);
-        scaler.matchWidthOrHeight = 0.5f;
+        UIResponsiva.ConfigurarEscala(go.GetComponent<CanvasScaler>(), new Vector2(1080, 1920));
 
         _textoGrande = Texto(go.transform, "Contagem", 220, Color.white);
         Esticar((RectTransform)_textoGrande.transform, Vector2.zero, Vector2.one);

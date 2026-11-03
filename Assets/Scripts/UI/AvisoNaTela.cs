@@ -32,10 +32,7 @@ public class AvisoNaTela : MonoBehaviour
         var canvas = go.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 500;
-        var scaler = go.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1080, 1920);
-        scaler.matchWidthOrHeight = 0.5f;
+        UIResponsiva.ConfigurarEscala(go.AddComponent<CanvasScaler>(), new Vector2(1080, 1920));
         _instancia = go.AddComponent<AvisoNaTela>();
         _instancia.Montar(go.transform);
     }

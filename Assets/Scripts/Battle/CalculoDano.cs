@@ -73,7 +73,7 @@ public static class CalculoDano
     public static int Calcular(Digimon atacante, Digimon defensor, bool especial)
     {
         var t = especial
-            ? new Tecnica { Nome = "Especial", Poder = (int)PoderEspecial, Tipo = TipoTecnica.Magica, Atributo = atacante.Base.Atribute }
+            ? new Tecnica { Nome = "Special", Poder = (int)PoderEspecial, Tipo = TipoTecnica.Magica, Atributo = atacante.Base.Atribute }
             : Tecnica.Basico(atacante.Base.Atribute);
         return Calcular(atacante, defensor, t, false);
     }

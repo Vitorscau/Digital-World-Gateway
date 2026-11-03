@@ -24,18 +24,18 @@ public class BattleController : MonoBehaviour
 
     public void StartBattle() // Renamed from SetBattleActive
     {
-        SceneManager.LoadScene(battleSceneName);
+        TelaCarregamento.Ir(battleSceneName);
     }
 
     public void ReturnToMap()
     {
         Debug.Log("voltando para o mapa");
-        SceneManager.LoadScene(mapSceneName); // antes ignorava o campo
+        TelaCarregamento.Ir(mapSceneName); // antes ignorava o campo
         
 
     }
      public void ReturnToAR()
     {
-        SceneManager.LoadScene(Cenas.AR);
+        TelaCarregamento.Ir(Cenas.AR);
     }
 }

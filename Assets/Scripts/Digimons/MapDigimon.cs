@@ -17,7 +17,7 @@ public class MapDigimon : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.SetBattleData(GameManager.Instance.PlayerDigimon, digimonBase, level);
-            SceneManager.LoadScene(Cenas.Batalha); // antes: "BattleScene", que não existe
+            TelaCarregamento.Ir(Cenas.Batalha); // antes: "BattleScene", que não existe
         }
     }
 }

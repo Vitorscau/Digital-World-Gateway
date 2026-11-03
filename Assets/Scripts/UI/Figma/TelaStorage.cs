@@ -85,7 +85,7 @@ public class TelaStorage : TelaFigma
         p.DefinirParceiro(d);
         var controlador = FindFirstObjectByType<DigimonController>();
         if (controlador != null && d.Ficha != null) controlador.SetDigimon(d.Ficha);
-        AvisoNaTela.Mostrar($"{(d.Ficha != null ? d.Ficha.Name.Trim() : d.especie)} agora é seu parceiro!");
+        AvisoNaTela.Mostrar($"{(d.Ficha != null ? d.Ficha.Name.Trim() : d.especie)} is now your partner!");
     }
 
     private static Color CorDoAtributo(DigimonBase f)
@@ -133,7 +133,7 @@ public class TelaStorage : TelaFigma
 
         var area = FigmaUI.Local(dentro, "Texto", 20f, 0, 897f, 70f);
         area.gameObject.AddComponent<RectMask2D>();
-        var dica = FigmaUI.Texto(area, "Buscar", 35f, FigmaUI.Peso.Negrito, TextAlignmentOptions.Center, false);
+        var dica = FigmaUI.Texto(area, "Search", 35f, FigmaUI.Peso.Negrito, TextAlignmentOptions.Center, false);
         dica.color = new Color(1, 1, 1, 0.75f);
         FigmaUI.Esticar(dica.rectTransform);
         var texto = FigmaUI.Texto(area, "", 35f, FigmaUI.Peso.Negrito, TextAlignmentOptions.Center, false);

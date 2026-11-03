@@ -27,7 +27,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Digitama_Scene.unity
     guid: 68af99ad2eb14014ab1d313450397179
   m_configObjects:
-    Niantic.Lightship.AR.LightshipSettings: {fileID: 11400000, guid: e871c1ddb1273c64eaef34ceac4cff33,
+    Niantic.Lightship.AR.LightshipSettings: {fileID: 11400000, guid: d4d5dc561f5bdef4588319a316f8c9ed,
       type: 2}
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: c1eeb8dc86ee1964e9f8c234ec23d3bd,
       type: 2}

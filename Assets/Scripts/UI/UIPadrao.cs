@@ -18,10 +18,7 @@ public static class UIPadrao
         var c = go.GetComponent<Canvas>();
         c.renderMode = RenderMode.ScreenSpaceOverlay;
         c.sortingOrder = ordem;
-        var s = go.GetComponent<CanvasScaler>();
-        s.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        s.referenceResolution = new Vector2(1080, 1920);
-        s.matchWidthOrHeight = 0.5f;
+        UIResponsiva.ConfigurarEscala(go.GetComponent<CanvasScaler>(), new Vector2(1080, 1920));
         if (UnityEngine.Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
             new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.EventSystems.StandaloneInputModule));
         return c;

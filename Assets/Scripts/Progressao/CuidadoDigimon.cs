@@ -86,6 +86,7 @@ public static class CuidadoDigimon
         PerfilJogador.GanharXp(d, 15);
         var agora = Agora;
         if (d.proximoCoco > agora + 1800) d.proximoCoco = agora + 1800; // comeu: cocô em até 30 min
+        Missoes.RegistrarAlimentar();
         p.Salvar();
         return ResultadoComida.Comeu;
     }
@@ -116,9 +117,9 @@ public static class CuidadoDigimon
     public static string PodeTreinar(DigimonSalvo d)
     {
         Atualizar(d);
-        if (d.energia < 20f) return "está cansado demais para treinar";
-        if (d.fome < 15f) return "está com fome demais para treinar";
-        if (d.humor < 15f) return "não quer treinar agora (está triste)";
+        if (d.energia < 20f) return "is too tired to train";
+        if (d.fome < 15f) return "is too hungry to train";
+        if (d.humor < 15f) return "doesn't want to train right now (feeling sad)";
         return null;
     }
 
@@ -141,6 +142,7 @@ public static class CuidadoDigimon
         if (pontos >= 6) { Mudar(ref d.humor, 5f); Amizade(d, 1); }
         else if (pontos <= 1) Mudar(ref d.humor, -4f);
         PerfilJogador.GanharXp(d, 5 + pontos * 2);
+        Missoes.RegistrarTreino();
         return ganho;
     }
 
@@ -180,5 +182,5 @@ public static class CuidadoDigimon
     }
 
     public static string NivelAmizade(int a) =>
-        a >= 90 ? "Melhores amigos" : a >= 60 ? "Muito próximos" : a >= 30 ? "Amigos" : a >= 10 ? "Se conhecendo" : "Desconfiado";
+        a >= 90 ? "Best friends" : a >= 60 ? "Very close" : a >= 30 ? "Friends" : a >= 10 ? "Getting to know each other" : "Wary";
 }

@@ -235,9 +235,9 @@ public class _DigimonGOP : MonoBehaviour
         perfil.GanharXp(xpTamer);
         var parceiro = perfil.Parceiro;
         var subiu = PerfilJogador.GanharXp(parceiro, xpParceiro);
-        var nome = parceiro?.Ficha != null ? parceiro.Ficha.Name.Trim() : "Parceiro";
-        AvisoNaTela.Mostrar($"Caminhada: +{xpTamer} EXP Tamer, +{xpParceiro} EXP {nome}" +
-                            (subiu > 0 ? $"  ({nome} subiu para o nível {parceiro.nivel}!)" : ""));
+        var nome = parceiro?.Ficha != null ? parceiro.Ficha.Name.Trim() : "Partner";
+        AvisoNaTela.Mostrar($"Walk: +{xpTamer} EXP Tamer, +{xpParceiro} EXP {nome}" +
+                            (subiu > 0 ? $"  ({nome} reached level {parceiro.nivel}!)" : ""));
         if (!TelaFigma.AlgumaAberta) TelaLevelUp.MostrarSePreciso();
     }
 
@@ -314,6 +314,7 @@ public class _DigimonGOP : MonoBehaviour
             var wild = go.GetComponent<WildDigimon>();
             if (wild == null) wild = go.AddComponent<WildDigimon>();
             var ficha = entrada.digimon != null ? entrada.digimon : CatalogoDigimon.Buscar(especie);
+            go.transform.localScale *= DigimonVisual.Ajuste(ficha); // ajuste_tamanho.txt
             wild.Configurar(this, id, especie, nivel, fim, local, habitat, ficha, modelo);
             _ativos[id] = new Ativo { Wild = wild, Layer = entrada.gameObjectPlacement, Fim = fim, Visto = true };
         }

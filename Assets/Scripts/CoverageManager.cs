@@ -243,7 +243,7 @@ public class CoverageManager : MonoBehaviour
         if (p == null || TelaFigma.AlgumaAberta) return;
         if (!PodeUsar(p))
         {
-            AvisoNaTela.Mostrar($"Longe demais. Chegue a {raioUsoMetros:0} m para decifrar os dados.");
+            AvisoNaTela.Mostrar($"Too far away. Get within {raioUsoMetros:0} m to decode the data.");
             return;
         }
         TelaDadosCriptografados.Abrir(p);

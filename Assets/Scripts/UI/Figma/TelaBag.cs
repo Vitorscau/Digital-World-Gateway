@@ -47,7 +47,7 @@ public class TelaBag : TelaFigma
             var vazio = new GameObject("Vazio", typeof(RectTransform));
             ((RectTransform)vazio.transform).SetParent(_lista, false);
             ((RectTransform)vazio.transform).sizeDelta = new Vector2(884f, 120f);
-            var t = FigmaUI.Texto(vazio.transform, "Bag vazia. Vença batalhas para ganhar itens.", 36f, FigmaUI.Peso.Normal, TextAlignmentOptions.Left);
+            var t = FigmaUI.Texto(vazio.transform, "Your Bag is empty. Win battles to earn items.", 36f, FigmaUI.Peso.Normal, TextAlignmentOptions.Left);
             FigmaUI.Esticar(t.rectTransform);
         }
     }
@@ -125,7 +125,7 @@ public class TelaBag : TelaFigma
         var msg = def.Usar(p);
         if (msg == null)
         {
-            AvisoNaTela.Mostrar(def.Id == Itens.Bandage ? "A Bandage já está ativa para a próxima batalha." : $"Não dá para usar {def.Nome} agora.");
+            AvisoNaTela.Mostrar(def.Id == Itens.Bandage ? "A Bandage is already active for your next battle." : $"You can't use {def.Nome} right now.");
             return;
         }
         p.GastarItem(def.Id);

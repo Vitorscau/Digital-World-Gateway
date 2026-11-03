@@ -25,17 +25,17 @@ public static class Digitamas
 
     public static readonly Tipo[] Todos =
     {
-        new Tipo { Fresh = "Botamon", Descricao = "Ovo laranja com bolinhas amarelas", Base = H("#F5872A"), Detalhe = H("#FFE45C"), Padrao = Padrao.Bolinhas },
-        new Tipo { Fresh = "Punimon", Descricao = "Ovo azul-claro com marcas azul-escuras", Base = H("#8FD3F7"), Detalhe = H("#1F4E9E"), Padrao = Padrao.Manchas },
-        new Tipo { Fresh = "Poyomon", Descricao = "Ovo azul-escuro com fios ondulados roxos", Base = H("#23306E"), Detalhe = H("#A15BD6"), Padrao = Padrao.Ondas },
-        new Tipo { Fresh = "Pabumon", Descricao = "Ovo fúcsia com círculos roxo-escuros", Base = H("#E5409A"), Detalhe = H("#4E1A63"), Padrao = Padrao.Circulos },
-        new Tipo { Fresh = "Kuramon", Descricao = "Ovo branco com losangos pretos na metade de baixo", Base = H("#F2F2F2"), Detalhe = H("#1A1A1A"), Padrao = Padrao.Losangos },
+        new Tipo { Fresh = "Botamon", Descricao = "Orange egg with yellow polka dots", Base = H("#F5872A"), Detalhe = H("#FFE45C"), Padrao = Padrao.Bolinhas },
+        new Tipo { Fresh = "Punimon", Descricao = "Light blue egg with dark blue markings", Base = H("#8FD3F7"), Detalhe = H("#1F4E9E"), Padrao = Padrao.Manchas },
+        new Tipo { Fresh = "Poyomon", Descricao = "Dark blue egg with wavy purple lines", Base = H("#23306E"), Detalhe = H("#A15BD6"), Padrao = Padrao.Ondas },
+        new Tipo { Fresh = "Pabumon", Descricao = "Fuchsia egg with dark purple circles", Base = H("#E5409A"), Detalhe = H("#4E1A63"), Padrao = Padrao.Circulos },
+        new Tipo { Fresh = "Kuramon", Descricao = "White egg with black diamonds on the lower half", Base = H("#F2F2F2"), Detalhe = H("#1A1A1A"), Padrao = Padrao.Losangos },
         // Ovos de Next Order / Re:Digitize / Digimon Story (descrições curtas: cor e, quando há, o desenho).
-        new Tipo { Fresh = "Pichimon", Descricao = "Ovo azul-céu com nuvens brancas", Base = H("#6EC6F5"), Detalhe = H("#FFFFFF"), Padrao = Padrao.Nuvens },
-        new Tipo { Fresh = "Conomon", Descricao = "Ovo de duas metades, branco em cima e laranja embaixo", Base = H("#F4F1EA"), Detalhe = H("#E8873A"), Padrao = Padrao.MeioAMeio },
-        new Tipo { Fresh = "Jyarimon", Descricao = "Ovo vermelho", Base = H("#D6312A"), Detalhe = H("#9E1B17"), Padrao = Padrao.Liso },
-        new Tipo { Fresh = "Dodomon", Descricao = "Ovo azul", Base = H("#2F5FD0"), Detalhe = H("#1E3F96"), Padrao = Padrao.Liso },
-        new Tipo { Fresh = "Chibomon", Descricao = "Ovo vermelho-claro", Base = H("#F06A5E"), Detalhe = H("#C9443B"), Padrao = Padrao.Liso },
+        new Tipo { Fresh = "Pichimon", Descricao = "Sky blue egg with white clouds", Base = H("#6EC6F5"), Detalhe = H("#FFFFFF"), Padrao = Padrao.Nuvens },
+        new Tipo { Fresh = "Conomon", Descricao = "Two-tone egg, white on top and orange on the bottom", Base = H("#F4F1EA"), Detalhe = H("#E8873A"), Padrao = Padrao.MeioAMeio },
+        new Tipo { Fresh = "Jyarimon", Descricao = "Red egg", Base = H("#D6312A"), Detalhe = H("#9E1B17"), Padrao = Padrao.Liso },
+        new Tipo { Fresh = "Dodomon", Descricao = "Blue egg", Base = H("#2F5FD0"), Detalhe = H("#1E3F96"), Padrao = Padrao.Liso },
+        new Tipo { Fresh = "Chibomon", Descricao = "Light red egg", Base = H("#F06A5E"), Detalhe = H("#C9443B"), Padrao = Padrao.Liso },
     };
 
     // ------------------------------------------------------------ Malha

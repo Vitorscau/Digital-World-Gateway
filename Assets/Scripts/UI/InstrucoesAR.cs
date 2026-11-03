@@ -45,15 +45,14 @@ public class InstrucoesAR : MonoBehaviour
 
     private void Montar(bool abrirJanela)
     {
-        var raiz = (RectTransform)FigmaUI.Canvas(transform, "UI_InstrucoesAR", 500).transform;
+        var raiz = FigmaUI.Tela(transform, "UI_InstrucoesAR", 500);
 
         // Dica fixa no alto (aparece quando a janela fecha).
         _dica = new GameObject("Dica", typeof(RectTransform));
         _dica.transform.SetParent(raiz, false);
         FigmaUI.Esticar((RectTransform)_dica.transform);
-        var fundoDica = FigmaUI.Imagem(FigmaUI.Ret(_dica.transform, "Fundo", 90f, 330f, 849f, 120f), FigmaUI.Arredondado(), new Color(0f, 0.2f, 0.3f, 0.75f));
-        fundoDica.type = Image.Type.Sliced;
-        var textoDica = FigmaUI.TextoEm(_dica.transform, 110f, 330f, 809f, 120f, "Mexa o celular devagar e toque duas vezes no chão", 34f, FigmaUI.Peso.Normal);
+        FigmaUI.PainelAzul(FigmaUI.Ret(_dica.transform, "Fundo", 90f, 330f, 849f, 120f));
+        var textoDica = FigmaUI.TextoEm(_dica.transform, 110f, 330f, 809f, 120f, "Move your phone slowly, then double-tap the ground", 34f, FigmaUI.Peso.Normal);
         textoDica.textWrappingMode = TextWrappingModes.Normal;
         _dica.SetActive(!abrirJanela);
 
@@ -65,36 +64,35 @@ public class InstrucoesAR : MonoBehaviour
         FigmaUI.Esticar((RectTransform)_janela.transform);
         // Escurece a câmera atrás e bloqueia os toques.
         var veu = FigmaUI.Ret(_janela.transform, "Veu", 0, 0, 1, 1);
-        FigmaUI.Esticar(veu);
+        FigmaUI.TelaCheia(veu);
         FigmaUI.Imagem(veu, null, new Color(0f, 0f, 0f, 0.6f)).raycastTarget = true;
 
-        var painel = FigmaUI.Imagem(FigmaUI.Ret(_janela.transform, "Painel", 60f, 330f, 909f, 1500f), FigmaUI.Arredondado(), new Color(0f, 0.38f, 0.55f, 0.95f));
-        painel.type = Image.Type.Sliced;
-        FigmaUI.CaixaVidro(_janela.transform, 60f, 330f, 909f, 1500f);
-        FigmaUI.TextoEm(_janela.transform, 60f, 380f, 909f, 100f, "Chamar seu Digimon", 60f, FigmaUI.Peso.Negrito);
+        // Painel no padrão das outras telas (azul com textura de pixels e borda branca).
+        FigmaUI.PainelAzul(FigmaUI.Ret(_janela.transform, "Painel", 60f, 330f, 909f, 1500f));
+        FigmaUI.TextoEm(_janela.transform, 60f, 380f, 909f, 100f, "Call your Digimon", 60f, FigmaUI.Peso.Negrito);
 
         // Passo 1: mexer a câmera.
-        Passo(1, 520f, "Mexa o celular devagar, apontando para o chão, até a câmera reconhecer o lugar.");
+        Passo(1, 520f, "Move your phone slowly, pointing at the ground, until the camera recognizes the area.");
         var area1 = FigmaUI.Ret(_janela.transform, "Area1", 60f, 640f, 909f, 330f);
         _celular = Celular(area1);
         Seta(area1, -1);
         Seta(area1, 1);
 
         // Passo 2: tocar duas vezes.
-        Passo(2, 1010f, "Toque duas vezes no chão, no lugar onde o Digimon vai aparecer.");
+        Passo(2, 1010f, "Double-tap the ground where you want your Digimon to appear.");
         var area2 = FigmaUI.Ret(_janela.transform, "Area2", 60f, 1130f, 909f, 400f);
         Chao(area2);
         _anel1 = Anel(area2, out _imgAnel1);
         _anel2 = Anel(area2, out _imgAnel2);
         _dedo = Dedo(area2);
 
-        FigmaUI.BotaoLargo(_janela.transform, 87f, 1640f, "Entendi", Fechar);
+        FigmaUI.BotaoBack(_janela.transform, (FigmaUI.Largura - 395f) / 2f, 1650f, Fechar, "Got it");
         StartCoroutine(Animar());
     }
 
     private void Passo(int numero, float y, string texto)
     {
-        var bola = FigmaUI.Imagem(FigmaUI.Ret(_janela.transform, "Numero" + numero, 110f, y, 80f, 80f), Formas.Circulo(), FigmaUI.AzulBarra);
+        var bola = FigmaUI.Imagem(FigmaUI.Ret(_janela.transform, "Numero" + numero, 110f, y, 80f, 80f), Formas.Circulo(), FigmaUI.AzulBarraFundo);
         bola.raycastTarget = false;
         FigmaUI.TextoEm(bola.transform, 0f, 0f, 80f, 80f, numero.ToString(), 46f, FigmaUI.Peso.Negrito);
         Esticar(bola.transform.GetChild(0));

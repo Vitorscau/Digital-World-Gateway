@@ -73,7 +73,7 @@ public class TelaDigivolucao : TelaFigma
         _imagem.rectTransform.pivot = new Vector2(0.5f, 0.5f);
         _imagem.rectTransform.anchoredPosition += new Vector2(350f, -350f);
 
-        FigmaUI.TextoEm(Raiz, 0, 140f, FigmaUI.Largura, 90f, "Digivolução", 80f, FigmaUI.Peso.Negrito);
+        FigmaUI.TextoEm(Raiz, 0, 140f, FigmaUI.Largura, 90f, "Digivolution", 80f, FigmaUI.Peso.Negrito);
         _texto = FigmaUI.TextoEm(Raiz, 60f, 1260f, 909f, 140f, "", 54f, FigmaUI.Peso.Negrito);
         _texto.textWrappingMode = TextWrappingModes.Normal;
         _nome = FigmaUI.TextoEm(Raiz, 0, 1400f, FigmaUI.Largura, 150f, "", 110f, FigmaUI.Peso.Negrito);
@@ -86,7 +86,7 @@ public class TelaDigivolucao : TelaFigma
     private Image Tela(string nome, Color cor)
     {
         var rt = FigmaUI.Ret(Raiz, nome, 0, 0, 1, 1);
-        FigmaUI.Esticar(rt);
+        FigmaUI.TelaCheia(rt);
         return FigmaUI.Imagem(rt, null, cor);
     }
 
@@ -176,7 +176,7 @@ public class TelaDigivolucao : TelaFigma
 
         // 1. Começo: o Digimon brilha e o fundo escurece.
         Mostrar(_retratoVelho, Color.white, 1f);
-        _texto.text = $"{Nome(_velha)} digivolve para...";
+        _texto.text = $"{Nome(_velha)} is digivolving into...";
         for (float t = 0; t < 1f; t += Time.unscaledDeltaTime / 1.2f)
         {
             _escuro.color = new Color(0.02f, 0.03f, 0.12f, t * 0.92f);
@@ -232,7 +232,7 @@ public class TelaDigivolucao : TelaFigma
             yield return null;
         }
         _nome.rectTransform.localScale = Vector3.one;
-        _texto.text = $"{Nome(_velha)} digivolveu para";
+        _texto.text = $"{Nome(_velha)} digivolved into";
         yield return new WaitForSecondsRealtime(0.6f);
 
         // Os efeitos acalmam e aparece o OK.

@@ -111,7 +111,7 @@ public class DigimonVirtual : MonoBehaviour
         {
             _proximoPedido = Time.time + 12f;
             IrAte(PertoDoTamer());
-            _cena.Balao(this, "Fome!", Itens.Icone(Itens.Meat));
+            _cena.Balao(this, "Hungry!", Itens.Icone(Itens.Meat));
             return;
         }
 
@@ -122,8 +122,8 @@ public class DigimonVirtual : MonoBehaviour
             return;
         }
 
-        if (d.cocos > 0 && Random.value < 0.25f) _cena.Balao(this, "Que sujeira...", null);
-        if (d.energia < 30f && Random.value < 0.3f) _cena.Balao(this, "Bocejo...", null);
+        if (d.cocos > 0 && Random.value < 0.25f) _cena.Balao(this, "What a mess...", null);
+        if (d.energia < 30f && Random.value < 0.3f) _cena.Balao(this, "*Yawn*...", null);
 
         // Livre: passear, vir para perto, brincar ou só olhar.
         var amizade = d.amizade / 100f;
@@ -198,7 +198,7 @@ public class DigimonVirtual : MonoBehaviour
         if (Random.value < obedece)
         {
             IrAte(ponto);
-            if (Random.value < 0.3f) _cena.Balao(this, "Indo!", null);
+            if (Random.value < 0.3f) _cena.Balao(this, "Coming!", null);
         }
         else
         {
@@ -220,7 +220,7 @@ public class DigimonVirtual : MonoBehaviour
         var ganho = CuidadoDigimon.Carinho(Dados, _carinhosRecentes++);
         _cena.Coracoes(Topo, _carinhosRecentes <= 3 ? 3 : 1);
         if (_carinhosRecentes <= 3) StartCoroutine(Pular(1));
-        else if (_carinhosRecentes > 6) _cena.Balao(this, "Chega, chega!", null);
+        else if (_carinhosRecentes > 6) _cena.Balao(this, "Okay, enough!", null);
         Atual = Atual == Estado.Andando ? Estado.Livre : Atual;
         return ganho;
     }
@@ -228,7 +228,7 @@ public class DigimonVirtual : MonoBehaviour
     public IEnumerator Comer()
     {
         Atual = Estado.Ocupado;
-        _cena.Balao(this, "Nham!", Itens.Icone(Itens.Meat));
+        _cena.Balao(this, "Yum!", Itens.Icone(Itens.Meat));
         if (_triggers.Contains("Eat"))
         {
             _anim.SetTrigger("Eat");
@@ -248,7 +248,7 @@ public class DigimonVirtual : MonoBehaviour
 
     public void RecusarComida()
     {
-        _cena.Balao(this, "Estou cheio!", null);
+        _cena.Balao(this, "I'm full!", null);
         StartCoroutine(Negar());
     }
 
@@ -320,12 +320,12 @@ public class DigimonVirtual : MonoBehaviour
         if (aForca)
         {
             CuidadoDigimon.Mudar(ref Dados.humor, -6f);
-            _cena.Balao(this, "Ei! Eu estava dormindo!", null);
+            _cena.Balao(this, "Hey! I was sleeping!", null);
             StartCoroutine(Negar());
         }
         else
         {
-            _cena.Balao(this, "Dormi bem!", null);
+            _cena.Balao(this, "I slept well!", null);
             StartCoroutine(Pular(1));
         }
         _proximaDecisao = Time.time + 2f;

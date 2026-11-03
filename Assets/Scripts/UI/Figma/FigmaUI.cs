@@ -39,7 +39,7 @@ public static class FigmaUI
 
     // ------------------------------------------------------------ Canvas e posicionamento
 
-    /// <summary>Canvas na escala do Figma (altura 2228 sempre cabe na tela).</summary>
+    /// <summary>Canvas na escala do Figma (a tela de 1029 x 2228 sempre cabe inteira, em qualquer proporção).</summary>
     public static Canvas Canvas(Transform pai, string nome, int ordem)
     {
         var go = new GameObject(nome, typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -47,14 +47,34 @@ public static class FigmaUI
         var c = go.GetComponent<Canvas>();
         c.renderMode = RenderMode.ScreenSpaceOverlay;
         c.sortingOrder = ordem;
-        var s = go.GetComponent<CanvasScaler>();
-        s.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        s.referenceResolution = new Vector2(Largura, Altura);
-        s.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-        s.matchWidthOrHeight = 1f;
+        UIResponsiva.ConfigurarEscala(go.GetComponent<CanvasScaler>(), new Vector2(Largura, Altura));
         if (UnityEngine.Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
             new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.EventSystems.StandaloneInputModule));
         return c;
+    }
+
+    /// <summary>
+    /// Canvas + a "prancheta" do Figma (1029 x 2228) encaixada na área segura da tela.
+    /// Monte a tela dentro do retângulo retornado, nas coordenadas do Figma.
+    /// Use <see cref="TelaCheia"/> para fundos e véus que devem cobrir a tela toda.
+    /// </summary>
+    public static RectTransform Tela(Transform pai, string nome, int ordem)
+    {
+        var canvas = Canvas(pai, nome, ordem);
+        var area = new GameObject("Area", typeof(RectTransform));
+        var rt = (RectTransform)area.transform;
+        rt.SetParent(canvas.transform, false);
+        rt.sizeDelta = new Vector2(Largura, Altura);
+        area.AddComponent<AreaDeDesenho>().Tamanho = new Vector2(Largura, Altura);
+        return rt;
+    }
+
+    /// <summary>Estica o retângulo para cobrir a tela inteira (inclusive fora da prancheta e da área segura).</summary>
+    public static void TelaCheia(RectTransform rt)
+    {
+        Esticar(rt);
+        if (rt.GetComponentInParent<AreaDeDesenho>() != null && rt.GetComponent<CobrirTela>() == null)
+            rt.gameObject.AddComponent<CobrirTela>();
     }
 
     /// <summary>Retângulo nas coordenadas do Figma (x, y a partir do canto de cima à esquerda da tela).</summary>
@@ -111,10 +131,10 @@ public static class FigmaUI
     public static void Fundo(RectTransform tela, float alfa = 1f)
     {
         var cor = Ret(tela, "Fundo", 0, 0, 1, 1);
-        Esticar(cor);
+        TelaCheia(cor);
         Imagem(cor, null, new Color(AzulFundo.r, AzulFundo.g, AzulFundo.b, alfa)).raycastTarget = true; // bloqueia toques no mapa
         var textura = Ret(tela, "Textura", 0, 0, 1, 1);
-        Esticar(textura);
+        TelaCheia(textura);
         var img = Imagem(textura, S("textura_pixel"), new Color(1, 1, 1, 0.15f * alfa));
         img.preserveAspect = false;
     }
@@ -243,6 +263,29 @@ public static class FigmaUI
     }
 
     /// <summary>Caixa de vidro: borda branca de 5, cantos de 20, fundo branco translúcido.</summary>
+    /// <summary>
+    /// Cartão / painel azul do Figma (cartões de missão, popups): fundo azul com a textura de pixels das telas,
+    /// borda branca de 5 e cantos de ~20. Os filhos do retângulo ficam recortados no formato do cartão.
+    /// </summary>
+    public static RectTransform PainelAzul(RectTransform rt)
+    {
+        var fundo = Imagem(rt, Arredondado(), Hex("#00B4FF"));
+        fundo.type = Image.Type.Sliced;
+        fundo.pixelsPerUnitMultiplier = 0.5f; // a borda de 11 px do sprite vira cantos de ~22
+        rt.gameObject.AddComponent<Mask>().showMaskGraphic = true;
+
+        var textura = Local(rt, "Textura", 0, 0, 1, 1);
+        Esticar(textura);
+        var t = Imagem(textura, S("textura_pixel"), new Color(1, 1, 1, 0.15f));
+        t.type = Image.Type.Tiled;
+        t.pixelsPerUnitMultiplier = 600f / Largura; // quadradinhos do mesmo tamanho dos do fundo das telas
+
+        var borda = Local(rt, "Borda", 0, 0, 1, 1);
+        Esticar(borda);
+        Imagem(borda, Vidro()).type = Image.Type.Sliced;
+        return rt;
+    }
+
     public static RectTransform CaixaVidro(Transform pai, float x, float y, float w, float h)
     {
         var rt = Ret(pai, "Vidro", x, y, w, h);
@@ -259,7 +302,8 @@ public static class FigmaUI
         return _arredondado;
     }
 
-    private static Sprite Vidro()
+    /// <summary>Fundo de vidro (branco a 10%, borda branca de 5, cantos de 20), fatiado.</summary>
+    public static Sprite Vidro()
     {
         if (_vidro == null) _vidro = GerarArredondado(96, 20, 5, new Color(1, 1, 1, 0.1f), Color.white);
         return _vidro;

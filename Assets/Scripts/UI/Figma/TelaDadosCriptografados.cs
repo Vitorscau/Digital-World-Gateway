@@ -79,11 +79,11 @@ public class TelaDadosCriptografados : TelaFigma
 
         var distancia = CoverageManager.Instancia != null ? CoverageManager.Instancia.DistanciaAte(_ponto) : 0;
         if (disponivel)
-            _estado.text = $"A {Distancia(distancia)} daqui";
+            _estado.text = $"{Distancia(distancia)} away";
         else
         {
             var r = _ponto.Recarga;
-            _estado.text = $"Recarregando: {(int)r.TotalMinutes}:{r.Seconds:00}";
+            _estado.text = $"Recharging: {(int)r.TotalMinutes}:{r.Seconds:00}";
         }
     }
 
@@ -125,8 +125,8 @@ public class TelaDadosCriptografados : TelaFigma
                 var ficha = especies[rnd.Next(especies.Count)];
                 var total = perfil.AdicionarScan(ficha.name, PontosScan);
                 linhaScan = total >= 100
-                    ? $"Dados de {ficha.Name.Trim()} completos! Abra o Scan."
-                    : $"+{PontosScan}% dados de {ficha.Name.Trim()} ({total}%)";
+                    ? $"{ficha.Name.Trim()} data complete! Open Scan."
+                    : $"+{PontosScan}% {ficha.Name.Trim()} data ({total}%)";
             }
         }
 
@@ -148,7 +148,7 @@ public class TelaDadosCriptografados : TelaFigma
         AtualizarEstado();
 
         FigmaUI.CaixaVidro(Raiz, 87f, 1315f, 855f, 560f); // criada antes dos textos: fica atrás deles
-        FigmaUI.TextoEm(Raiz, 87f, 1340f, 855f, 60f, "Dados decifrados!", 44f, FigmaUI.Peso.Negrito);
+        FigmaUI.TextoEm(Raiz, 87f, 1340f, 855f, 60f, "Data decoded!", 44f, FigmaUI.Peso.Negrito);
 
         // Ícones dos itens lado a lado, com a quantidade.
         const float lado = 150f, espaco = 60f;
@@ -162,7 +162,7 @@ public class TelaDadosCriptografados : TelaFigma
             x += lado + espaco;
         }
 
-        var linhas = $"+{xp} EXP" + (primeiraVez ? "  (primeira vez aqui!)" : "");
+        var linhas = $"+{xp} EXP" + (primeiraVez ? "  (first time here!)" : "");
         if (linhaScan != null) linhas += "\n" + linhaScan;
         var t = FigmaUI.TextoEm(Raiz, 107f, 1660f, 815f, 190f, linhas, 36f, FigmaUI.Peso.Normal);
         t.textWrappingMode = TextWrappingModes.Normal;
@@ -182,32 +182,32 @@ public class TelaDadosCriptografados : TelaFigma
     {
         switch (tipo)
         {
-            case null: case "": return "Dados perdidos no mapa";
-            case "place_of_worship": case "church": case "christian": return "Templo";
-            case "park": case "garden": case "playground": return "Parque";
-            case "monument": case "memorial": case "statue": case "artwork": return "Monumento";
-            case "museum": return "Museu";
-            case "art_gallery": case "gallery": return "Galeria";
-            case "theatre": return "Teatro";
+            case null: case "": return "Data lost on the map";
+            case "place_of_worship": case "church": case "christian": return "Temple";
+            case "park": case "garden": case "playground": return "Park";
+            case "monument": case "memorial": case "statue": case "artwork": return "Monument";
+            case "museum": return "Museum";
+            case "art_gallery": case "gallery": return "Gallery";
+            case "theatre": return "Theater";
             case "cinema": return "Cinema";
-            case "library": return "Biblioteca";
-            case "attraction": case "viewpoint": return "Atração";
-            case "school": case "college": case "university": case "kindergarten": return "Escola";
-            case "hospital": case "clinic": case "doctors": return "Saúde";
-            case "pharmacy": case "chemist": return "Farmácia";
-            case "town_hall": case "townhall": case "courthouse": return "Prédio público";
-            case "restaurant": return "Restaurante";
-            case "cafe": return "Café";
+            case "library": return "Library";
+            case "attraction": case "viewpoint": return "Attraction";
+            case "school": case "college": case "university": case "kindergarten": return "School";
+            case "hospital": case "clinic": case "doctors": return "Health";
+            case "pharmacy": case "chemist": return "Pharmacy";
+            case "town_hall": case "townhall": case "courthouse": return "Public building";
+            case "restaurant": return "Restaurant";
+            case "cafe": return "Cafe";
             case "bar": case "pub": case "beer": return "Bar";
-            case "fast_food": case "ice_cream": return "Lanchonete";
-            case "bakery": return "Padaria";
-            case "grocery": case "supermarket": case "convenience": return "Mercado";
-            case "shop": case "clothes": case "clothing_store": case "mall": return "Loja";
-            case "bank": case "atm": return "Banco";
-            case "fuel": return "Posto";
-            case "lodging": case "hotel": return "Hospedagem";
-            case "stadium": case "sports_centre": case "pitch": case "sport": return "Esporte";
-            case "bus": case "bus_stop": case "station": case "railway": return "Estação";
+            case "fast_food": case "ice_cream": return "Snack bar";
+            case "bakery": return "Bakery";
+            case "grocery": case "supermarket": case "convenience": return "Market";
+            case "shop": case "clothes": case "clothing_store": case "mall": return "Shop";
+            case "bank": case "atm": return "Bank";
+            case "fuel": return "Gas station";
+            case "lodging": case "hotel": return "Lodging";
+            case "stadium": case "sports_centre": case "pitch": case "sport": return "Sports";
+            case "bus": case "bus_stop": case "station": case "railway": return "Station";
             default:
                 var s = tipo.Replace("_", " ");
                 return char.ToUpper(s[0]) + s.Substring(1);

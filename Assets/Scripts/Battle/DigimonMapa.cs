@@ -16,6 +16,6 @@ public class DigimonMapa : MonoBehaviour
 
         BattleData.digimonClicadoID = digimonID;
         BattleData.digimonDoJogadorPrefab = prefabParaBatalha;
-        SceneManager.LoadScene(Cenas.BatalhaAR);
+        TelaCarregamento.Ir(Cenas.BatalhaAR);
     }
 }

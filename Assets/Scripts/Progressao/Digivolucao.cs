@@ -152,7 +152,7 @@ public static class Digivolucao
             var falha = d.errosCuidado >= 8 ? CatalogoDigimon.Buscar("Sukamon") : CatalogoDigimon.Buscar("Numemon");
             if (falha != null) return falha;
         }
-        motivo = "precisa de mais treino, amizade ou vitórias";
+        motivo = "it needs more training, friendship or victories";
         return null;
     }
 
@@ -266,9 +266,9 @@ public static class Digivolucao
         var ficha = d?.Ficha;
         if (ficha == null) return "";
         var nivel = NivelParaDigivolver(ficha.Stage);
-        if (nivel <= 0) return "Estágio final";
-        if (!ChegouAHora(d)) return $"Digivolui no nível {nivel}";
-        return Escolher(d, out var motivo) != null ? "Pronto para digivolver!" : $"Nível certo, mas {motivo}";
+        if (nivel <= 0) return "Final stage";
+        if (!ChegouAHora(d)) return $"Digivolves at level {nivel}";
+        return Escolher(d, out var motivo) != null ? "Ready to digivolve!" : $"Right level, but {motivo}";
     }
 
     /// <summary>Aplica a digivolução: a espécie muda, o resto (nível, treino, amizade) continua.</summary>
@@ -279,6 +279,7 @@ public static class Digivolucao
         d.nasceuEm = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         CuidadoDigimon.Mudar(ref d.humor, 20f);
         CuidadoDigimon.Mudar(ref d.energia, 30f);
+        Missoes.RegistrarDigivolucao();
         PerfilJogador.Atual.Salvar();
     }
 }

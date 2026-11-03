@@ -179,7 +179,7 @@ public class CenaDigitama : MonoBehaviour
         var tema = Resources.Load<Niantic.Lightship.Maps.MapaLivreTheme>("MapaLivre/TemaOriginal");
         if (tema == null || tema.Ground == null) return Material(CorChao);
         var m = new Material(tema.Ground);
-        var escala = new Vector2(6f, 6f);
+        var escala = new Vector2(4f, 4f); // circuito 50% maior (antes 6 repetições)
         if (m.HasProperty("_BaseMap")) m.SetTextureScale("_BaseMap", escala);
         m.mainTextureScale = escala;
         return m;
@@ -347,7 +347,7 @@ public class CenaDigitama : MonoBehaviour
         _anguloAlvo = _angulo + Mathf.DeltaAngle(_angulo, alvo);
         if (imediato) _angulo = _anguloAlvo;
         _descricao.text = NomeDoFresh(Digitamas.Todos[_atual].Fresh);
-        if (_contador != null) _contador.text = $"Digitama {_atual + 1} de {n}";
+        if (_contador != null) _contador.text = $"Digitama {_atual + 1} of {n}";
     }
 
     private static string NomeDoFresh(string especie)
@@ -360,9 +360,9 @@ public class CenaDigitama : MonoBehaviour
 
     private void MontarUI()
     {
-        _raiz = (RectTransform)FigmaUI.Canvas(transform, "UI_Digitama", 100).transform;
-        _titulo = FigmaUI.TextoEm(_raiz, 0, 140f, FigmaUI.Largura, 100f, "Escolha seu Digitama", 76f, FigmaUI.Peso.Negrito);
-        _subtitulo = FigmaUI.TextoEm(_raiz, 60f, 250f, 909f, 120f, "Cada ovo guarda um Digimon diferente.\nEle será o seu primeiro parceiro.", 36f, FigmaUI.Peso.Normal);
+        _raiz = FigmaUI.Tela(transform, "UI_Digitama", 100);
+        _titulo = FigmaUI.TextoEm(_raiz, 0, 140f, FigmaUI.Largura, 100f, "Choose your Digitama", 76f, FigmaUI.Peso.Negrito);
+        _subtitulo = FigmaUI.TextoEm(_raiz, 60f, 250f, 909f, 120f, "Each egg holds a different Digimon.\nIt will be your first partner.", 36f, FigmaUI.Peso.Normal);
         _subtitulo.textWrappingMode = TextWrappingModes.Normal;
 
         _controles = new GameObject("Controles", typeof(RectTransform));
@@ -384,9 +384,9 @@ public class CenaDigitama : MonoBehaviour
         _descricao.fontSizeMax = 58f;
         Seta(_controles.transform, 70f, "<", -1);
         Seta(_controles.transform, FigmaUI.Largura - 70f - 230f, ">", 1);
-        FigmaUI.BotaoLargo(_controles.transform, 87f, 1800f, "Escolher este ovo", Confirmar);
+        FigmaUI.BotaoLargo(_controles.transform, 87f, 1800f, "Choose this egg", Confirmar);
         // Destino: a roleta gira e para num ovo qualquer.
-        FigmaUI.BotaoBack(_controles.transform, (FigmaUI.Largura - 395f) / 2f, 1965f, () => StartCoroutine(Destino()), "Destino");
+        FigmaUI.BotaoBack(_controles.transform, (FigmaUI.Largura - 395f) / 2f, 1965f, () => StartCoroutine(Destino()), "Fate");
 
         _confirmacao = new GameObject("Confirmacao", typeof(RectTransform));
         _confirmacao.transform.SetParent(_raiz, false);
@@ -396,8 +396,8 @@ public class CenaDigitama : MonoBehaviour
         fundoConfirmacao.raycastTarget = false;
         _textoConfirmacao = FigmaUI.TextoEm(_confirmacao.transform, 60f, 1460f, 909f, 180f, "", 52f, FigmaUI.Peso.Negrito);
         _textoConfirmacao.textWrappingMode = TextWrappingModes.Normal;
-        FigmaUI.BotaoBack(_confirmacao.transform, 107f, 1680f, () => StartCoroutine(Chocar()), "Sim");
-        FigmaUI.BotaoBack(_confirmacao.transform, 527f, 1680f, () => { _confirmacao.SetActive(false); _controles.SetActive(true); }, "Não");
+        FigmaUI.BotaoBack(_confirmacao.transform, 107f, 1680f, () => StartCoroutine(Chocar()), "Yes");
+        FigmaUI.BotaoBack(_confirmacao.transform, 527f, 1680f, () => { _confirmacao.SetActive(false); _controles.SetActive(true); }, "No");
         _confirmacao.SetActive(false);
 
         _final = new GameObject("Final", typeof(RectTransform));
@@ -406,7 +406,7 @@ public class CenaDigitama : MonoBehaviour
         _final.SetActive(false);
 
         var clarao = FigmaUI.Ret(_raiz, "Clarao", 0, 0, 1, 1);
-        FigmaUI.Esticar(clarao);
+        FigmaUI.TelaCheia(clarao);
         _clarao = FigmaUI.Imagem(clarao, null, new Color(1, 1, 1, 0));
     }
 
@@ -416,7 +416,7 @@ public class CenaDigitama : MonoBehaviour
         b.GetComponentInChildren<TMP_Text>().fontSize = 60f;
     }
 
-    public void Confirmar() => Confirmar("Chocar este Digitama?");
+    public void Confirmar() => Confirmar("Hatch this Digitama?");
 
     private void Confirmar(string pergunta)
     {
@@ -443,7 +443,7 @@ public class CenaDigitama : MonoBehaviour
         }
         yield return new WaitForSeconds(0.6f);
         _sorteando = false;
-        Confirmar($"O destino escolheu {NomeDoFresh(Digitamas.Todos[_atual].Fresh)}!\nChocar este Digitama?");
+        Confirmar($"Fate has chosen {NomeDoFresh(Digitamas.Todos[_atual].Fresh)}!\nHatch this Digitama?");
     }
 
     // ------------------------------------------------------------ Chocar
@@ -527,11 +527,11 @@ public class CenaDigitama : MonoBehaviour
         Registrar(tipo.Fresh);
         var nome = ficha != null ? ficha.Name.Trim() : tipo.Fresh;
         _final.SetActive(true);
-        FigmaUI.TextoEm(_final.transform, 0, 160f, FigmaUI.Largura, 100f, $"{nome} nasceu!", 80f, FigmaUI.Peso.Negrito);
+        FigmaUI.TextoEm(_final.transform, 0, 160f, FigmaUI.Largura, 100f, $"{nome} hatched!", 80f, FigmaUI.Peso.Negrito);
         FigmaUI.TextoEm(_final.transform, 60f, 1480f, 909f, 220f,
-            "Este é o seu novo parceiro.\nAlimente, treine e dê carinho: o jeito como você cuida decide em quem ele vai digivolver.",
+            "This is your new partner.\nFeed it, train it and pet it: how you care for it decides what it will digivolve into.",
             38f, FigmaUI.Peso.Normal).textWrappingMode = TextWrappingModes.Normal;
-        FigmaUI.BotaoLargo(_final.transform, 87f, 1800f, "Começar a aventura", () => SceneManager.LoadScene(Cenas.Mapa));
+        FigmaUI.BotaoLargo(_final.transform, 87f, 1800f, "Start your adventure", () => TelaCarregamento.Ir(Cenas.Mapa));
     }
 
     /// <summary>O bebê entra na coleção como parceiro e o início fica marcado como feito.</summary>

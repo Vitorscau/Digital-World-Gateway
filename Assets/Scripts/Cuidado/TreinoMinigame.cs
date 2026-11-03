@@ -44,8 +44,8 @@ public class TreinoMinigame : MonoBehaviour
     private void Montar()
     {
         FigmaUI.CaixaVidro(_raiz, 87f, 560f, 855f, 1080f);
-        _titulo = FigmaUI.TextoEm(_raiz, 87f, 590f, 855f, 70f, "Treino", 56f, FigmaUI.Peso.Negrito);
-        _texto = FigmaUI.TextoEm(_raiz, 127f, 680f, 775f, 90f, $"O que o {_nome} vai treinar?", 36f, FigmaUI.Peso.Normal);
+        _titulo = FigmaUI.TextoEm(_raiz, 87f, 590f, 855f, 70f, "Training", 56f, FigmaUI.Peso.Negrito);
+        _texto = FigmaUI.TextoEm(_raiz, 127f, 680f, 775f, 90f, $"What will {_nome} train?", 36f, FigmaUI.Peso.Normal);
         _texto.textWrappingMode = TextWrappingModes.Normal;
 
         _escolhas = new GameObject("Escolhas", typeof(RectTransform));
@@ -55,7 +55,7 @@ public class TreinoMinigame : MonoBehaviour
         Escolha(StatusTreino.Defense, 527f, 800f);
         Escolha(StatusTreino.Speed, 107f, 960f);
         Escolha(StatusTreino.Brains, 527f, 960f);
-        FigmaUI.BotaoBack(_escolhas.transform, (FigmaUI.Largura - 300f) / 2f, 1440f, Fechar, "Cancelar", 300f / 395f);
+        FigmaUI.BotaoBack(_escolhas.transform, (FigmaUI.Largura - 300f) / 2f, 1440f, Fechar, "Cancel", 300f / 395f);
     }
 
     private void Escolha(StatusTreino s, float x, float y)
@@ -69,8 +69,8 @@ public class TreinoMinigame : MonoBehaviour
     {
         _status = s;
         Destroy(_escolhas);
-        _titulo.text = $"Treino de {CuidadoDigimon.Nome(s)}";
-        _texto.text = "Toque quando o anel encostar no círculo!";
+        _titulo.text = $"{CuidadoDigimon.Nome(s)} Training";
+        _texto.text = "Tap when the ring touches the circle!";
 
         _alvo = Circulo("Alvo", new Color(1f, 1f, 1f, 0.9f));
         _anel = Circulo("Anel", new Color(1f, 0.85f, 0.2f));
@@ -87,7 +87,7 @@ public class TreinoMinigame : MonoBehaviour
         var perfeitos = 0;
         for (var r = 0; r < Rodadas; r++)
         {
-            _texto.text = $"Rodada {r + 1} de {Rodadas} — toque quando o anel encostar no círculo!";
+            _texto.text = $"Round {r + 1} of {Rodadas} - tap when the ring touches the circle!";
             yield return new WaitForSeconds(0.5f);
             _tocou = false;
             var duracao = 1.35f - r * 0.1f;
@@ -101,9 +101,9 @@ public class TreinoMinigame : MonoBehaviour
                 yield return null;
             }
             var erro = Mathf.Abs(tam - TamanhoAlvo);
-            if (_tocou && erro < 25f) { nota = 2; perfeitos++; Retorno("Perfeito!", new Color(1f, 0.85f, 0.2f)); }
-            else if (_tocou && erro < 70f) { nota = 1; Retorno("Bom!", new Color(0.5f, 1f, 0.6f)); }
-            else Retorno(_tocou ? "Errou..." : "Lento demais!", new Color(1f, 0.5f, 0.5f));
+            if (_tocou && erro < 25f) { nota = 2; perfeitos++; Retorno("Perfect!", new Color(1f, 0.85f, 0.2f)); }
+            else if (_tocou && erro < 70f) { nota = 1; Retorno("Good!", new Color(0.5f, 1f, 0.6f)); }
+            else Retorno(_tocou ? "Miss..." : "Too slow!", new Color(1f, 0.5f, 0.5f));
             pontos += nota;
             _pet.AnimarTreino(_status, nota > 0);
             yield return new WaitForSeconds(0.9f);
@@ -114,14 +114,14 @@ public class TreinoMinigame : MonoBehaviour
         Destroy(_alvo.gameObject);
         var ganho = CuidadoDigimon.Treinar(_d, _status, pontos);
         var total = CuidadoDigimon.Treino(_d, _status);
-        var nivel = perfeitos == Rodadas ? "Treino perfeito!" : pontos >= 6 ? "Ótimo treino!" : pontos >= 3 ? "Bom treino." : "Treino fraco...";
+        var nivel = perfeitos == Rodadas ? "Perfect training!" : pontos >= 6 ? "Great training!" : pontos >= 3 ? "Good training." : "Weak training...";
         _titulo.text = nivel;
         _retorno.text = "";
         _texto.text = ganho > 0
             ? $"{CuidadoDigimon.Nome(_status)} +{ganho}  (total {total})\nEXP +{5 + pontos * 2}"
             : pontos > 0
-                ? $"{CuidadoDigimon.Nome(_status)} já está no limite para o nível {_d.nivel}.\nSuba de nível para treinar mais."
-                : "Nenhum ponto desta vez. Tente de novo!";
+                ? $"{CuidadoDigimon.Nome(_status)} is already maxed out for level {_d.nivel}.\nLevel up to train more."
+                : "No points this time. Try again!";
         _texto.rectTransform.sizeDelta = new Vector2(_texto.rectTransform.sizeDelta.x, 300f);
         if (pontos >= 6) _pet.Comemorar();
         FigmaUI.BotaoBack(_raiz, (FigmaUI.Largura - 395f) / 2f, 1440f, Fechar, "OK");

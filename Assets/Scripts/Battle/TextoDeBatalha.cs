@@ -26,10 +26,7 @@ public class TextoDeBatalha : MonoBehaviour
             _instancia._canvas = go.AddComponent<Canvas>();
             _instancia._canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             _instancia._canvas.sortingOrder = 150;
-            var escala = go.AddComponent<UnityEngine.UI.CanvasScaler>();
-            escala.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            escala.referenceResolution = new Vector2(1080, 1920);
-            escala.matchWidthOrHeight = 0.5f;
+            UIResponsiva.ConfigurarEscala(go.AddComponent<UnityEngine.UI.CanvasScaler>(), new Vector2(1080, 1920));
         }
         _instancia.StartCoroutine(_instancia.Subir(mundo, texto, cor, tamanho, subida));
     }

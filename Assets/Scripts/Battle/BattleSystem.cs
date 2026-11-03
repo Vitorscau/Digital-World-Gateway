@@ -25,6 +25,6 @@ public class BattleSystem : MonoBehaviour
 
     public void LoadMapScene()
     {
-        SceneManager.LoadScene(Cenas.Mapa);
+        TelaCarregamento.Ir(Cenas.Mapa);
     }
 }

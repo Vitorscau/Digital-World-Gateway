@@ -20,10 +20,11 @@ public class Encontro
     public static Encontro Atual { get; private set; }
 
     /// <summary>
-    /// true (padrão): a batalha acontece em AR (AR_Battle_Scene), como no jogo original.
-    /// false: usa a Battle_Scene comum, sem câmera (útil para testar rápido).
+    /// false (padrão): a batalha acontece na arena 3D comum (Battle_Scene).
+    /// true: em AR (AR_Battle_Scene). O jogador escolhe em Settings ("AR Battles") e pode trocar
+    /// na hora: a arena comum tem um botão "AR" e a do AR tem "No AR" antes da luta começar.
     /// </summary>
-    public static bool UsarAR = true;
+    public static bool UsarAR => PerfilJogador.Atual.batalhaAR;
 
     public static void Limpar() => Atual = null;
 
@@ -35,12 +36,12 @@ public class Encontro
         var fichaParceiro = parceiro?.Ficha;
         if (fichaParceiro == null)
         {
-            AvisoNaTela.Mostrar("Seu parceiro não foi encontrado no catálogo de Digimons.");
+            AvisoNaTela.Mostrar("Your partner was not found in the Digimon catalog.");
             return false;
         }
         if (fichaInimigo == null)
         {
-            AvisoNaTela.Mostrar($"{selvagem.Especie} ainda não tem ficha de batalha (Resources/Digimons).");
+            AvisoNaTela.Mostrar($"{selvagem.Especie} has no battle data yet.");
             return false;
         }
 
@@ -55,7 +56,7 @@ public class Encontro
             ModeloInimigo = modelo
         };
 
-        SceneManager.LoadScene(UsarAR ? Cenas.BatalhaAR : Cenas.Batalha);
+        TelaCarregamento.Ir(UsarAR ? Cenas.BatalhaAR : Cenas.Batalha);
         return true;
     }
 

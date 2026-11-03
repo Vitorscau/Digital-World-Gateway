@@ -60,8 +60,8 @@ public class CenaCuidado : MonoBehaviour
         CuidadoDigimon.Atualizar(_parceiro);
         TelaSettings.AplicarSom();
         MontarUI();
-        if (_ficha == null) { _dica.text = "Nenhum parceiro escolhido."; return; }
-        _dica.text = $"Aponte para o chão e toque para chamar o {Nome}.";
+        if (_ficha == null) { _dica.text = "No partner chosen."; return; }
+        _dica.text = $"Point at the ground and tap to call {Nome}.";
         StartCoroutine(VerificarAR());
     }
 
@@ -112,7 +112,7 @@ public class CenaCuidado : MonoBehaviour
         if (go.GetComponentInChildren<Collider>() == null) go.AddComponent<CapsuleCollider>();
 
         // Tamanho real pelo estágio, pés no chão, olhando para o Tamer.
-        var altura = alturaRookieMetros * Proporcao(_ficha.Stage);
+        var altura = alturaRookieMetros * Proporcao(_ficha.Stage) * DigimonVisual.Ajuste(_ficha);
         var h = DigimonVisual.Altura(go);
         if (h > 0.0001f) go.transform.localScale *= altura / h;
         go.transform.position = chao;
@@ -134,7 +134,7 @@ public class CenaCuidado : MonoBehaviour
         _pet = go.AddComponent<DigimonVirtual>();
         _pet.Iniciar(this, _parceiro, chao, altura);
         CriarCocos();
-        _dica.text = "Toque nele para fazer carinho. Toque no chão para chamá-lo.";
+        _dica.text = "Tap your partner to pet it. Tap the ground to call it.";
         StartCoroutine(SumirDica(6f));
     }
 
@@ -265,7 +265,7 @@ public class CenaCuidado : MonoBehaviour
             if (comecou || Time.time - _ultimoEsfregar > 0.6f)
             {
                 _ultimoEsfregar = Time.time;
-                if (_pet.Carinho() > 0) AvisoNaTela.Mostrar($"Amizade +1 ({_parceiro.amizade})");
+                if (_pet.Carinho() > 0) AvisoNaTela.Mostrar($"Friendship +1 ({_parceiro.amizade})");
             }
             return;
         }
@@ -320,7 +320,7 @@ public class CenaCuidado : MonoBehaviour
         switch (CuidadoDigimon.Alimentar(_perfil, _parceiro))
         {
             case CuidadoDigimon.ResultadoComida.SemComida:
-                AvisoNaTela.Mostrar("Sem Meat na Bag. Vença batalhas ou decifre Encrypted Data para conseguir mais.");
+                AvisoNaTela.Mostrar("No Meat in your Bag. Win battles or decode Encrypted Data to get more.");
                 break;
             case CuidadoDigimon.ResultadoComida.Cheio:
                 _pet.RecusarComida();
@@ -352,7 +352,7 @@ public class CenaCuidado : MonoBehaviour
     {
         if (!PetPronto()) return;
         if (_pet.Dormindo) _pet.Acordar(true);
-        else if (_parceiro.energia > 90f) _pet.Balao("Não estou com sono!");
+        else if (_parceiro.energia > 90f) _pet.Balao("I'm not sleepy!");
         else StartCoroutine(_pet.Dormir());
     }
 
@@ -361,21 +361,21 @@ public class CenaCuidado : MonoBehaviour
         if (!PetPronto()) return;
         var n = CuidadoDigimon.Limpar(_parceiro);
         CriarCocos();
-        if (n > 0) { _pet.Comemorar(); AvisoNaTela.Mostrar("Tudo limpo!"); }
-        else _pet.Balao("Já está limpinho!");
+        if (n > 0) { _pet.Comemorar(); AvisoNaTela.Mostrar("All clean!"); }
+        else _pet.Balao("Already squeaky clean!");
     }
 
     private bool PetPronto()
     {
         if (_pet != null && _treino == null) return true;
-        if (_pet == null) AvisoNaTela.Mostrar($"Primeiro toque no chão para chamar o {Nome}.");
+        if (_pet == null) AvisoNaTela.Mostrar($"First tap the ground to call {Nome}.");
         return false;
     }
 
     private void Voltar()
     {
         _perfil.Salvar();
-        SceneManager.LoadScene(Cenas.Mapa);
+        TelaCarregamento.Ir(Cenas.Mapa);
     }
 
     private void OnApplicationPause(bool pausa)
@@ -424,7 +424,7 @@ public class CenaCuidado : MonoBehaviour
 
     private void MontarUI()
     {
-        _raiz = (RectTransform)FigmaUI.Canvas(transform, "UI_Cuidado", 100).transform;
+        _raiz = FigmaUI.Tela(transform, "UI_Cuidado", 100);
 
         // Painel de cima: nome, nível, jeito e as quatro barras.
         FigmaUI.CaixaVidro(_raiz, 40f, 40f, 949f, 470f);
@@ -433,10 +433,10 @@ public class CenaCuidado : MonoBehaviour
         _amizadeTxt.enableAutoSizing = true;
         _amizadeTxt.fontSizeMin = 20f;
         _amizadeTxt.fontSizeMax = 32f;
-        Barra("Fome", 195f, new Color(1f, 0.6f, 0.25f));
-        Barra("Energia", 270f, new Color(0.35f, 0.85f, 0.4f));
-        Barra("Humor", 345f, new Color(1f, 0.85f, 0.3f));
-        Barra("Amizade", 420f, new Color(1f, 0.45f, 0.65f));
+        Barra("Hunger", 195f, new Color(1f, 0.6f, 0.25f));
+        Barra("Energy", 270f, new Color(0.35f, 0.85f, 0.4f));
+        Barra("Mood", 345f, new Color(1f, 0.85f, 0.3f));
+        Barra("Friendship", 420f, new Color(1f, 0.45f, 0.65f));
 
         _dica = FigmaUI.TextoEm(_raiz, 60f, 540f, 909f, 140f, "", 38f, FigmaUI.Peso.Negrito);
         _dica.textWrappingMode = TextWrappingModes.Normal;
@@ -455,11 +455,11 @@ public class CenaCuidado : MonoBehaviour
 
         // Botões de baixo (padrão do Figma).
         var e = (FigmaUI.Largura - 2f * 430f - 30f) / 2f;
-        _rotuloComida = Rotulo(FigmaUI.BotaoBack(_raiz, e, 1720f, Alimentar, "Alimentar", 430f / 395f));
-        Rotulo(FigmaUI.BotaoBack(_raiz, e + 460f, 1720f, Treinar, "Treinar", 430f / 395f));
-        _rotuloDormir = Rotulo(FigmaUI.BotaoBack(_raiz, e, 1880f, DormirOuAcordar, "Dormir", 430f / 395f));
-        Rotulo(FigmaUI.BotaoBack(_raiz, e + 460f, 1880f, Limpar, "Limpar", 430f / 395f));
-        FigmaUI.BotaoBack(_raiz, (FigmaUI.Largura - 300f) / 2f, 2050f, Voltar, "Voltar", 300f / 395f);
+        _rotuloComida = Rotulo(FigmaUI.BotaoBack(_raiz, e, 1720f, Alimentar, "Feed", 430f / 395f));
+        Rotulo(FigmaUI.BotaoBack(_raiz, e + 460f, 1720f, Treinar, "Train", 430f / 395f));
+        _rotuloDormir = Rotulo(FigmaUI.BotaoBack(_raiz, e, 1880f, DormirOuAcordar, "Sleep", 430f / 395f));
+        Rotulo(FigmaUI.BotaoBack(_raiz, e + 460f, 1880f, Limpar, "Clean", 430f / 395f));
+        FigmaUI.BotaoBack(_raiz, (FigmaUI.Largura - 300f) / 2f, 2050f, Voltar, "Back", 300f / 395f);
     }
 
     private static TMP_Text Rotulo(Button b) => b.GetComponentInChildren<TMP_Text>();
@@ -478,20 +478,20 @@ public class CenaCuidado : MonoBehaviour
         if (_parceiro == null) return;
         _titulo.text = $"{Nome}  <size=36>Lv {_parceiro.nivel}</size>";
         var jeito = new Digimon(_ficha, Mathf.Max(1, _parceiro.nivel)).Personalidade;
-        _amizadeTxt.text = $"{CuidadoDigimon.NivelAmizade(_parceiro.amizade)} · jeito {jeito} · {Digivolucao.Dica(_parceiro)}" +
-                           (_parceiro.cocos > 0 ? $" · sujeira: {_parceiro.cocos}" : "");
+        _amizadeTxt.text = $"{CuidadoDigimon.NivelAmizade(_parceiro.amizade)} · {jeito} nature · {Digivolucao.Dica(_parceiro)}" +
+                           (_parceiro.cocos > 0 ? $" · poop: {_parceiro.cocos}" : "");
         void B(string n, float v)
         {
             var (fundo, cheio, valor) = _barras[n];
             FigmaUI.AtualizarBarra(fundo, cheio, v / 100f);
             valor.text = Mathf.RoundToInt(v).ToString();
         }
-        B("Fome", _parceiro.fome);
-        B("Energia", _parceiro.energia);
-        B("Humor", _parceiro.humor);
-        B("Amizade", _parceiro.amizade);
-        _rotuloComida.text = $"Alimentar ({_perfil.Quantidade(Itens.Meat)})";
-        _rotuloDormir.text = _pet != null && _pet.Dormindo ? "Acordar" : "Dormir";
+        B("Hunger", _parceiro.fome);
+        B("Energy", _parceiro.energia);
+        B("Mood", _parceiro.humor);
+        B("Friendship", _parceiro.amizade);
+        _rotuloComida.text = $"Feed ({_perfil.Quantidade(Itens.Meat)})";
+        _rotuloDormir.text = _pet != null && _pet.Dormindo ? "Wake up" : "Sleep";
 
         if (_balao.gameObject.activeSelf)
         {
