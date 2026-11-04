@@ -105,6 +105,13 @@ public partial class CriaturaArena : MonoBehaviour
     private float _fugirAte;          // inimigo assustado com um golpe forte: foge até esse tempo
     private float _inicioFuga;
     private bool Fugindo => Time.time < _fugirAte;
+    private bool _noAr;               // arremessado por um golpe forte (voando, quicando ou caído)
+    private int _estadoBase;          // estado inicial do Animator (idle), para levantar depois de cair
+    private float _chaoY;             // altura do chão da arena (onde ele cai depois de voar)
+    private float _recuarAte;         // depois de atacar: recua e circula até esse tempo, depois volta a atacar
+    private float _empurradoAte;      // sendo empurrado por um golpe: o empurrão manda no movimento
+    private bool _andandoDeCostas;    // o Mover está levando ele para longe do inimigo (vira de costas)
+    private Vector3 _direcaoAndando;
     private Vector3 _posAnterior;
     private Vector3 _velocidade;      // para quem atira mirar onde ele vai estar
 
@@ -144,6 +151,7 @@ public partial class CriaturaArena : MonoBehaviour
         }
         LerParametrosAnimator();
         _altura = AlturaModelo();
+        if (animator != null && animator.isActiveAndEnabled) _estadoBase = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
     }
 
     /// <summary>Aumenta a vida máxima e atual (ex.: Bandage usada antes da batalha).</summary>
@@ -246,12 +254,16 @@ public partial class CriaturaArena : MonoBehaviour
         if (!_arenaDefinida) { DefinirArena(); _posAnterior = transform.position; }
         _velocidade = (transform.position - _posAnterior) / Time.fixedDeltaTime;
         _posAnterior = transform.position;
+        if (_noAr || Time.time < _empurradoAte) return; // voando/caído/sendo empurrado: não anda por conta própria
         if (_estado == Estado.Livre && Fugindo)
         {
             Fugir();
             return;
         }
-        Olhar(inimigo.transform.position);
+        // Andando para trás (recuando): vira de costas e olha para onde vai; senão, encara o inimigo.
+        var deCostas = _andandoDeCostas && _estado == Estado.Livre;
+        _andandoDeCostas = false; // o Mover deste quadro decide de novo
+        Olhar(deCostas ? transform.position + _direcaoAndando : inimigo.transform.position);
         if (_estado != Estado.Livre) return;
 
         // Inimigo cambaleando: um Digimon esperto não espera a barra encher toda para aproveitar.
@@ -261,6 +273,13 @@ public partial class CriaturaArena : MonoBehaviour
         if (_plano == null || (_plano.CustoMP > _mp)) _plano = EscolherTecnica();
         var distancia = DistanciaAte(inimigo);
         var alvo = DistanciaDesejada(_plano);
+
+        // Acabou de atacar: recua para uma distância segura e circula; só depois volta a atacar.
+        if (Time.time < _recuarAte)
+        {
+            Mover(distancia, Mathf.Max(alvo, Perto * 3f));
+            return;
+        }
 
         // Barra cheia e no alcance: age.
         if (_barraAcao >= 1f)
@@ -354,8 +373,9 @@ public partial class CriaturaArena : MonoBehaviour
     private void DefinirArena()
     {
         _arenaDefinida = true;
+        _chaoY = transform.position.y;
         _centroArena = (transform.position + inimigo.transform.position) * 0.5f;
-        _raioArena = Mathf.Max(DistanciaAte(inimigo) * 0.9f, Perto * 4f);
+        _raioArena = Mathf.Max(DistanciaAte(inimigo) * 0.9f, Perto * 5f); // espaço para voar longe nos golpes fortes
     }
 
     private float DistanciaAte(CriaturaArena outro)
@@ -406,6 +426,12 @@ public partial class CriaturaArena : MonoBehaviour
         var circulo = Personalidade == DigimonPersonalities.Nimble ? 0.8f : 0.25f + 0.35f * Esperteza;
         if (Mathf.Abs(erro) < Perto * 0.8f) movimento += lateral * circulo;
         if (movimento.sqrMagnitude < 0.01f) return;
+        // Se afastando do inimigo: no próximo quadro ele vira de costas (FixedUpdate).
+        if (Vector3.Dot(movimento.normalized, dir) < -0.35f)
+        {
+            _andandoDeCostas = true;
+            _direcaoAndando = movimento.normalized;
+        }
 
         var passo = movimento.normalized * Velocidade() * Mathf.Min(1f, movimento.magnitude) * Time.fixedDeltaTime;
         var destino = transform.position + passo;
@@ -539,9 +565,10 @@ public partial class CriaturaArena : MonoBehaviour
         {
             yield return ExecutarEstilo(t, cor);
             if (Time.time > _fimBonusAtaque) _bonusAtaque = 1f;
-            if (TerminaDePerto(t.Estilo) && Vivo && _estado == Estado.Agindo) yield return Recuo(0.2f);
+            if (TerminaDePerto(t.Estilo) && Vivo && _estado == Estado.Agindo) yield return Recuo(0.25f);
             yield return new WaitForSeconds(0.2f);
             if (_estado == Estado.Agindo) _estado = Estado.Livre;
+            ComecarRecuo();
             yield break;
         }
 
@@ -577,9 +604,27 @@ public partial class CriaturaArena : MonoBehaviour
         if (Time.time > _fimBonusAtaque) _bonusAtaque = 1f;
 
         // Depois de um golpe de perto, volta um pouco (como um pulo para trás).
-        if (t.Tipo == TipoTecnica.Fisica && Vivo) yield return Recuo(0.2f);
+        if (t.Tipo == TipoTecnica.Fisica && Vivo) yield return Recuo(0.25f);
         yield return new WaitForSeconds(t.Tipo == TipoTecnica.Fisica ? 0.15f : 0.35f);
         if (_estado == Estado.Agindo) _estado = Estado.Livre;
+        ComecarRecuo();
+    }
+
+    /// <summary>
+    /// Ritmo de luta: ataca, recua até uma distância segura (andando em volta) e só então volta para atacar.
+    /// O tempo recuado varia com a personalidade (Fighter volta logo; Brainy/Defender esperam mais).
+    /// </summary>
+    private void ComecarRecuo()
+    {
+        if (!Vivo) return;
+        var tempo = Random.Range(0.6f, 1.1f);
+        switch (Personalidade)
+        {
+            case DigimonPersonalities.Fighter: tempo *= 0.65f; break;
+            case DigimonPersonalities.Brainy:
+            case DigimonPersonalities.Defender: tempo *= 1.3f; break;
+        }
+        _recuarAte = Time.time + tempo;
     }
 
     /// <summary>0 = técnica fraca, 1 = técnica muito forte (pelo Poder).</summary>
@@ -603,7 +648,8 @@ public partial class CriaturaArena : MonoBehaviour
         {
             var p = k / duracao;
             var velocidade = p < 0.3f ? -0.4f : 1.4f; // impulso para trás, depois o bote
-            MoverPara(transform.position + dir * passo * velocidade * Time.deltaTime / duracao);
+            // (levou um golpe no meio do bote: o empurrão ganha)
+            if (Time.time >= _empurradoAte) MoverPara(transform.position + dir * passo * velocidade * Time.deltaTime / duracao);
             yield return null;
         }
     }
@@ -617,7 +663,7 @@ public partial class CriaturaArena : MonoBehaviour
         dir = dir.sqrMagnitude > 1e-8f ? dir.normalized : -transform.forward;
         for (float k = 0; k < duracao && Vivo && _estado == Estado.Agindo; k += Time.deltaTime)
         {
-            MoverPara(transform.position + dir * Perto * 0.5f * Time.deltaTime / duracao);
+            MoverPara(transform.position + dir * Perto * 1.1f * Time.deltaTime / duracao); // pulo para trás
             yield return null;
         }
     }
@@ -628,7 +674,8 @@ public partial class CriaturaArena : MonoBehaviour
         var dir = atacante != null ? transform.position - atacante.transform.position : -transform.forward;
         dir.y = 0;
         dir = dir.sqrMagnitude > 1e-8f ? dir.normalized : -transform.forward;
-        var duracao = Mathf.Lerp(0.16f, 0.32f, Mathf.Clamp01(forca)); // empurrão forte voa por mais tempo
+        var duracao = Mathf.Lerp(0.18f, 0.34f, Mathf.Clamp01(forca / 2f)); // empurrão forte arrasta por mais tempo
+        _empurradoAte = Time.time + duracao;
         if (forca > 0.6f) EfeitosBatalha.Poeira(transform.position, _altura * 0.5f);
         for (float k = 0; k < duracao && Vivo; k += Time.deltaTime)
         {
@@ -637,6 +684,102 @@ public partial class CriaturaArena : MonoBehaviour
             yield return null;
         }
         if (forca > 0.6f && Vivo) EfeitosBatalha.Poeira(transform.position, _altura * 0.6f); // arrasta no chão ao parar
+    }
+
+    /// <summary>
+    /// Golpe forte: o Digimon voa para trás num arco, cai de costas, quica duas vezes, fica caído um instante e
+    /// levanta (no estilo dos jogos de luta de Digimon). Se o golpe derrubou (ko), só voa e quica; a animação
+    /// "Down" e o sumiço vêm do Morrer.
+    /// </summary>
+    private IEnumerator Arremesso(CriaturaArena atacante, float forca, float peso, bool ko)
+    {
+        _noAr = true;
+        if (!ko)
+        {
+            StopCoroutine(nameof(Cambalear));
+            _estado = Estado.Atordoado;
+            _barraAcao *= 0.4f;
+            _fugirAte = 0f;
+            Animar("Damage");
+        }
+        var dir = atacante != null ? transform.position - atacante.transform.position : -transform.forward;
+        dir.y = 0;
+        dir = dir.sqrMagnitude > 1e-8f ? dir.normalized : -transform.forward;
+        var chao = _arenaDefinida ? _chaoY : transform.position.y; // (se já estava no ar, cai até o chão de verdade)
+        var distancia = Perto * Mathf.Clamp(forca * 2f, 2.5f, 6f);
+        var alturaVoo = _altura * Mathf.Clamp(0.45f + 0.3f * forca, 0.6f, 1.5f);
+
+        // O corpo (modelo) tomba de costas enquanto voa; o "suporte" continua de pé (a física e a mira usam ele).
+        var corpo = animator != null && animator.transform != transform && animator.transform.IsChildOf(transform) ? animator.transform : null;
+        var giroInicial = corpo != null ? corpo.localRotation : Quaternion.identity;
+        const float deitado = -80f;
+
+        // Voo principal e dois quiques, cada um mais baixo e mais curto.
+        float[] parte = { 0.62f, 0.26f, 0.12f };
+        float[] altura = { 1f, 0.32f, 0.1f };
+        float[] duracao = { 0.55f, 0.3f, 0.18f };
+        var escalaTempo = Mathf.Lerp(0.85f, 1.25f, Mathf.Clamp01(forca / 3f));
+        EfeitosBatalha.Poeira(transform.position, _altura * 0.5f);
+        for (var fase = 0; fase < parte.Length; fase++)
+        {
+            var dur = duracao[fase] * escalaTempo;
+            for (float k = 0; k < dur; k += Time.deltaTime)
+            {
+                var p = Mathf.Clamp01(k / dur);
+                var pos = transform.position + dir * distancia * parte[fase] * Time.deltaTime / dur;
+                pos.y = chao + alturaVoo * altura[fase] * 4f * p * (1f - p);
+                MoverPara(pos);
+                if (corpo != null && !ko)
+                {
+                    // Gira de costas no primeiro voo; nos quiques balança um pouco e volta a deitar.
+                    var angulo = fase == 0 ? Mathf.Lerp(0f, deitado, Mathf.SmoothStep(0f, 1f, p)) : deitado + 18f * altura[fase] * Mathf.Sin(p * Mathf.PI);
+                    corpo.localRotation = giroInicial * Quaternion.Euler(angulo, 0f, 0f);
+                }
+                yield return null;
+            }
+            // Bateu no chão.
+            var noChao = transform.position;
+            noChao.y = chao;
+            MoverPara(noChao);
+            EfeitosBatalha.Poeira(noChao, _altura * (fase == 0 ? 0.9f : 0.6f));
+        }
+        // Arrasta mais um pouco no chão.
+        for (float k = 0; k < 0.15f; k += Time.deltaTime)
+        {
+            var pos = transform.position + dir * distancia * 0.06f * (1f - k / 0.15f) * Time.deltaTime / 0.075f;
+            pos.y = chao;
+            MoverPara(pos);
+            yield return null;
+        }
+        if (ko || !Vivo) yield break; // derrotado: fica no chão
+
+        // Caído um instante (mais tempo no golpe que tirou muito) e levanta.
+        yield return new WaitForSeconds(Mathf.Lerp(0.45f, 0.9f, peso));
+        if (!Vivo) yield break;
+        if (animator != null && _estadoBase != 0)
+        {
+            foreach (var trigger in _triggers) animator.ResetTrigger(trigger);
+            animator.CrossFadeInFixedTime(_estadoBase, 0.2f);
+        }
+        var giroDeitado = corpo != null ? corpo.localRotation : Quaternion.identity;
+        const float levantar = 0.35f;
+        for (float k = 0; k < levantar; k += Time.deltaTime)
+        {
+            var p = Mathf.SmoothStep(0f, 1f, k / levantar);
+            if (corpo != null) corpo.localRotation = Quaternion.Slerp(giroDeitado, giroInicial, p);
+            var pos = transform.position;
+            pos.y = chao + _altura * 0.12f * Mathf.Sin(p * Mathf.PI); // pulinho ao levantar
+            MoverPara(pos);
+            yield return null;
+        }
+        if (corpo != null) corpo.localRotation = giroInicial;
+        var fim = transform.position;
+        fim.y = chao;
+        MoverPara(fim);
+        _noAr = false;
+        _fimFirmeza = Time.time + 1.2f; // não cambaleia logo depois de levantar
+        if (_estado == Estado.Atordoado) _estado = Estado.Livre;
+        TalvezFugir(peso);
     }
 
     /// <summary>Técnica de longe: uma bola de energia na cor do elemento voa até o alvo.</summary>
@@ -821,13 +964,27 @@ public partial class CriaturaArena : MonoBehaviour
             });
         }
 
-        ReceberDano(dano);
-        if (!Vivo) return;
         // Empurrão: pequeno na guarda, maior no crítico e nos golpes que tiram muito.
         var peso = Mathf.Clamp01(dano / (float)Mathf.Max(1, vidaMaxima) * 4f);
         // (golpes de perto e técnicas fortes jogam mais longe; disparos fracos quase não empurram)
-        var impulso = (defendeu ? 0.2f : 0.5f + 0.9f * peso + (critico ? 0.4f : 0f) + (forte ? 0.3f : 0f)) * Mathf.Lerp(0.4f, 1f, fracao);
+        // Todo golpe empurra (até o fraco e o de longe); na guarda, menos.
+        var impulso = (defendeu ? 0.6f : 1.3f + 1.8f * peso + (critico ? 0.8f : 0f) + (forte ? 0.6f : 0f)) * Mathf.Lerp(0.6f, 1f, fracao);
         if (t != null && t.Tipo == TipoTecnica.Fisica) impulso *= 1.2f;
+        // Golpe forte (ou o que derruba): voa longe, quica no chão, fica caído e levanta.
+        var arremessa = !defendeu && fracao > 0.5f && (forte || critico || peso > 0.55f || dano >= vidaAtual);
+
+        ReceberDano(dano);
+        if (!Vivo)
+        {
+            if (arremessa || fracao > 0.5f) StartCoroutine(Arremesso(atacante, impulso, 0f, true));
+            return;
+        }
+        if (_noAr) return; // já voando: o golpe só tira vida
+        if (arremessa)
+        {
+            StartCoroutine(Arremesso(atacante, impulso, peso, false));
+            return; // o resto (cambalear/fugir) acontece quando ele levanta
+        }
         StartCoroutine(Empurrao(atacante, impulso));
         if (defendeu) return;
         if (forte || peso > 0.5f) TalvezFugir(peso);
